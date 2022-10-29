@@ -2,7 +2,9 @@ package com.healthcode.healthcodeserver.entity;
 
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
+import lombok.Data;
 
+@Data
 @TableName("t_person_relation")
 public class PersonRelation {
   @TableField("person_id_a")
@@ -14,6 +16,5 @@ public class PersonRelation {
   1: 血亲
   2：姻亲
    */
-  @TableField("relation")
   private Short relation;
 }

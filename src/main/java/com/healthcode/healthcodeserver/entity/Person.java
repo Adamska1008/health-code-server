@@ -13,10 +13,7 @@ public class Person {
   private String id;
   @TableField(value="person_name")
   private String name;
-  @TableField(value="phone_number")
   private String phoneNumber;
-  @TableField(value="gender")
   private Short gender; // 0: male; 1: female
-  @TableField(value="health_code_color")
   private String healthCodeColor;
 }
