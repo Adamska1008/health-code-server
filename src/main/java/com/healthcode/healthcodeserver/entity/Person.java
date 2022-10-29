@@ -8,7 +8,7 @@ import lombok.Data;
 
 @Data
 @TableName("t_person_info")
-public class User {
+public class Person {
   @TableId(value="person_id", type=IdType.NONE)
   private String id;
   @TableField(value="person_name")
