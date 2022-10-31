@@ -2,7 +2,9 @@ package com.healthcode.healthcodeserver.common;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
+import java.util.HashMap;
 import java.util.Map;
 
 @Getter
@@ -15,14 +17,19 @@ public class Result {
    */
   private Integer statusCode;
   private String message;
-  private Map<String, Object> data;
+  private final Map<String, Object> data = new HashMap<>();
 
-  public static Result ok() {
-    return new Result(){{ setStatusCode(0); setMessage("OK"); }};
+
+  public Result ok() {
+    this.setStatusCode(0);
+    this.setMessage("OK");
+    return this;
   }
 
-  public static Result error() {
-    return new Result(){{ setStatusCode(1); setMessage("UNKNOWN ERROR"); }};
+  public Result error() {
+    this.setStatusCode(1);
+    this.setMessage("UNKNOWN ERROR");
+    return this;
   }
 
   public Result putData(String key, Object value) {

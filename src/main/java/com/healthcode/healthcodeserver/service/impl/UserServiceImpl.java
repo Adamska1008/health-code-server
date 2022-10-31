@@ -1,4 +1,8 @@
 package com.healthcode.healthcodeserver.service.impl;
 
-public class UserServiceImpl {
+import com.healthcode.healthcodeserver.service.UserService;
+import org.springframework.stereotype.Service;
+
+@Service
+public class UserServiceImpl implements UserService {
 }
