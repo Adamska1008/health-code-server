@@ -11,11 +11,12 @@ import org.springframework.stereotype.Service;
 @Service
 public class UserServiceImpl extends ServiceImpl<UserDao,User> implements UserService {
   @Autowired
-  UserService userService;
+  private UserDao userDao;
+
   @Override
   public User getUserInfoById(String id) {
-    QueryWrapper queryWrapper=new QueryWrapper<>()
-            .eq("person_id",id);
-    return userService.getOne(queryWrapper);
+    QueryWrapper<User> queryWrapper = new QueryWrapper<>();
+    queryWrapper.eq("person_id",id);
+    return userDao.selectOne(queryWrapper);
   }
 }

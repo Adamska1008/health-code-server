@@ -1,5 +1,5 @@
 -- gender 0:男 1:女
--- health_code_color 0:红码 1:黄码 2:绿码
+-- health_code_color 0:绿 1:黄 2:绿
 CREATE TABLE IF NOT EXISTS t_user_info (
     person_id           CHAR(20)    NOT NULL,
     person_name         CHAR(20)    NOT NULL,
@@ -14,8 +14,14 @@ CREATE TABLE IF NOT EXISTS t_user_relation (
     person_id_b     CHAR(20)    NOT NULL,
     relation        TINYINT    	NOT NULL,
     PRIMARY KEY(person_id_a, person_id_b),
-    FOREIGN KEY(person_id_a) REFERENCES t_person_info(person_id),
-    FOREIGN KEY(person_id_b) REFERENCES t_person_info(person_id)
+    FOREIGN KEY(person_id_a) REFERENCES t_user_info(person_id),
+    FOREIGN KEY(person_id_b) REFERENCES t_user_info(person_id)
+);
+
+-- 核酸检测试剂
+CREATE TABLE IF NOT EXISTS t_nucleic_acid_info(
+                                                  nucleic_acid_id         CHAR(20)    NOT NULL,
+                                                  PRIMARY KEY(nucleic_acid_id)
 );
 
 -- test_result 0:阴性 1:阳性
@@ -26,7 +32,7 @@ CREATE TABLE IF NOT EXISTS t_nucleic_acid_test_info (
     nucleic_acid_id        		    CHAR(20)    NOT NULL,
     test_result         	TINYINT    	NOT NULL CHECK(test_result IN(0,1)),
     PRIMARY KEY(person_id, nucleic_acid_id),
-    FOREIGN KEY(person_id) REFERENCES t_person_info(person_id),
+    FOREIGN KEY(person_id) REFERENCES t_user_info(person_id),
     FOREIGN KEY(nucleic_acid_id) REFERENCES  t_nucleic_acid_info(nucleic_acid_id)
 );
 
@@ -39,11 +45,7 @@ CREATE TABLE IF NOT EXISTS t_vaccine_inoculation_info(
     PRIMARY KEY(person_id, inoculation_number)
 );
 
--- 核酸检测试剂
-CREATE TABLE IF NOT EXISTS t_nucleic_acid_info(
-    nucleic_acid_id         CHAR(20)    NOT NULL,
-    PRIMARY KEY(nucleic_acid_id)
-);
+
 
 -- 核酸检测机构
 CREATE table  IF NOT EXISTS t_covid_test_institution(
@@ -84,7 +86,7 @@ CREATE table IF NOT EXISTS t_itinerary_information(
     venue_id CHAR(20) DEFAULT '',
     record_time TIMESTAMP,
     PRIMARY KEY (person_id,venue_id,record_time),
-    FOREIGN KEY (person_id) REFERENCES t_person_info(person_id),
+    FOREIGN KEY (person_id) REFERENCES t_user_info(person_id),
     FOREIGN KEY (venue_id) REFERENCES t_venue_code_info(code_id)
 )ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 

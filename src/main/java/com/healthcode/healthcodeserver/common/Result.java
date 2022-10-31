@@ -23,7 +23,7 @@ public class Result {
   private final Map<String, Object> data = new HashMap<>();
 
   public Result ok() {
-    this.setStatusCode(200);
+    this.setStatusCode(0);
     this.setMessage("OK");
     return this;
   }

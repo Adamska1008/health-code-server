@@ -1,4 +1,4 @@
-package com.healthcode.healthcodeserver;
+package com.healthcode.healthcodeserver.controllerTest;
 
 import com.alibaba.fastjson2.JSON;
 import com.healthcode.healthcodeserver.common.Result;
@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-public class UserTest {
+public class UserControllerTest {
   @Autowired
   UserController userController;
 

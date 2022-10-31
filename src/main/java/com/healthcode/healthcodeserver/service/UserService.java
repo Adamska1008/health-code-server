@@ -5,6 +5,5 @@ import com.healthcode.healthcodeserver.entity.User;
 import org.springframework.stereotype.Service;
 
 public interface UserService extends IService<User> {
-  public User getUserInfoById(String id);
-
+  User getUserInfoById(String id);
 }

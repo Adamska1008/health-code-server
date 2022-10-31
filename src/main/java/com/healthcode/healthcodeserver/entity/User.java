@@ -9,11 +9,13 @@ import lombok.Data;
 @Data
 @TableName("t_user_info")
 public class User {
-  @TableId(value="person_id", type=IdType.NONE)
-  private String id;
+  @TableId(type=IdType.NONE)
+  private String personId;
+  @TableField(value = "person_name")
   private String name;
   private String phoneNumber;
-  // 0: male; 1: female
+  // 0: 男; 1: 女
   private Short gender;
+  // health_code_color 0:绿 1:黄 2:绿
   private String healthCodeColor;
 }

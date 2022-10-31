@@ -12,10 +12,12 @@ import java.util.List;
 @Service
 public class NucleicAcidTestInfoServiceImpl extends ServiceImpl<NucleicAcidTestInfoDao, NucleicAcidTestInfo> implements NucleicAcidTestInfoService {
   @Autowired
-  NucleicAcidTestInfoService nucleicAcidTestInfoService;
+  private NucleicAcidTestInfoDao nucleicAcidTestInfoDao;
+
   @Override
-  public List<NucleicAcidTestInfo> getNucleicAcidTestInfoListById(String id) {
-    QueryWrapper queryWrapper = new QueryWrapper<>().eq("person_id",id);
-    return nucleicAcidTestInfoService.list(queryWrapper);
+  public List<NucleicAcidTestInfo> getNucleicAcidTestInfoListByPersonId(String id) {
+    QueryWrapper<NucleicAcidTestInfo> queryWrapper = new QueryWrapper<>();
+    queryWrapper.eq("person_id", id);
+    return nucleicAcidTestInfoDao.selectList(queryWrapper);
   }
 }
