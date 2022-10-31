@@ -5,8 +5,8 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
 @Data
-@TableName("t_person_relation")
-public class PersonRelation {
+@TableName("t_user_relation")
+public class UserRelation {
   @TableField("person_id_a")
   private String personIdA;
   @TableField("person_id_b")

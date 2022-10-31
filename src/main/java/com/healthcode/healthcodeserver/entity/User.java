@@ -7,13 +7,13 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
 @Data
-@TableName("t_person_info")
-public class Person {
+@TableName("t_user_info")
+public class User {
   @TableId(value="person_id", type=IdType.NONE)
   private String id;
-  @TableField(value="person_name")
   private String name;
   private String phoneNumber;
-  private Short gender; // 0: male; 1: female
+  // 0: male; 1: female
+  private Short gender;
   private String healthCodeColor;
 }

@@ -6,6 +6,10 @@ import org.springframework.web.client.RestTemplate;
 
 @Configuration
 public class SpringConfiguration {
+  /**
+   * RestTemplate 用于发送http请求
+   * @return restTemplate bean
+   */
   @Bean
   public RestTemplate restTemplate() {
     return new RestTemplate();

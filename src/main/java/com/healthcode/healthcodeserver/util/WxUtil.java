@@ -30,7 +30,6 @@ public class WxUtil {
       put("secret", appSecret);
       put("js_code", code);
     }};
-    System.out.println(map);
     ResponseEntity<String> responseEntity = restTemplate.getForEntity(url, String.class, map);
     return responseEntity.getBody();
   }

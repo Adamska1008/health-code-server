@@ -12,7 +12,7 @@ public class NucleicAcidTestInfo {
   private String personId;
   private Date testTime;
   private String testInstitutionId;
-  private String acidCode;
+  private String nucleicAcidId;
   /*
   0: 阴性
   1: 阳性
