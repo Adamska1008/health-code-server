@@ -4,3 +4,7 @@ spring:
     url: jdbc:mysql:///healthcode
     username: root
     password: 1234
+
+app:
+  id: wx65b5e04ace35528d
+  secret: 1e1950d5417423036256bb16d435d63a
