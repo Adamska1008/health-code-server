@@ -1,11 +1,14 @@
 package com.healthcode.healthcodeserver.entity;
 
-import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.sql.Date;
 
+@AllArgsConstructor
+@NoArgsConstructor
 @Data
 @TableName("t_nucleic_acid_test_info")
 public class NucleicAcidTestInfo {
