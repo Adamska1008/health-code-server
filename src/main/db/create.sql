@@ -7,8 +7,9 @@ CREATE TABLE IF NOT EXISTS t_user_info (
     gender              TINYINT     NOT NULL CHECK(gender IN(0, 1)),
     health_code_color   TINYINT    	NOT NULL CHECK (health_code_color IN (0,1,2)),
     PRIMARY KEY (person_id)
-);
+)DEFAULT CHARSET=utf8mb4;
 
+-- 用户关系表
 CREATE TABLE IF NOT EXISTS t_user_relation (
     person_id_a     CHAR(20)    NOT NULL,
     person_id_b     CHAR(20)    NOT NULL,
@@ -16,14 +17,15 @@ CREATE TABLE IF NOT EXISTS t_user_relation (
     PRIMARY KEY(person_id_a, person_id_b),
     FOREIGN KEY(person_id_a) REFERENCES t_user_info(person_id),
     FOREIGN KEY(person_id_b) REFERENCES t_user_info(person_id)
-);
+)DEFAULT CHARSET=utf8mb4;
 
--- 核酸检测试剂
+-- 核酸检测试剂表
 CREATE TABLE IF NOT EXISTS t_nucleic_acid_info(
-                                                  nucleic_acid_id         CHAR(20)    NOT NULL,
-                                                  PRIMARY KEY(nucleic_acid_id)
-);
+    nucleic_acid_id         CHAR(20)    NOT NULL,
+    PRIMARY KEY(nucleic_acid_id)
+)DEFAULT CHARSET=utf8mb4;
 
+-- 核酸检测结果表
 -- test_result 0:阴性 1:阳性
 CREATE TABLE IF NOT EXISTS t_nucleic_acid_test_info (
     person_id           	CHAR(20),
@@ -34,8 +36,9 @@ CREATE TABLE IF NOT EXISTS t_nucleic_acid_test_info (
     PRIMARY KEY(person_id, nucleic_acid_id),
     FOREIGN KEY(person_id) REFERENCES t_user_info(person_id),
     FOREIGN KEY(nucleic_acid_id) REFERENCES  t_nucleic_acid_info(nucleic_acid_id)
-);
+)DEFAULT CHARSET=utf8mb4;
 
+-- 疫苗接种表
 CREATE TABLE IF NOT EXISTS t_vaccine_inoculation_info(
     person_id               CHAR(20)    NOT NULL,
     inoculation_time        DATETIME    NOT NULL,
@@ -43,17 +46,15 @@ CREATE TABLE IF NOT EXISTS t_vaccine_inoculation_info(
     vaccine_name            CHAR(20)    NOT NULL,
     inoculation_number      CHAR(20)    NOT NULL,
     PRIMARY KEY(person_id, inoculation_number)
-);
-
-
+)DEFAULT CHARSET=utf8mb4;
 
 -- 核酸检测机构
 CREATE table  IF NOT EXISTS t_covid_test_institution(
-    institution_id CHAR(20) DEFAULT '',
-    institution_locate_area VARCHAR(40) DEFAULT '',
-    institution_name VARCHAR(40) DEFAULT '',
+    institution_id          CHAR(20)    NOT NULL,
+    institution_locate_area VARCHAR(40) ,
+    institution_name        VARCHAR(40) ,
     PRIMARY KEY (institution_id)
-)ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+)DEFAULT CHARSET=utf8mb4;
 
 -- 场所码信息
 CREATE table IF NOT EXISTS t_venue_code_info(
@@ -63,7 +64,7 @@ CREATE table IF NOT EXISTS t_venue_code_info(
     venue_locate_type VARCHAR(10) DEFAULT '',
     venue_name VARCHAR(40) DEFAULT '',
     PRIMARY KEY (code_id)
-)ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+)DEFAULT CHARSET=utf8mb4;
 
 -- 场所码申请信息
 -- is_solved 0: 未处理 1:已处理
@@ -78,7 +79,7 @@ CREATE table IF NOT EXISTS t_venue_code_application(
     code_application_result TINYINT CHECK ( code_application_result IN (0,1)),
     result_info VARCHAR(50),
     PRIMARY KEY (code_application_id)
-)ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+)DEFAULT CHARSET=utf8mb4;
 
 -- 行程信息
 CREATE table IF NOT EXISTS t_itinerary_information(
@@ -88,7 +89,7 @@ CREATE table IF NOT EXISTS t_itinerary_information(
     PRIMARY KEY (person_id,venue_id,record_time),
     FOREIGN KEY (person_id) REFERENCES t_user_info(person_id),
     FOREIGN KEY (venue_id) REFERENCES t_venue_code_info(code_id)
-)ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+)DEFAULT CHARSET=utf8mb4;
 
 #risk_level 0:低 1:中 2:高 3:常态化
 CREATE TABLE IF NOT EXISTS t_regional_risk_profile(
@@ -103,7 +104,7 @@ CREATE TABLE IF NOT EXISTS t_regional_risk_profile(
     yellow_code_number 	INTEGER,
     infected_number 	INTEGER,
     PRIMARY KEY (profile_id)
-);
+)DEFAULT CHARSET=utf8mb4;
 
 #risk_level 0:低 1:中 2:高 3:常态化
 CREATE TABLE IF NOT EXISTS t_daily_risk_situation(
@@ -116,7 +117,7 @@ CREATE TABLE IF NOT EXISTS t_daily_risk_situation(
     yesterday_addition_asymptomatic INTEGER,
     PRIMARY KEY (situation_id),
     FOREIGN KEY (profile_id) REFERENCES t_regional_risk_profile(profile_id)
-);
+)DEFAULT CHARSET=utf8mb4;
 
 #category 0:用户 1:核酸检测人员 2:防疫管理人员
 CREATE TABLE IF NOT EXISTS t_account(
@@ -125,7 +126,7 @@ CREATE TABLE IF NOT EXISTS t_account(
     user_password VARCHAR(20),
     category VARCHAR(10) CHECK ( category IN (0,1,2)),
     PRIMARY KEY (account_id)
-);
+)DEFAULT CHARSET=utf8mb4;
 
 # is_investigated 0:已审核 1:未审核
 # is_processed 0:已处理 1:未处理
@@ -139,7 +140,7 @@ CREATE TABLE IF NOT EXISTS t_abnormal_info_appeal_investigate(
     is_processed TINYINT CHECK ( is_processed IN (0,1)),
     appeal_result VARCHAR(20) ,
     PRIMARY KEY (appeal_number)
-);
+)DEFAULT CHARSET=utf8mb4;
 
 #apply_type 0:核酸检测人员 1:防疫管理人员
 # is_succeed 0:申请失败 1:申请成功
@@ -153,7 +154,7 @@ CREATE TABLE IF NOT EXISTS t_identity_application(
     is_succeed TINYINT CHECK ( is_succeed IN (0,1)),
     result_info VARCHAR(50),
     PRIMARY KEY(application_id)
-);
+)DEFAULT CHARSET=utf8mb4;
 
 
 CREATE TABLE IF NOT EXISTS t_audit_family_code  (
@@ -165,7 +166,7 @@ CREATE TABLE IF NOT EXISTS t_audit_family_code  (
     is_succeed TINYINT CHECK ( is_succeed IN (0,1)),
     result_info VARCHAR(50),
     PRIMARY KEY(application_id)
-);
+)DEFAULT CHARSET=utf8mb4;
 
 # is_investigated 0:已审核 1:未审核
 # is_processed 0:已处理 1:未处理
@@ -178,7 +179,7 @@ CREATE TABLE IF NOT EXISTS t_audit_journey_information  (
     is_processed TINYINT CHECK ( is_processed IN (0,1)),
     appeal_result VARCHAR(20),
     PRIMARY KEY(application_id) 
-);
+)DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE IF NOT EXISTS t_collectionpoint_information (
 	collectionpoint_id            CHAR(20)    NOT NULL,
@@ -187,7 +188,7 @@ CREATE TABLE IF NOT EXISTS t_collectionpoint_information (
     collectionpoint_principal     CHAR(20)    NOT NULL,
     collectionpoint_contact       CHAR(20)    NOT NULL,
     PRIMARY KEY (collectionpoint_id)
-);
+)DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE IF NOT EXISTS t_policy_information (
     policy_id                     CHAR(20) NOT NULL,
@@ -198,4 +199,4 @@ CREATE TABLE IF NOT EXISTS t_policy_information (
     policy_title                  CHAR(20) NOT NULL,
     policy_link                   CHAR(20) NOT NULL,
     PRIMARY KEY (policy_id)
-);
+)DEFAULT CHARSET=utf8mb4;

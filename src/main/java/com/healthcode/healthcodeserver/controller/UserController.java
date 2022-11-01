@@ -18,7 +18,9 @@ public class UserController {
   WxUtil wxUtil;
 
   @GetMapping("/{appid}/login")
-  public Result code2Session(@RequestParam("code") String code, @PathVariable String appid) {
+  public Result code2Session(@RequestParam("code") String code,
+                             @PathVariable String appid,
+                             @RequestParam("userProfile") String obj) {
     String data = wxUtil.code2Session(code);
     JSONObject jsonObject = JSONObject.parseObject(data);
     log.info("request to build session with code "+ code);
