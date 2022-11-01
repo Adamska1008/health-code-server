@@ -14,12 +14,19 @@ public class UserServiceTest {
 
   @Test
   public void UnitTest() {
-    getUserInfoByIdTest("35341719961123514X");
+    getUserInfoByPersonIdTest("35341719961123514X");
+    getUserInfoByOpenId("0");
   }
 
   @Test
-  public void getUserInfoByIdTest(String personId) {
-    User user = userService.getUserInfoById(personId);
+  public void getUserInfoByPersonIdTest(String personId) {
+    User user = userService.getUserInfoByPersonId(personId);
+    System.out.println(JSON.toJSON(user));
+  }
+
+  @Test
+  public void getUserInfoByOpenId(String openId) {
+    User user = userService.getUserInfoByOpenId(openId);
     System.out.println(JSON.toJSON(user));
   }
 }

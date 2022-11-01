@@ -8,6 +8,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @Slf4j
 @RestController
 @RequestMapping("/wx/user")
@@ -16,9 +19,11 @@ public class UserController {
   UserService userService;
   @Autowired
   WxUtil wxUtil;
+  Map<String, String> openIdToSessionKey = new HashMap<>();
 
   @GetMapping("/{appid}/login")
-  public Result code2Session(@RequestParam("code") String code, @PathVariable String appid) {
+  public Result code2Session(@RequestParam("code") String code,
+                             @PathVariable String appid) {
     String data = wxUtil.code2Session(code);
     JSONObject jsonObject = JSONObject.parseObject(data);
     log.info("request to build session with code "+ code);
@@ -29,6 +34,7 @@ public class UserController {
     if (sessionKey == null || openId == null) {
       return result.error();
     } else {
+      openIdToSessionKey.put(openId, sessionKey);
       return result.ok();
     }
   }

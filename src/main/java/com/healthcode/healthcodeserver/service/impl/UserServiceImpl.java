@@ -14,9 +14,15 @@ public class UserServiceImpl extends ServiceImpl<UserDao,User> implements UserSe
   private UserDao userDao;
 
   @Override
-  public User getUserInfoById(String id) {
+  public User getUserInfoByPersonId(String personId) {
     QueryWrapper<User> queryWrapper = new QueryWrapper<>();
-    queryWrapper.eq("person_id",id);
+    queryWrapper.eq("person_id",personId);
+    return userDao.selectOne(queryWrapper);
+  }
+
+  public User getUserInfoByOpenId(String openId) {
+    QueryWrapper<User> queryWrapper = new QueryWrapper<>();
+    queryWrapper.eq("wx_openid",openId);
     return userDao.selectOne(queryWrapper);
   }
 }
