@@ -56,18 +56,16 @@ public class UserController {
                                 @RequestParam("session_key") String sessionKey,
                                 @PathVariable("appid") String appid) {
     if (!openIdToSessionKey.get(openId).equals(sessionKey)) {
-      return new Result().error(3).setMessage("unregistered session_key");
+      return new Result().error(3);
     }
     User user = userService.getUserInfoByOpenId(openId);
-    Result result = new Result().ok();
-
     List<VaccineInoculationInfo> vaccineInoculationInfoList =
             vaccineInoculationInfoService.getVaccineInoculationInfoListByPersonId(user.getPersonId());
     List<NucleicAcidTestInfo> nucleicAcidTestInfoList =
             nucleicAcidTestInfoService.getNucleicAcidTestInfoListByPersonId(user.getPersonId());
-    result.putData("name", user.getName())
+    return new Result().ok()
+            .putData("name", user.getName())
             .putData("vaccine_inoculation_info", vaccineInoculationInfoList)
             .putData("nucleic_acid_test_info", nucleicAcidTestInfoList);
-    return result;
   }
 }

@@ -41,11 +41,6 @@ public class Result {
     return this;
   }
 
-  public Result setMessage(String message) {
-    this.message = message;
-    return this;
-  }
-
   /**
    * 将键值对放入Result的Data返回值中
    * @param key 字符串键
