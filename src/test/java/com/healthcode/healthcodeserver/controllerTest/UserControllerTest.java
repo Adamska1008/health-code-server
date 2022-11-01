@@ -17,4 +17,8 @@ public class UserControllerTest {
     Result result = userController.code2Session("053f6l1w3IEltZ2AoT0w3CyrqA0f6l1R", null);
     System.out.println(JSON.toJSON(result));
   }
+
+  @Test
+  public void getMainPageInfoTest() {
+  }
 }

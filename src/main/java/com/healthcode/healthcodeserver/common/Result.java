@@ -5,6 +5,7 @@ import lombok.Setter;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * 统一的后端向前端传输数据对象
@@ -21,6 +22,12 @@ public class Result {
   private Integer statusCode;
   private String message;
   private final Map<String, Object> data = new HashMap<>();
+  private static final Map<Integer, String> errorCodeToInfo = new HashMap<>(){{
+    put(0, "OK");
+    put(1, "Unknown Error");
+    put(2, "Failed to fetch session key and openid by code");
+    put(3, "unregistered session_key");
+  }};
 
   public Result ok() {
     this.setStatusCode(0);
@@ -28,9 +35,14 @@ public class Result {
     return this;
   }
 
-  public Result error() {
-    this.setStatusCode(1);
-    this.setMessage("UNKNOWN ERROR");
+  public Result error(Integer errorCode) {
+    this.statusCode = Objects.requireNonNullElse(errorCode, 1);
+    this.message =errorCodeToInfo.get(this.statusCode);
+    return this;
+  }
+
+  public Result setMessage(String message) {
+    this.message = message;
     return this;
   }
 
