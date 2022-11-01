@@ -33,4 +33,6 @@ public class WxUtil {
     ResponseEntity<String> responseEntity = restTemplate.getForEntity(url, String.class, map);
     return responseEntity.getBody();
   }
+
+
 }

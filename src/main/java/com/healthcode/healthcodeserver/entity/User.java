@@ -14,6 +14,8 @@ public class User {
   @TableField(value = "person_name")
   private String name;
   private String phoneNumber;
+  @TableField(value = "wx_openid")
+  private String openId;
   // 0: 男; 1: 女
   private Short gender;
   // health_code_color 0:绿 1:黄 2:绿

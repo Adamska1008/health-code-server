@@ -2,10 +2,11 @@
 -- health_code_color 0:绿 1:黄 2:绿
 CREATE TABLE IF NOT EXISTS t_user_info (
     person_id           CHAR(20)    NOT NULL,
-    person_name         CHAR(20)    NOT NULL,
-    phone_number        CHAR(20)    NOT NULL,
-    gender              TINYINT     NOT NULL CHECK(gender IN(0, 1)),
-    health_code_color   TINYINT    	NOT NULL CHECK (health_code_color IN (0,1,2)),
+    person_name         CHAR(20),
+    phone_number        CHAR(20),
+    wx_openid           CHAR(20),
+    gender              TINYINT     CHECK(gender IN(0, 1)),
+    health_code_color   TINYINT    	CHECK (health_code_color IN (0,1,2)),
     PRIMARY KEY (person_id)
 )DEFAULT CHARSET=utf8mb4;
 
@@ -13,7 +14,7 @@ CREATE TABLE IF NOT EXISTS t_user_info (
 CREATE TABLE IF NOT EXISTS t_user_relation (
     person_id_a     CHAR(20)    NOT NULL,
     person_id_b     CHAR(20)    NOT NULL,
-    relation        TINYINT    	NOT NULL,
+    relation        TINYINT    	,
     PRIMARY KEY(person_id_a, person_id_b),
     FOREIGN KEY(person_id_a) REFERENCES t_user_info(person_id),
     FOREIGN KEY(person_id_b) REFERENCES t_user_info(person_id)
@@ -28,11 +29,11 @@ CREATE TABLE IF NOT EXISTS t_nucleic_acid_info(
 -- 核酸检测结果表
 -- test_result 0:阴性 1:阳性
 CREATE TABLE IF NOT EXISTS t_nucleic_acid_test_info (
-    person_id           	CHAR(20),
-    test_time 	          	DATETIME    NOT NULL,
-    test_institution_id    	CHAR(20)    NOT NULL,
-    nucleic_acid_id        		    CHAR(20)    NOT NULL,
-    test_result         	TINYINT    	NOT NULL CHECK(test_result IN(0,1)),
+    person_id           	CHAR(20)    NOT NULL,
+    test_time 	          	DATETIME    ,
+    test_institution_id    	CHAR(20)    ,
+    nucleic_acid_id        	CHAR(20)    NOT NULL,
+    test_result         	TINYINT    	CHECK(test_result IN(0,1)),
     PRIMARY KEY(person_id, nucleic_acid_id),
     FOREIGN KEY(person_id) REFERENCES t_user_info(person_id),
     FOREIGN KEY(nucleic_acid_id) REFERENCES  t_nucleic_acid_info(nucleic_acid_id)
@@ -41,9 +42,9 @@ CREATE TABLE IF NOT EXISTS t_nucleic_acid_test_info (
 -- 疫苗接种表
 CREATE TABLE IF NOT EXISTS t_vaccine_inoculation_info(
     person_id               CHAR(20)    NOT NULL,
-    inoculation_time        DATETIME    NOT NULL,
-    inoculation_facility    CHAR(20)    NOT NULL,
-    vaccine_name            CHAR(20)    NOT NULL,
+    inoculation_time        DATETIME    ,
+    inoculation_facility    CHAR(20)    ,
+    vaccine_name            CHAR(20)    ,
     inoculation_number      CHAR(20)    NOT NULL,
     PRIMARY KEY(person_id, inoculation_number)
 )DEFAULT CHARSET=utf8mb4;
@@ -58,11 +59,11 @@ CREATE table  IF NOT EXISTS t_covid_test_institution(
 
 -- 场所码信息
 CREATE table IF NOT EXISTS t_venue_code_info(
-    code_id CHAR(20) DEFAULT '',
-    venue_type VARCHAR(10) DEFAULT '',
-    venue_locate_area VARCHAR(40) DEFAULT '',
-    venue_locate_type VARCHAR(10) DEFAULT '',
-    venue_name VARCHAR(40) DEFAULT '',
+    code_id             CHAR(20)    NOT NULL,
+    venue_type          VARCHAR(10) ,
+    venue_locate_area   VARCHAR(40) ,
+    venue_locate_type   VARCHAR(10) ,
+    venue_name          VARCHAR(40) ,
     PRIMARY KEY (code_id)
 )DEFAULT CHARSET=utf8mb4;
 
@@ -70,22 +71,22 @@ CREATE table IF NOT EXISTS t_venue_code_info(
 -- is_solved 0: 未处理 1:已处理
 -- code_application_result 0: 申请成功 1:申请失败
 CREATE table IF NOT EXISTS t_venue_code_application(
-    code_application_id CHAR(20) DEFAULT '',
-    code_application_person VARCHAR(10) DEFAULT '',
-    code_application_locate VARCHAR(40) DEFAULT '',
-    code_application_type VARCHAR(10) DEFAULT '',
-    code_application_name VARCHAR(40) DEFAULT '',
-    is_solved TINYINT CHECK ( is_solved IN (0,1)),
+    code_application_id     CHAR(20)    NOT NULL,
+    code_application_person VARCHAR(10) ,
+    code_application_locate VARCHAR(40) ,
+    code_application_type   VARCHAR(10) ,
+    code_application_name   VARCHAR(40) ,
+    is_solved               TINYINT CHECK ( is_solved IN (0,1)),
     code_application_result TINYINT CHECK ( code_application_result IN (0,1)),
-    result_info VARCHAR(50),
+    result_info             VARCHAR(100),
     PRIMARY KEY (code_application_id)
 )DEFAULT CHARSET=utf8mb4;
 
 -- 行程信息
 CREATE table IF NOT EXISTS t_itinerary_information(
-    person_id CHAR(20) DEFAULT '',
-    venue_id CHAR(20) DEFAULT '',
-    record_time TIMESTAMP,
+    person_id           CHAR(20) DEFAULT '',
+    venue_id            CHAR(20) DEFAULT '',
+    record_time         TIMESTAMP,
     PRIMARY KEY (person_id,venue_id,record_time),
     FOREIGN KEY (person_id) REFERENCES t_user_info(person_id),
     FOREIGN KEY (venue_id) REFERENCES t_venue_code_info(code_id)
@@ -108,12 +109,12 @@ CREATE TABLE IF NOT EXISTS t_regional_risk_profile(
 
 #risk_level 0:低 1:中 2:高 3:常态化
 CREATE TABLE IF NOT EXISTS t_daily_risk_situation(
-    situation_id CHAR(10) NOT NULL ,
-    profile_id CHAR(10),
-    curr_date DATE,
-    risk_level TINYINT CHECK ( risk_level IN (0,1,2,3)),
-    detection_point_number INTEGER,
-    yesterday_addition_positive INTEGER,
+    situation_id                    CHAR(10)    NOT NULL ,
+    profile_id                      CHAR(10),
+    curr_date                       DATE,
+    risk_level                      TINYINT     CHECK ( risk_level IN (0,1,2,3)),
+    detection_point_number          INTEGER,
+    yesterday_addition_positive     INTEGER,
     yesterday_addition_asymptomatic INTEGER,
     PRIMARY KEY (situation_id),
     FOREIGN KEY (profile_id) REFERENCES t_regional_risk_profile(profile_id)

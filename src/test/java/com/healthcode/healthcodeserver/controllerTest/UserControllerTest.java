@@ -14,7 +14,7 @@ public class UserControllerTest {
 
   @Test
   public void code2SessionTest() {
-    Result result = userController.code2Session("053f6l1w3IEltZ2AoT0w3CyrqA0f6l1R", null, null);
+    Result result = userController.code2Session("053f6l1w3IEltZ2AoT0w3CyrqA0f6l1R", null);
     System.out.println(JSON.toJSON(result));
   }
 }
