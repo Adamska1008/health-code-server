@@ -147,13 +147,13 @@ CREATE TABLE IF NOT EXISTS t_abnormal_info_appeal_investigate(
 # is_succeed 0:申请失败 1:申请成功
 # is_processed 0:已处理 1:未处理
 CREATE TABLE IF NOT EXISTS t_identity_application(
-    application_id char(20)  NOT NULL,
-    applicant_name char(20)  NOT NULL,
-    additional_information varchar(50)  NOT NULL,
-    apply_type TINYINT  CHECK ( apply_type in (0,1)),
-    is_processed TINYINT CHECK ( is_processed IN (0,1)),
-    is_succeed TINYINT CHECK ( is_succeed IN (0,1)),
-    result_info VARCHAR(50),
+    application_id          CHAR(20)  NOT NULL,
+    applicant_name          CHAR(20)  NOT NULL,
+    additional_information  VARCHAR(50)  NOT NULL,
+    apply_type              TINYINT  CHECK ( apply_type in (0,1)),
+    is_processed            TINYINT CHECK ( is_processed IN (0,1)),
+    is_succeed              TINYINT CHECK ( is_succeed IN (0,1)),
+    result_info             VARCHAR(50),
     PRIMARY KEY(application_id)
 )DEFAULT CHARSET=utf8mb4;
 
