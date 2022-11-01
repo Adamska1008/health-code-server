@@ -120,12 +120,13 @@ CREATE TABLE IF NOT EXISTS t_daily_risk_situation(
     FOREIGN KEY (profile_id) REFERENCES t_regional_risk_profile(profile_id)
 )DEFAULT CHARSET=utf8mb4;
 
+DROP TABLE t_account;
 #category 0:用户 1:核酸检测人员 2:防疫管理人员
 CREATE TABLE IF NOT EXISTS t_account(
     account_id CHAR(10) NOT NULL ,
     user_name VARCHAR(20),
     user_password VARCHAR(20),
-    category VARCHAR(10) CHECK ( category IN (0,1,2)),
+    category TINYINT(10) CHECK ( category IN (0,1,2)),
     PRIMARY KEY (account_id)
 )DEFAULT CHARSET=utf8mb4;
 
