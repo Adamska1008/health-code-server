@@ -1,10 +1,13 @@
+DROP DATABASE healthcode;
+CREATE DATABASE healthcode;
+USE healthcode;
 -- gender 0:男 1:女
 -- health_code_color 0:绿 1:黄 2:绿
 CREATE TABLE IF NOT EXISTS t_user_info (
     person_id           CHAR(20)    NOT NULL,
     person_name         CHAR(20),
     phone_number        CHAR(20),
-    wx_openid           CHAR(20),
+    wx_openid           CHAR(40),
     gender              TINYINT     CHECK(gender IN(0, 1)),
     health_code_color   TINYINT    	CHECK (health_code_color IN (0,1,2)),
     PRIMARY KEY (person_id)
@@ -120,7 +123,6 @@ CREATE TABLE IF NOT EXISTS t_daily_risk_situation(
     FOREIGN KEY (profile_id) REFERENCES t_regional_risk_profile(profile_id)
 )DEFAULT CHARSET=utf8mb4;
 
-DROP TABLE t_account;
 #category 0:用户 1:核酸检测人员 2:防疫管理人员
 CREATE TABLE IF NOT EXISTS t_account(
     account_id CHAR(10) NOT NULL ,

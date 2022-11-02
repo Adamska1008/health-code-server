@@ -10,14 +10,25 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 @Service
-public class NucleicAcidTestInfoServiceImpl extends ServiceImpl<NucleicAcidTestInfoDao, NucleicAcidTestInfo> implements NucleicAcidTestInfoService {
+public class NucleicAcidTestInfoServiceImpl
+        extends ServiceImpl<NucleicAcidTestInfoDao, NucleicAcidTestInfo>
+        implements NucleicAcidTestInfoService {
   @Autowired
   private NucleicAcidTestInfoDao nucleicAcidTestInfoDao;
 
   @Override
-  public List<NucleicAcidTestInfo> getNucleicAcidTestInfoListByPersonId(String id) {
+  public List<NucleicAcidTestInfo> getNucleicAcidTestInfoListByPersonId(String personId) {
     QueryWrapper<NucleicAcidTestInfo> queryWrapper = new QueryWrapper<>();
-    queryWrapper.eq("person_id", id);
+    queryWrapper.eq("person_id", personId);
     return nucleicAcidTestInfoDao.selectList(queryWrapper);
+  }
+
+  @Override
+  public NucleicAcidTestInfo getLatestTestInfoByPersonId(String personId) {
+    QueryWrapper<NucleicAcidTestInfo> queryWrapper = new QueryWrapper<>();
+    queryWrapper.eq("person_id", personId);
+    queryWrapper.orderByDesc("test_time");
+    queryWrapper.last("LIMIT 1");
+    return nucleicAcidTestInfoDao.selectOne(queryWrapper);
   }
 }

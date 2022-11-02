@@ -5,7 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.sql.Date;
+import java.sql.Timestamp;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -13,7 +13,7 @@ import java.sql.Date;
 @TableName("t_vaccine_inoculation_info")
 public class VaccineInoculationInfo {
   private String personId;
-  private Date inoculationTime;
+  private Timestamp inoculationTime;
   private String inoculationFacility;
   private String vaccineName;
   private String inoculationNumber;

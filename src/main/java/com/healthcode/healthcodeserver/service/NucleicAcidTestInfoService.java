@@ -6,5 +6,6 @@ import com.healthcode.healthcodeserver.entity.NucleicAcidTestInfo;
 import java.util.List;
 
 public interface NucleicAcidTestInfoService extends IService<NucleicAcidTestInfo> {
-  List<NucleicAcidTestInfo> getNucleicAcidTestInfoListByPersonId(String id);
+  List<NucleicAcidTestInfo> getNucleicAcidTestInfoListByPersonId(String personId);
+  NucleicAcidTestInfo getLatestTestInfoByPersonId(String personId);
 }

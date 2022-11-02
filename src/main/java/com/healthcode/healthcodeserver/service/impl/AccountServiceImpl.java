@@ -15,7 +15,7 @@ public class AccountServiceImpl extends ServiceImpl<AccountDao, Account> impleme
 
   @Override
   public boolean accountIsValid(String userName, String userPassword, int category) {
-    QueryWrapper queryWrapper = new QueryWrapper<>();
+    QueryWrapper<Account> queryWrapper = new QueryWrapper<>();
     queryWrapper.eq("user_name",userName);
     queryWrapper.eq("user_password",userPassword);
     queryWrapper.eq("category",category);

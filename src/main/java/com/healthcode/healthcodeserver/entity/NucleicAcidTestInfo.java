@@ -5,7 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.sql.Date;
+import java.sql.Timestamp;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -13,7 +13,7 @@ import java.sql.Date;
 @TableName("t_nucleic_acid_test_info")
 public class NucleicAcidTestInfo {
   private String personId;
-  private Date testTime;
+  private Timestamp testTime;
   private String testInstitutionId;
   private String nucleicAcidId;
   /*

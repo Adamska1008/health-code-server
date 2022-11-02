@@ -27,6 +27,7 @@ public class Result {
     put(1, "Unknown Error");
     put(2, "Failed to fetch session key and openid by code");
     put(3, "unregistered session_key");
+    put(4, "user with given openid not existed");
   }};
 
   public Result ok() {

@@ -10,13 +10,13 @@ import org.springframework.web.bind.annotation.RestController;
 
 @Slf4j
 @RestController
-@RequestMapping("/login")
+@RequestMapping("/admin")
 public class AccountController {
   @Autowired
   AccountService accountService;
 
   //防疫管理人员登陆验证接口
-  @PostMapping("/admin")
+  @PostMapping("/login")
   public boolean adminLogIn(@RequestParam("userName") String userName,
                             @RequestParam("password") String userPassword){
     return accountService.accountIsValid(userName,userPassword,2);
