@@ -7,13 +7,11 @@ import com.healthcode.healthcodeserver.service.AccountService;
 import com.healthcode.healthcodeserver.util.TokenUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 
+@CrossOrigin
 @Slf4j
 @RestController
 @RequestMapping("web/admin")
@@ -29,9 +27,10 @@ public class AccountController {
    * @param password 密码
    * @return token值
    */
-  @PostMapping("/login")
+  @GetMapping("/login")
   public Result adminLogIn(@RequestParam("username") String username,
                            @RequestParam("password") String password){
+    log.info("Admin with username "+username+" request log in.");
     QueryWrapper<Account> wrapper = new QueryWrapper<>();
     wrapper.eq("username", username);
     Account account = accountService.getOne(wrapper);

@@ -125,9 +125,9 @@ CREATE TABLE IF NOT EXISTS t_daily_risk_situation(
 
 #category 0:用户 1:核酸检测人员 2:防疫管理人员
 CREATE TABLE IF NOT EXISTS t_account(
-    account_id CHAR(10) NOT NULL ,
-    user_name VARCHAR(20),
-    user_password VARCHAR(20),
+    account_id CHAR(20) NOT NULL ,
+    username VARCHAR(20),
+    password VARCHAR(20),
     category TINYINT(10) CHECK ( category IN (0,1,2)),
     PRIMARY KEY (account_id)
 )DEFAULT CHARSET=utf8mb4;

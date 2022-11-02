@@ -18,6 +18,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@CrossOrigin
 @Slf4j
 @RestController
 @RequestMapping("/wx/user")
@@ -58,6 +59,10 @@ public class UserController {
   public Result getMainPageInfo(@RequestParam("openid") String openId,
                                 @RequestParam("session_key") String sessionKey,
                                 @PathVariable("appid") String appid) {
+    if (!openIdToSessionKey.containsKey(openId)) {
+     log.warn("do not have given openid: "+ openId);
+     return new Result().error(null);
+    }
     if (!openIdToSessionKey.get(openId).equals(sessionKey)) {
       log.warn("receive openid "+openId+" and session_key "+sessionKey+", which do not correspond.");
       return new Result().error(3);

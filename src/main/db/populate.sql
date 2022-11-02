@@ -39,5 +39,5 @@ VALUES
        ('457342192208107100', '1994-03-18 18:03:04', '46312353322876452624', '71744404055443795171', '1'),
        ('457342192208107100', '2008-09-24 13:56:58', '74280262060094563874', '30446016663405972408', '0');
 
-INSERT INTO t_account(account_id,user_name,user_password,category)
+INSERT INTO t_account(account_id, username, password,category)
 VALUES ('1','admin','123456',2);

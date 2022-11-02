@@ -3,12 +3,13 @@ package com.healthcode.healthcodeserver.util;
 import com.healthcode.healthcodeserver.entity.Account;
 import org.springframework.stereotype.Component;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
 @Component
 public class TokenUtil {
-  private Map<String, String> tokenToAccountId;
+  private final Map<String, String> tokenToAccountId = new HashMap<>();
 
   /**
    * 为用户生成唯一的token
