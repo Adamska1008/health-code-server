@@ -1,5 +1,6 @@
 package com.healthcode.healthcodeserver.util;
 
+import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -11,6 +12,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Component
+@Data
 public class WxUtil {
   @Autowired
   private RestTemplate restTemplate;
