@@ -15,7 +15,7 @@ public class VaccineInoculationInfoServiceImpl extends ServiceImpl<VaccineInocul
   @Autowired
   VaccineInoculationInfoDao vaccineInoculationInfoDao;
   @Override
-  public List<VaccineInoculationInfo> getVaccineInoculationInfoListByPersonId(String id) {
+  public List<VaccineInoculationInfo> getInfoListByPersonId(String id) {
     QueryWrapper<VaccineInoculationInfo> queryWrapper = new QueryWrapper<>();
     queryWrapper.eq("person_id",id);
     return vaccineInoculationInfoDao.selectList(queryWrapper);

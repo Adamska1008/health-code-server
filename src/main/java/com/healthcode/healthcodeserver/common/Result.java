@@ -25,11 +25,11 @@ public class Result {
   private static final Map<Integer, String> errorCodeToInfo = new HashMap<>(){{
     put(0, "OK");
     put(1, "unknown: Unknown Error");
-    put(2, "user: Failed to fetch session key and openid by code");
-    put(3, "user: unregistered session_key");
-    put(4, "user: user with given openid not existed");
-    put(21, "admin: no such account with given username");
-    put(22, "admin: wrong password");
+    put(101, "user: Failed to fetch session key and openid by code");
+    put(102, "user: unregistered session_key");
+    put(103, "user: user with given openid not existed");
+    put(201, "admin: no such account with given username");
+    put(202, "admin: wrong password");
   }};
 
   public Result ok() {

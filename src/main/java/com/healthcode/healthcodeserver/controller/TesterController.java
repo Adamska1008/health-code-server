@@ -25,9 +25,7 @@ public class TesterController {
   @GetMapping("/{appid}/login")
   public Result code2Session(@RequestParam("code") String code,
                              @PathVariable String appid) {
-    wxUtil.setAppId("wx0b1ccdf0f4339b3e");
-    wxUtil.setAppSecret("16ae338ca982d3e6c6f20c8c4aff4874");
-    String data = wxUtil.code2Session(code);
+    String data = wxUtil.code2Session(code, 1);
     JSONObject jsonObject = JSONObject.parseObject(data);
     log.info("request to build session with code "+ code);
     String sessionKey = jsonObject.getString("session_key");

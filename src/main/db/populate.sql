@@ -39,5 +39,14 @@ VALUES
        ('457342192208107100', '1994-03-18 18:03:04', '46312353322876452624', '71744404055443795171', '1'),
        ('457342192208107100', '2008-09-24 13:56:58', '74280262060094563874', '30446016663405972408', '0');
 
-INSERT INTO t_account(account_id, username, password,category)
-VALUES ('1','admin','123456',2);
+INSERT INTO
+    t_account(account_id, username, password,category)
+VALUES
+       ('1','admin','123456',2);
+
+
+INSERT INTO
+    t_vaccine_inoculation_info(person_id, inoculation_time, inoculation_facility, vaccine_name, inoculation_number)
+VALUES
+       ('457342192208107100', '2008-01-15 08:06:34', '治之水', '么关最', 1),
+       ('457342192208107100', '1990-08-25 09:41:56', '日问儿政龙按', '组队机美表', 2);

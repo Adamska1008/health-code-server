@@ -6,5 +6,5 @@ import com.healthcode.healthcodeserver.entity.VaccineInoculationInfo;
 import java.util.List;
 
 public interface VaccineInoculationInfoService extends IService<VaccineInoculationInfo> {
-  public List<VaccineInoculationInfo> getVaccineInoculationInfoListByPersonId(String id);
+  List<VaccineInoculationInfo> getInfoListByPersonId(String personId);
 }

@@ -35,10 +35,29 @@ public class UserController {
   WxUtil wxUtil;
   Map<String, String> openIdToSessionKey = new HashMap<>();
 
+  private Result verifySession(String openId, String sessionKey) {
+    if (!openIdToSessionKey.containsKey(openId)) {
+      log.warn("do not have given openid: "+ openId);
+      return new Result().error(null);
+    }
+    if (!openIdToSessionKey.get(openId).equals(sessionKey)) {
+      log.warn("receive openid "+openId+" and session_key "+sessionKey+", which do not correspond.");
+      return new Result().error(3);
+    }
+    return new Result().ok();
+  }
+
+  /**
+   * 前端发送登陆凭证code，后端通过微信接口获取session_key与openid返回给前端
+   * 并且将openid与session信息注册到系统内部
+   * @param code 登陆批准
+   * @param appid 小程序码，
+   * @return Result
+   */
   @GetMapping("/{appid}/login")
   public Result code2Session(@RequestParam("code") String code,
                              @PathVariable String appid) {
-    String data = wxUtil.code2Session(code);
+    String data = wxUtil.code2Session(code, 0);
     JSONObject jsonObject = JSONObject.parseObject(data);
     log.info("request to build session with code "+ code);
     String sessionKey = jsonObject.getString("session_key");
@@ -55,35 +74,84 @@ public class UserController {
     }
   }
 
+  /**
+   * 前端发送openid与session_key获取用户信息。
+   * 检查信息无误之后返回为前端定制的信息
+   * @param openId 微信用户在小程序上的唯一id
+   * @param sessionKey 建立session的凭证
+   * @param appid 小程序码
+   * @return Result
+   */
   @GetMapping("/{appid}/index_profile")
   public Result getMainPageInfo(@RequestParam("openid") String openId,
                                 @RequestParam("session_key") String sessionKey,
                                 @PathVariable("appid") String appid) {
-    if (!openIdToSessionKey.containsKey(openId)) {
-     log.warn("do not have given openid: "+ openId);
-     return new Result().error(null);
-    }
-    if (!openIdToSessionKey.get(openId).equals(sessionKey)) {
-      log.warn("receive openid "+openId+" and session_key "+sessionKey+", which do not correspond.");
-      return new Result().error(3);
+    Result verifiedResult = verifySession(openId, sessionKey);
+    if (verifiedResult.getStatusCode() != 0) {
+      return verifiedResult;
     }
     User user = userService.getUserInfoByOpenId(openId);
     if (user == null) {
       log.warn("no user with such openid");
       return new Result().error(4);
     }
-
     NucleicAcidTestInfo latestInfo = nucleicAcidTestInfoService.getLatestTestInfoByPersonId(user.getPersonId());
     String testInstitutionName = covidTestInstitutionService.getNameById(latestInfo.getTestInstitutionId());
+
+    JSONObject latestTest = new JSONObject();
+    latestTest.put("result", latestInfo.getTestResult());
+    latestTest.put("test_time", latestInfo.getTestTime());
+    latestTest.put("institution_name", testInstitutionName);
+
     List<VaccineInoculationInfo> vaccineInoculationInfoList =
-            vaccineInoculationInfoService.getVaccineInoculationInfoListByPersonId(user.getPersonId());
+            vaccineInoculationInfoService.getInfoListByPersonId(user.getPersonId());
+
     log.info("return info of user with openid "+openId);
     return new Result().ok()
             .putData("name", user.getName())
             .putData("health_code_color", user.getHealthCodeColor())
-            .putData("latest_test_result", latestInfo.getTestResult())
-            .putData("latest_test_time", latestInfo.getTestTime())
-            .putData("latest_test_institution", testInstitutionName)
+            .putData("latest_test", latestTest)
             .putData("vaccine_inoculation_info", vaccineInoculationInfoList);
   }
+
+  /**
+   * 获取指定用户的核酸检测信息
+   */
+  @GetMapping("{appid}/nucleic_test_info")
+  public Result getNucleicAcidTestInfo(@RequestParam("openid") String openId,
+                                       @RequestParam("session_key") String sessionKey) {
+    Result verifiedResult = verifySession(openId, sessionKey);
+    if (verifiedResult.getStatusCode() != 0) {
+      return verifiedResult;
+    }
+    User user = userService.getUserInfoByOpenId(openId);
+    if (user == null) {
+      log.warn("no user with such openid");
+      return new Result().error(4);
+    }
+    List<NucleicAcidTestInfo> nucleicAcidTestInfos =
+            nucleicAcidTestInfoService.getNucleicAcidTestInfoListByPersonId(user.getPersonId());
+    return new Result().ok()
+            .putData("test_info", nucleicAcidTestInfos);
+  }
+
+  @GetMapping("{appid}/vaccine_inocu_info")
+  public Result getVaccineInoculationInfo(@RequestParam("openid") String openId,
+                                       @RequestParam("session_key") String sessionKey) {
+    Result verifiedResult = verifySession(openId, sessionKey);
+    if (verifiedResult.getStatusCode() != 0) {
+      return verifiedResult;
+    }
+    User user = userService.getUserInfoByOpenId(openId);
+    if (user == null) {
+      log.warn("no user with such openid");
+      return new Result().error(4);
+    }
+    List<VaccineInoculationInfo> vaccineInoculationInfos =
+            vaccineInoculationInfoService.getInfoListByPersonId(user.getPersonId());
+    return new Result().ok()
+            .putData("test_info", vaccineInoculationInfos);
+  }
 }
+
+

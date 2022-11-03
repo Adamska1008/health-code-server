@@ -13,6 +13,6 @@ public class WxUtilTest {
   @Test
   public void code2SessionTest() {
     String code = "053f6l1w3IEltZ2AoT0w3CyrqA0f6l1R";
-    System.out.println(wxUtil.code2Session(code));
+    System.out.println(wxUtil.code2Session(code, 0));
   }
 }

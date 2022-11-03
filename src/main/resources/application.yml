@@ -5,6 +5,10 @@ spring:
     username: root
     password: 1234
 
-app:
+main_app:
   id: wx65b5e04ace35528d
   secret: 1e1950d5417423036256bb16d435d63a
+
+test_app:
+  id: wx0b1ccdf0f4339b3e
+  secret: 16ae338ca982d3e6c6f20c8c4aff4874
