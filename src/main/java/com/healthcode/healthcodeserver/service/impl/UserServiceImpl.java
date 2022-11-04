@@ -25,4 +25,16 @@ public class UserServiceImpl extends ServiceImpl<UserDao,User> implements UserSe
     queryWrapper.eq("wx_openid",openId);
     return userDao.selectOne(queryWrapper);
   }
+
+  @Override
+  public int insertUserInfo(String personId, String personName, String phoneNumber, String wxOpenid, String gender) {
+    User user = new User();
+    user.setPersonId(personId);
+    user.setName(personName);
+    int genderNumber = Integer.parseInt(gender);
+    user.setGender((short)(genderNumber));
+    user.setHealthCodeColor("0");
+    user.setOpenId(wxOpenid);
+    return userDao.insert(user);
+  }
 }

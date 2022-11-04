@@ -2,6 +2,7 @@ package com.healthcode.healthcodeserver.controller;
 
 import com.alibaba.fastjson.JSONObject;
 import com.healthcode.healthcodeserver.common.Result;
+import com.healthcode.healthcodeserver.entity.User;
 import com.healthcode.healthcodeserver.service.UserService;
 import com.healthcode.healthcodeserver.util.WxUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -22,6 +23,18 @@ public class TesterController {
   WxUtil wxUtil;
   Map<String, String> openIdToSessionKey = new HashMap<>();
 
+  private Result verifySession(String openId, String sessionKey) {
+    if (!openIdToSessionKey.containsKey(openId)) {
+      log.warn("do not have given openid: "+ openId);
+      return new Result().error(null);
+    }
+    if (!openIdToSessionKey.get(openId).equals(sessionKey)) {
+      log.warn("receive openid "+openId+" and session_key "+sessionKey+", which do not correspond.");
+      return new Result().error(3);
+    }
+    return new Result().ok();
+  }
+
   @GetMapping("/{appid}/login")
   public Result code2Session(@RequestParam("code") String code,
                              @PathVariable String appid) {
@@ -38,5 +51,20 @@ public class TesterController {
       openIdToSessionKey.put(openId, sessionKey);
       return result.ok();
     }
+  }
+  @GetMapping("/{appid}/apply")
+  public Result getApplicationInfo(@RequestParam("openid") String openId,
+                                   @RequestParam("session_key") String sessionKey,
+                                   @PathVariable("appid") String appId){
+    Result verifiedResult = verifySession(openId, sessionKey);
+    if (verifiedResult.getStatusCode() != 0) {
+      return verifiedResult;
+    }
+    User user = userService.getUserInfoByOpenId(openId);
+    if (user == null) {
+      log.warn("no user with such openid");
+      return new Result().error(4);
+    }
+    return new Result();
   }
 }

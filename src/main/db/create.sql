@@ -1,8 +1,10 @@
 DROP DATABASE healthcode;
 CREATE DATABASE healthcode;
 USE healthcode;
+
+DROP TABLE t_user_info;
 -- gender 0:男 1:女
--- health_code_color 0:绿 1:黄 2:绿
+-- health_code_color 0:绿 1:黄 2:红
 CREATE TABLE IF NOT EXISTS t_user_info (
     person_id           CHAR(20)    NOT NULL,
     person_name         CHAR(20),
@@ -13,6 +15,7 @@ CREATE TABLE IF NOT EXISTS t_user_info (
     PRIMARY KEY (person_id)
 )DEFAULT CHARSET=utf8mb4;
 
+DROP TABLE t_user_relation;
 -- 用户关系表
 CREATE TABLE IF NOT EXISTS t_user_relation (
     person_id_a     CHAR(20)    NOT NULL,
@@ -29,6 +32,7 @@ CREATE TABLE IF NOT EXISTS t_nucleic_acid_info(
     PRIMARY KEY(nucleic_acid_id)
 )DEFAULT CHARSET=utf8mb4;
 
+DROP TABLE t_nucleic_acid_test_info;
 -- 核酸检测结果表
 -- test_result 0:阴性 1:阳性
 CREATE TABLE IF NOT EXISTS t_nucleic_acid_test_info (
@@ -42,6 +46,7 @@ CREATE TABLE IF NOT EXISTS t_nucleic_acid_test_info (
     FOREIGN KEY(nucleic_acid_id) REFERENCES  t_nucleic_acid_info(nucleic_acid_id)
 )DEFAULT CHARSET=utf8mb4;
 
+DROP TABLE t_vaccine_inoculation_info;
 -- 疫苗接种表
 CREATE TABLE IF NOT EXISTS t_vaccine_inoculation_info(
     person_id               CHAR(20)    NOT NULL,
@@ -123,6 +128,7 @@ CREATE TABLE IF NOT EXISTS t_daily_risk_situation(
     FOREIGN KEY (profile_id) REFERENCES t_regional_risk_profile(profile_id)
 )DEFAULT CHARSET=utf8mb4;
 
+DROP TABLE t_account;
 #category 0:用户 1:核酸检测人员 2:防疫管理人员
 CREATE TABLE IF NOT EXISTS t_account(
     account_id CHAR(20) NOT NULL ,

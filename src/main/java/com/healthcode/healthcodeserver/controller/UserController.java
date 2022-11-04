@@ -1,5 +1,6 @@
 package com.healthcode.healthcodeserver.controller;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.healthcode.healthcodeserver.common.Result;
 import com.healthcode.healthcodeserver.entity.NucleicAcidTestInfo;
@@ -72,6 +73,33 @@ public class UserController {
       log.info("binding openid " + openId + " to session " + sessionKey + ".");
       return result.ok();
     }
+  }
+
+  /**
+   * 第一次登录需要填写表单以获取用户信息
+   * 用户信息存在userInfo中，openId和sessionKey存在token中
+   * @param token
+   * @param userInfo
+   * @return
+   */
+  @PostMapping("/{appid}/info")
+  public Result insertUserInfo(@RequestParam("token") String token,
+                               @RequestParam("userInfo") String userInfo){
+    Result result = new Result();
+    JSONObject jsonObject1 = JSONObject.parseObject(userInfo);
+    String personName = jsonObject1.getString("personName");
+    String personId = jsonObject1.getString("personId");
+    String gender = jsonObject1.getString("gender");
+    String phoneNumber = jsonObject1.getString("phone");
+    JSONObject jsonObject2 = JSON.parseObject(token);
+    String openId = jsonObject2.getString("openId");
+    int insertResult = userService.insertUserInfo(personId,personName,phoneNumber,openId,gender);
+    if (insertResult==1){
+      result.ok();
+    } else {
+      result.error(1);
+    }
+    return result;
   }
 
   /**
