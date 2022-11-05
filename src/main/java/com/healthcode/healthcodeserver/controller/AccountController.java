@@ -50,7 +50,7 @@ public class AccountController {
             .putData("token", token);
   }
 
-  @GetMapping("/testerApplication")
+  @GetMapping("/tester_apply")
   public Result getTesterApplicationInfo(@RequestParam String token) {
     if (tokenUtil.verify(token)) {
       List<IdentityApplication> identityApplications = identityApplicationService.getTesterApplicationList();
