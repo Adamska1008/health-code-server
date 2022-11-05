@@ -189,5 +189,3 @@ public class UserController {
             .putData("test_info", vaccineInoculationInfos);
   }
 }
-
-

@@ -75,7 +75,7 @@ public class TesterController {
   }
 
   /**
-   *
+   * 申请成为核酸检测人员接口
    * @param form 注册信息，包括姓名，身份证号，手机号
    * @return Result
    */
