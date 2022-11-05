@@ -158,6 +158,8 @@ CREATE TABLE IF NOT EXISTS t_abnormal_info_appeal_investigate(
 CREATE TABLE IF NOT EXISTS t_identity_application(
     application_id          CHAR(20)  NOT NULL,
     applicant_name          CHAR(20)  NOT NULL,
+    applicant_person_id     CHAR(20)  NOT NULL,
+    applicant_phone         CHAR(20)  NOT NULL,
     additional_information  VARCHAR(50)  NOT NULL,
     apply_type              TINYINT  CHECK ( apply_type in (0,1)),
     is_processed            TINYINT CHECK ( is_processed IN (0,1)),

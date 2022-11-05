@@ -52,6 +52,7 @@ public class TesterController {
       return result.ok();
     }
   }
+
   @GetMapping("/{appid}/apply")
   public Result getApplicationInfo(@RequestParam("openid") String openId,
                                    @RequestParam("session_key") String sessionKey,
@@ -65,6 +66,6 @@ public class TesterController {
       log.warn("no user with such openid");
       return new Result().error(4);
     }
-    return new Result();
+    return new Result().ok();
   }
 }

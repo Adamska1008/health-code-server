@@ -3,12 +3,15 @@ package com.healthcode.healthcodeserver.controller;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.healthcode.healthcodeserver.common.Result;
 import com.healthcode.healthcodeserver.entity.Account;
+import com.healthcode.healthcodeserver.entity.IdentityApplication;
 import com.healthcode.healthcodeserver.service.AccountService;
+import com.healthcode.healthcodeserver.service.IdentityApplicationService;
 import com.healthcode.healthcodeserver.util.TokenUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
 
 @CrossOrigin
@@ -20,6 +23,8 @@ public class AccountController {
   AccountService accountService;
   @Autowired
   TokenUtil tokenUtil;
+  @Autowired
+  IdentityApplicationService identityApplicationService;
 
   /**
    * 管理员登陆获取验证token
@@ -43,5 +48,16 @@ public class AccountController {
     String token = tokenUtil.gen(account);
     return new Result().ok()
             .putData("token", token);
+  }
+
+  @GetMapping("/testerApplication")
+  public Result getTesterApplicationInfo(@RequestParam String token) {
+    if (tokenUtil.verify(token)) {
+      List<IdentityApplication> identityApplications = identityApplicationService.getTesterApplicationList();
+      return new Result().ok()
+              .putData("application_list", identityApplications);
+    } else {
+      return new Result().error(null);
+    }
   }
 }
