@@ -3,6 +3,7 @@ package com.healthcode.healthcodeserver.controller;
 import com.alibaba.fastjson.JSONObject;
 import com.healthcode.healthcodeserver.common.Result;
 import com.healthcode.healthcodeserver.entity.User;
+import com.healthcode.healthcodeserver.service.TesterService;
 import com.healthcode.healthcodeserver.service.UserService;
 import com.healthcode.healthcodeserver.util.WxUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -21,6 +22,10 @@ public class TesterController {
   UserService userService;
   @Autowired
   WxUtil wxUtil;
+
+  @Autowired
+  TesterService testerService;
+
   Map<String, String> openIdToSessionKey = new HashMap<>();
 
   private Result verifySession(String openId, String sessionKey) {
@@ -45,6 +50,7 @@ public class TesterController {
     String openId = jsonObject.getString("openid");
     Result result = new Result();
     jsonObject.forEach(result::putData);
+    result.putData("isTester",testerService.isTester(openId)?1:0);
     if (sessionKey == null || openId == null) {
       return result.error(2);
     } else {
@@ -66,6 +72,9 @@ public class TesterController {
       log.warn("no user with such openid");
       return new Result().error(4);
     }
-    return new Result().ok();
+    Result result = new Result();
+    result.putData("status",0);
+    // TODO: 2022/11/5 返回更详细的申请状态信息
+    return result;
   }
 }

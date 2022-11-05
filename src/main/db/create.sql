@@ -138,6 +138,13 @@ CREATE TABLE IF NOT EXISTS t_account(
     PRIMARY KEY (account_id)
 )DEFAULT CHARSET=utf8mb4;
 
+DROP TABLE t_tester;
+#核酸检测人员表
+CREATE TABLE IF NOT EXISTS t_tester(
+    open_id CHAR(20) NOT NULL ,
+    PRIMARY KEY (open_id)
+);
+
 # is_investigated 0:已审核 1:未审核
 # is_processed 0:已处理 1:未处理
 CREATE TABLE IF NOT EXISTS t_abnormal_info_appeal_investigate(
