@@ -2,7 +2,9 @@ package com.healthcode.healthcodeserver.controller;
 
 import com.alibaba.fastjson.JSONObject;
 import com.healthcode.healthcodeserver.common.Result;
+import com.healthcode.healthcodeserver.entity.IdentityApplication;
 import com.healthcode.healthcodeserver.entity.User;
+import com.healthcode.healthcodeserver.service.IdentityApplicationService;
 import com.healthcode.healthcodeserver.service.UserService;
 import com.healthcode.healthcodeserver.util.WxUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -21,6 +23,9 @@ public class TesterController {
   UserService userService;
   @Autowired
   WxUtil wxUtil;
+  @Autowired
+  IdentityApplicationService identityApplicationService;
+
   Map<String, String> openIdToSessionKey = new HashMap<>();
 
   private Result verifySession(String openId, String sessionKey) {
@@ -66,6 +71,29 @@ public class TesterController {
       log.warn("no user with such openid");
       return new Result().error(4);
     }
+    return new Result().ok();
+  }
+
+  /**
+   *
+   * @param form 注册信息，包括姓名，身份证号，手机号
+   * @return Result
+   */
+  @PostMapping("/{appid}/register")
+  public Result register(@RequestParam("openid") String openId,
+                         @RequestParam("session_key") String sessionKey,
+                         @RequestBody JSONObject form,
+                         @PathVariable String appid) {
+    Result verifiedResult = verifySession(openId, sessionKey);
+    if (verifiedResult.getStatusCode() != 0) {
+      return verifiedResult;
+    }
+    IdentityApplication application = new IdentityApplication();
+    application.setApplicantName(form.getString("name"));
+    application.setApplicantPersonId(form.getString("person_id"));
+    application.setApplicantPhone(form.getString("phone"));
+    application.setType(0);
+    identityApplicationService.save(application);
     return new Result().ok();
   }
 }

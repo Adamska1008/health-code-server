@@ -36,6 +36,12 @@ public class UserController {
   WxUtil wxUtil;
   Map<String, String> openIdToSessionKey = new HashMap<>();
 
+  /**
+   * 固定检查session_key 是否合法的程序
+   * @param openId openid
+   * @param sessionKey session_key
+   * @return 如果无openid或open_id不包含对应的session_key返回错误，否则返回ok
+   */
   private Result verifySession(String openId, String sessionKey) {
     if (!openIdToSessionKey.containsKey(openId)) {
       log.warn("do not have given openid: "+ openId);
@@ -147,7 +153,8 @@ public class UserController {
    */
   @GetMapping("{appid}/nucleic_test_info")
   public Result getNucleicAcidTestInfo(@RequestParam("openid") String openId,
-                                       @RequestParam("session_key") String sessionKey) {
+                                       @RequestParam("session_key") String sessionKey,
+                                       @PathVariable String appid) {
     Result verifiedResult = verifySession(openId, sessionKey);
     if (verifiedResult.getStatusCode() != 0) {
       return verifiedResult;
@@ -165,7 +172,8 @@ public class UserController {
 
   @GetMapping("{appid}/vaccine_inocu_info")
   public Result getVaccineInoculationInfo(@RequestParam("openid") String openId,
-                                       @RequestParam("session_key") String sessionKey) {
+                                          @RequestParam("session_key") String sessionKey,
+                                          @PathVariable String appid) {
     Result verifiedResult = verifySession(openId, sessionKey);
     if (verifiedResult.getStatusCode() != 0) {
       return verifiedResult;
