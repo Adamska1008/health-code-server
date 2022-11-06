@@ -2,7 +2,9 @@ package com.healthcode.healthcodeserver.controller;
 
 import com.alibaba.fastjson.JSONObject;
 import com.healthcode.healthcodeserver.common.Result;
+import com.healthcode.healthcodeserver.entity.IdentityApplication;
 import com.healthcode.healthcodeserver.entity.User;
+import com.healthcode.healthcodeserver.service.IdentityApplicationService;
 import com.healthcode.healthcodeserver.service.TesterService;
 import com.healthcode.healthcodeserver.service.UserService;
 import com.healthcode.healthcodeserver.util.WxUtil;
@@ -22,6 +24,8 @@ public class TesterController {
   UserService userService;
   @Autowired
   WxUtil wxUtil;
+  @Autowired
+  IdentityApplicationService identityApplicationService;
 
   @Autowired
   TesterService testerService;
@@ -43,6 +47,7 @@ public class TesterController {
   @GetMapping("/{appid}/login")
   public Result code2Session(@RequestParam("code") String code,
                              @PathVariable String appid) {
+    System.out.println("logIn Started");
     String data = wxUtil.code2Session(code, 1);
     JSONObject jsonObject = JSONObject.parseObject(data);
     log.info("request to build session with code "+ code);
@@ -50,6 +55,7 @@ public class TesterController {
     String openId = jsonObject.getString("openid");
     Result result = new Result();
     jsonObject.forEach(result::putData);
+    System.out.println("ok here:"+openId);
     result.putData("isTester",testerService.isTester(openId)?1:0);
     if (sessionKey == null || openId == null) {
       return result.error(2);
@@ -61,20 +67,37 @@ public class TesterController {
 
   @GetMapping("/{appid}/apply")
   public Result getApplicationInfo(@RequestParam("openid") String openId,
-                                   @RequestParam("session_key") String sessionKey,
+                                   @RequestParam("sessionKey") String sessionKey,
+                                   @RequestParam("name") String name,
+                                   @RequestParam("idNumber") String idNumber,
+                                   @RequestParam("phoneNumber") String phoneNumber,
                                    @PathVariable("appid") String appId){
     Result verifiedResult = verifySession(openId, sessionKey);
     if (verifiedResult.getStatusCode() != 0) {
       return verifiedResult;
     }
     User user = userService.getUserInfoByOpenId(openId);
+    System.out.println("openId"+openId);
     if (user == null) {
       log.warn("no user with such openid");
       return new Result().error(4);
     }
     Result result = new Result();
-    result.putData("status",0);
-    // TODO: 2022/11/5 返回更详细的申请状态信息
-    return result;
+    if (identityApplicationService.hasApplicationRecord(idNumber)){
+      //没有申请记录
+      result.putData("status",1);
+    } else {//有申请记录
+      IdentityApplication identityApplication = new IdentityApplication();
+      identityApplication.setApplicantName(name);
+      identityApplication.setApplicantPersonId(idNumber);
+      identityApplication.setApplicantPhone(phoneNumber);
+      identityApplication.setId("124321421342");// TODO: 2022/11/7 这里应该有一个生成id算法
+      identityApplication.setIsProceeded(0);
+      identityApplication.setIsSucceed(0);
+      identityApplication.setType(0);
+      identityApplicationService.save(identityApplication);
+      result.putData("status",0);
+    }
+    return result.ok();
   }
 }

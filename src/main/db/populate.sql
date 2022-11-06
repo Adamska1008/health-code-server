@@ -50,3 +50,13 @@ INSERT INTO
 VALUES
        ('457342192208107100', '2008-01-15 08:06:34', '治之水', '么关最', 1),
        ('457342192208107100', '1990-08-25 09:41:56', '日问儿政龙按', '组队机美表', 2);
+
+INSERT INTO
+    t_user_info(person_id, person_name, phone_number, wx_openid, gender, health_code_color)
+VALUES
+    ('341435234546546544','fy','13317278715','ojKoj52igjq_xw7MpIKZ4LUZJnH8',0,0);
+
+INSERT INTO
+    t_identity_application(application_id, applicant_name, applicant_person_id, applicant_phone, additional_information, apply_type, is_processed, is_succeed, result_info)
+VALUES
+    ('341435234546546544','fy','341435234546546544','13317278716','2428935897293745',0,0,0,null);

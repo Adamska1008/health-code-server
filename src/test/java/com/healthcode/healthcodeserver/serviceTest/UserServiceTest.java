@@ -29,4 +29,10 @@ public class UserServiceTest {
     User user = userService.getUserInfoByOpenId(openId);
     System.out.println(JSON.toJSON(user));
   }
+
+  @Test
+  public void test(){
+    //User user = userService.getUserInfoByOpenId(openId);
+    //System.out.println(user);
+  }
 }

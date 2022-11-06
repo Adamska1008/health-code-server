@@ -18,6 +18,6 @@ public class IdentityApplication {
   private String additionalInfo;
   // 0:核酸检测人员 1: 政务管理人员
   private Integer type;
-  private Boolean isProceeded;
-  private Boolean isSucceed;
+  private Integer isProceeded;
+  private Integer isSucceed;
 }

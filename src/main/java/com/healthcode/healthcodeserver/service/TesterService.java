@@ -5,4 +5,5 @@ import com.healthcode.healthcodeserver.entity.Tester;
 
 public interface TesterService extends IService<Tester> {
   public Boolean isTester(String openId);
+
 }
