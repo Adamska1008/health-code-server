@@ -5,7 +5,8 @@ VALUES
        ('457342192208107100', '姜洋', '18133654025', 'oHbzp5yIBhroac3en14rw9zhYVcI' , 0, 0),
        ('725341186604107764', '贾芳', '18641528264', null, 1, 1),
        ('73151418061117368X', '唐秀兰', '18655727623', null, 0, 1),
-       ('745221196308105087', '傅强', '18626544578', null, 1, 2);
+       ('745221196308105087', '傅强', '18626544578', null, 1, 2),
+       ('341435234546546544','fy','13317278715','ojKoj52igjq_xw7MpIKZ4LUZJnH8',0,0);
 
 INSERT INTO
     t_user_relation(person_id_a, person_id_b, relation)
@@ -51,10 +52,6 @@ VALUES
        ('457342192208107100', '2008-01-15 08:06:34', '治之水', '么关最', 1),
        ('457342192208107100', '1990-08-25 09:41:56', '日问儿政龙按', '组队机美表', 2);
 
-INSERT INTO
-    t_user_info(person_id, person_name, phone_number, wx_openid, gender, health_code_color)
-VALUES
-    ('341435234546546544','fy','13317278715','ojKoj52igjq_xw7MpIKZ4LUZJnH8',0,0);
 
 INSERT INTO
     t_identity_application(application_id, applicant_name, applicant_person_id, applicant_phone, additional_information, apply_type, is_processed, is_succeed, result_info)
