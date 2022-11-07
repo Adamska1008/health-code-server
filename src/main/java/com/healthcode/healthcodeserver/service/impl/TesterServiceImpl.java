@@ -14,7 +14,7 @@ public class TesterServiceImpl extends ServiceImpl<TesterDao, Tester> implements
   TesterDao testerDao;
   @Override
   public Boolean isTester(String openId) {
-    QueryWrapper queryWrapper = new QueryWrapper<>();
+    QueryWrapper<Tester> queryWrapper = new QueryWrapper<>();
     queryWrapper.eq("open_id",openId);
     return !testerDao.selectList(queryWrapper).isEmpty();
   }

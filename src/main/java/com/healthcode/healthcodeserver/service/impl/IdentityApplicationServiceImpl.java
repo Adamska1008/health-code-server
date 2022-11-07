@@ -3,11 +3,8 @@ package com.healthcode.healthcodeserver.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.healthcode.healthcodeserver.dao.IdentityApplicationDao;
-import com.healthcode.healthcodeserver.dao.UserDao;
 import com.healthcode.healthcodeserver.entity.IdentityApplication;
-import com.healthcode.healthcodeserver.entity.User;
 import com.healthcode.healthcodeserver.service.IdentityApplicationService;
-import com.healthcode.healthcodeserver.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,15 +16,16 @@ public class IdentityApplicationServiceImpl extends ServiceImpl<IdentityApplicat
   IdentityApplicationDao identityApplicationDao;
 
   @Override
-  public List<IdentityApplication> getTesterApplicationList() {
+  public List<IdentityApplication> getTesterApplicationList(int limit) {
     QueryWrapper<IdentityApplication> wrapper = new QueryWrapper<>();
-    wrapper.eq("apply_type", 0);
+    wrapper.eq("apply_type", 0)
+            .last("LIMIT "+limit);
     return identityApplicationDao.selectList(wrapper);
   }
 
   @Override
   public Boolean hasApplicationRecord(String id) {
-    QueryWrapper queryWrapper = new QueryWrapper<>();
+    QueryWrapper<IdentityApplication> queryWrapper = new QueryWrapper<>();
     queryWrapper.eq("applicant_person_id",id);
     return !identityApplicationDao.selectList(queryWrapper).isEmpty();
   }

@@ -41,7 +41,6 @@ public class WxUtil {
         put("appid", testAppId);
         put("secret", testAppSecret);
       }
-
       put("js_code", code);
     }};
     ResponseEntity<String> responseEntity = restTemplate.getForEntity(url, String.class, map);

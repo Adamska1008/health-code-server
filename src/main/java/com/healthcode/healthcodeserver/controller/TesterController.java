@@ -26,7 +26,6 @@ public class TesterController {
   WxUtil wxUtil;
   @Autowired
   IdentityApplicationService identityApplicationService;
-
   @Autowired
   TesterService testerService;
 
@@ -47,7 +46,7 @@ public class TesterController {
   @GetMapping("/{appid}/login")
   public Result code2Session(@RequestParam("code") String code,
                              @PathVariable String appid) {
-    System.out.println("logIn Started");
+//    System.out.println("logIn Started");
     String data = wxUtil.code2Session(code, 1);
     JSONObject jsonObject = JSONObject.parseObject(data);
     log.info("request to build session with code "+ code);
@@ -55,8 +54,8 @@ public class TesterController {
     String openId = jsonObject.getString("openid");
     Result result = new Result();
     jsonObject.forEach(result::putData);
-    System.out.println("ok here:"+openId);
-    result.putData("isTester",testerService.isTester(openId)?1:0);
+//    System.out.println("ok here:"+openId);
+    result.putData("isTester", testerService.isTester(openId)?1:0);
     if (sessionKey == null || openId == null) {
       return result.error(2);
     } else {
@@ -87,14 +86,16 @@ public class TesterController {
       //没有申请记录
       result.putData("status",1);
     } else {//有申请记录
-      IdentityApplication identityApplication = new IdentityApplication();
-      identityApplication.setApplicantName(name);
-      identityApplication.setApplicantPersonId(idNumber);
-      identityApplication.setApplicantPhone(phoneNumber);
-      identityApplication.setId("124321421342");// TODO: 2022/11/7 这里应该有一个生成id算法
-      identityApplication.setIsProceeded(0);
-      identityApplication.setIsSucceed(0);
-      identityApplication.setType(0);
+      IdentityApplication identityApplication = new IdentityApplication(
+              null, name, idNumber, phoneNumber, null, 0, 0, 0);
+//      identityApplication.setApplicantName(name);
+//      identityApplication.setApplicantPersonId(idNumber);
+//      identityApplication.setApplicantPhone(phoneNumber);
+//      // 已经用了mybatis-plus本身的雪花算法
+//      // identityApplication.setId("124321421342");// TODO: 2022/11/7 这里应该有一个生成id算法
+//      identityApplication.setIsProceeded(0);
+//      identityApplication.setIsSucceed(0);
+//      identityApplication.setType(0);
       identityApplicationService.save(identityApplication);
       result.putData("status",0);
     }

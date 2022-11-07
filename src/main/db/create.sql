@@ -141,7 +141,10 @@ CREATE TABLE IF NOT EXISTS t_account(
 DROP TABLE t_tester;
 #核酸检测人员表
 CREATE TABLE IF NOT EXISTS t_tester(
-    open_id CHAR(20) NOT NULL ,
+    open_id     CHAR(20)        NOT NULL,
+    person_id   VARCHAR(20)     NOT NULL,
+    `name`      VARCHAR(20)     ,
+    phone       VARCHAR(20)     ,
     PRIMARY KEY (open_id)
 );
 

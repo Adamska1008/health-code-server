@@ -6,7 +6,7 @@ import com.healthcode.healthcodeserver.entity.IdentityApplication;
 import java.util.List;
 
 public interface IdentityApplicationService extends IService<IdentityApplication> {
-  List<IdentityApplication> getTesterApplicationList();
+  List<IdentityApplication> getTesterApplicationList(int limit);
 
-  public Boolean hasApplicationRecord(String id);
+  Boolean hasApplicationRecord(String id);
 }
