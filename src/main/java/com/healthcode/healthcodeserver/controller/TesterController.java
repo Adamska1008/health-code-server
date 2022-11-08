@@ -73,29 +73,16 @@ public class TesterController {
                                    @PathVariable("appid") String appId){
     Result verifiedResult = verifySession(openId, sessionKey);
     if (verifiedResult.getStatusCode() != 0) {
+      log.info("user with openid "+openId + " did not fetch session_key.");
       return verifiedResult;
-    }
-    User user = userService.getUserInfoByOpenId(openId);
-    System.out.println("openId"+openId);
-    if (user == null) {
-      log.warn("no user with such openid");
-      return new Result().error(4);
     }
     Result result = new Result();
     if (identityApplicationService.hasApplicationRecord(idNumber)){
-      //没有申请记录
       result.putData("status",1);
     } else {//有申请记录
       IdentityApplication identityApplication = new IdentityApplication(
-              null, name, idNumber, phoneNumber, null, 0, 0, 0);
-//      identityApplication.setApplicantName(name);
-//      identityApplication.setApplicantPersonId(idNumber);
-//      identityApplication.setApplicantPhone(phoneNumber);
-//      // 已经用了mybatis-plus本身的雪花算法
-//      // identityApplication.setId("124321421342");// TODO: 2022/11/7 这里应该有一个生成id算法
-//      identityApplication.setIsProceeded(0);
-//      identityApplication.setIsSucceed(0);
-//      identityApplication.setType(0);
+              null, openId, name, idNumber, phoneNumber, null, 0, 0, 0, null);
+      log.info(name + " wants to apply for tester");
       identityApplicationService.save(identityApplication);
       result.putData("status",0);
     }

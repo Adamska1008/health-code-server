@@ -9,4 +9,6 @@ public interface IdentityApplicationService extends IService<IdentityApplication
   List<IdentityApplication> getTesterApplicationList(int limit);
 
   Boolean hasApplicationRecord(String id);
+
+  void updateApplicantProcessed(String id, Integer isSucceed);
 }

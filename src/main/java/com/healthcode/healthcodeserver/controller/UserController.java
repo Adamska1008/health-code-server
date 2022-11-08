@@ -81,32 +81,32 @@ public class UserController {
     }
   }
 
-  /**
-   * 第一次登录需要填写表单以获取用户信息
-   * 用户信息存在userInfo中，openId和sessionKey存在token中
-   * @param token
-   * @param userInfo
-   * @return
-   */
-  @PostMapping("/{appid}/info")
-  public Result insertUserInfo(@RequestParam("token") String token,
-                               @RequestParam("userInfo") String userInfo){
-    Result result = new Result();
-    JSONObject jsonObject1 = JSONObject.parseObject(userInfo);
-    String personName = jsonObject1.getString("personName");
-    String personId = jsonObject1.getString("personId");
-    String gender = jsonObject1.getString("gender");
-    String phoneNumber = jsonObject1.getString("phone");
-    JSONObject jsonObject2 = JSON.parseObject(token);
-    String openId = jsonObject2.getString("openId");
-    int insertResult = userService.insertUserInfo(personId,personName,phoneNumber,openId,gender);
-    if (insertResult==1){
-      result.ok();
-    } else {
-      result.error(1);
-    }
-    return result;
-  }
+//  /**
+//   * 第一次登录需要填写表单以获取用户信息
+//   * 用户信息存在userInfo中，openId和sessionKey存在token中
+//   * @param token token
+//   * @param userInfo
+//   * @return
+//   */
+//  @PostMapping("/{appid}/info")
+//  public Result insertUserInfo(@RequestParam("token") String token,
+//                               @RequestParam("userInfo") String userInfo){
+//    Result result = new Result();
+//    JSONObject jsonObject1 = JSONObject.parseObject(userInfo);
+//    String personName = jsonObject1.getString("personName");
+//    String personId = jsonObject1.getString("personId");
+//    String gender = jsonObject1.getString("gender");
+//    String phoneNumber = jsonObject1.getString("phone");
+//    JSONObject jsonObject2 = JSON.parseObject(token);
+//    String openId = jsonObject2.getString("openId");
+//    int insertResult = userService.insertUserInfo(personId,personName,phoneNumber,openId,gender);
+//    if (insertResult==1){
+//      result.ok();
+//    } else {
+//      result.error(1);
+//    }
+//    return result;
+//  }
 
   /**
    * 前端发送openid与session_key获取用户信息。
@@ -125,7 +125,7 @@ public class UserController {
       return verifiedResult;
     }
     User user = userService.getUserInfoByOpenId(openId);
-    if (user == null) {
+      if (user == null) {
       log.warn("no user with such openid");
       return new Result().error(4);
     }

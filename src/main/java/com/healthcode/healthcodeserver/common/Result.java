@@ -40,7 +40,12 @@ public class Result {
 
   public Result error(Integer errorCode) {
     this.statusCode = Objects.requireNonNullElse(errorCode, 1);
-    this.message =errorCodeToInfo.get(this.statusCode);
+    this.message = errorCodeToInfo.get(this.statusCode);
+    return this;
+  }
+
+  public Result message(String message) {
+    this.message = message;
     return this;
   }
 

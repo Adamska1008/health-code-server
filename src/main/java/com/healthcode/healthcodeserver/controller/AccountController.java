@@ -1,11 +1,14 @@
 package com.healthcode.healthcodeserver.controller;
 
+import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.healthcode.healthcodeserver.common.Result;
 import com.healthcode.healthcodeserver.entity.Account;
 import com.healthcode.healthcodeserver.entity.IdentityApplication;
+import com.healthcode.healthcodeserver.entity.Tester;
 import com.healthcode.healthcodeserver.service.AccountService;
 import com.healthcode.healthcodeserver.service.IdentityApplicationService;
+import com.healthcode.healthcodeserver.service.TesterService;
 import com.healthcode.healthcodeserver.util.TokenUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +23,8 @@ import java.util.List;
 public class AccountController {
   @Autowired
   AccountService accountService;
+  @Autowired
+  TesterService testerService;
   @Autowired
   TokenUtil tokenUtil;
   @Autowired
@@ -49,14 +54,32 @@ public class AccountController {
             .putData("token", token);
   }
 
-  @GetMapping("/tester_apply")
+  @GetMapping("/get_tester_apply")
   public Result getTesterApplicationInfo(@RequestParam("token") String token) {
     if (tokenUtil.verify(token)) {
-      List<IdentityApplication> identityApplications = identityApplicationService.getTesterApplicationList(1000);
+      log.info("admin with token "+token+" acquire tester apply info");
+      List<IdentityApplication> identityApplications = identityApplicationService.getTesterApplicationList(100);
       return new Result().ok()
               .putData("application_list", identityApplications);
     } else {
+      log.info("unknown token");
       return new Result().error(null);
+    }
+  }
+
+  @PostMapping("/post_tester_apply")
+  public Result postTesterApplicationInfo(@RequestParam("token") String token,
+                                          @RequestBody IdentityApplication application) {
+    if (tokenUtil.verify(token)) {
+      Tester tester = new Tester(
+              application.getOpenId(), application.getApplicantPersonId(),
+              application.getApplicantPhone(), application.getApplicantName());
+      testerService.save(tester);
+      identityApplicationService.updateApplicantProcessed(application.getId(), application.getIsSucceed());
+      return new Result().ok();
+    } else {
+      log.info("unknown token");
+      return new Result().error(null).message("unknown token");
     }
   }
 }

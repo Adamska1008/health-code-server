@@ -165,11 +165,11 @@ CREATE TABLE IF NOT EXISTS t_identity_application(
     applicant_name          CHAR(20)  NOT NULL,
     applicant_person_id     CHAR(20)  NOT NULL,
     applicant_phone         CHAR(20)  NOT NULL,
-    additional_information  VARCHAR(50)  NOT NULL,
+    additional_information  CHAR(50)  ,
     apply_type              TINYINT  CHECK ( apply_type in (0,1)),
     is_processed            TINYINT CHECK ( is_processed IN (0,1)),
     is_succeed              TINYINT CHECK ( is_succeed IN (0,1)),
-    result_info             VARCHAR(50),
+    result_info             CHAR(50)  ,
     PRIMARY KEY(application_id)
 )DEFAULT CHARSET=utf8mb4;
 

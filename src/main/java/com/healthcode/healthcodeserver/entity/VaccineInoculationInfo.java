@@ -1,5 +1,6 @@
 package com.healthcode.healthcodeserver.entity;
 
+import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
@@ -13,6 +14,7 @@ import java.sql.Timestamp;
 @Data
 @TableName("t_vaccine_inoculation_info")
 public class VaccineInoculationInfo {
+  @TableId
   private String personId;
   @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
   private Timestamp inoculationTime;
