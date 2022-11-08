@@ -71,11 +71,13 @@ public class AccountController {
   public Result postTesterApplicationInfo(@RequestParam("token") String token,
                                           @RequestBody IdentityApplication application) {
     if (tokenUtil.verify(token)) {
-      Tester tester = new Tester(
-              application.getOpenId(), application.getApplicantPersonId(),
-              application.getApplicantPhone(), application.getApplicantName());
-      testerService.save(tester);
       identityApplicationService.updateApplicantProcessed(application.getId(), application.getIsSucceed());
+      if (application.getIsSucceed() == 1) {
+        Tester tester = new Tester(
+                application.getOpenId(), application.getApplicantPersonId(),
+                application.getApplicantPhone(), application.getApplicantName());
+        testerService.save(tester);
+      }
       return new Result().ok();
     } else {
       log.info("unknown token");
