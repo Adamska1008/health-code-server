@@ -17,4 +17,48 @@ public class UserRelation {
   2：姻亲
    */
   private Short relation;
+
+  public UserRelation(String personIdA,
+                      String personIdB,
+                      Short relation) {
+    this.personIdA = personIdA;
+    this.personIdB = personIdB;
+    this.relation = relation;
+  }
+
+  public UserRelation() {
+  }
+
+  public String getPersonIdA() {
+    return personIdA;
+  }
+
+  public void setPersonIdA(String personIdA) {
+    this.personIdA = personIdA;
+  }
+
+  public String getPersonIdB() {
+    return personIdB;
+  }
+
+  public void setPersonIdB(String personIdB) {
+    this.personIdB = personIdB;
+  }
+
+  public Short getRelation() {
+    return relation;
+  }
+
+  public void setRelation(Short relation) {
+    this.relation = relation;
+  }
+
+  @Override
+  public String toString() {
+    return "UserRelation{" +
+            "personIdA='" + personIdA + '\'' +
+            ", personIdB='" + personIdB + '\'' +
+            ", relation=" + relation +
+            '}';
+  }
 }

@@ -9,9 +9,6 @@ import lombok.NoArgsConstructor;
 
 import java.sql.Timestamp;
 
-@AllArgsConstructor
-@NoArgsConstructor
-@Data
 @TableName("t_vaccine_inoculation_info")
 public class VaccineInoculationInfo {
   @TableId
@@ -21,4 +18,71 @@ public class VaccineInoculationInfo {
   private String inoculationFacility;
   private String vaccineName;
   private String inoculationNumber;
+
+  public VaccineInoculationInfo(String personId,
+                                Timestamp inoculationTime,
+                                String inoculationFacility,
+                                String vaccineName,
+                                String inoculationNumber) {
+    this.personId = personId;
+    this.inoculationTime = inoculationTime;
+    this.inoculationFacility = inoculationFacility;
+    this.vaccineName = vaccineName;
+    this.inoculationNumber = inoculationNumber;
+  }
+
+  public VaccineInoculationInfo() {
+  }
+
+  public String getPersonId() {
+    return personId;
+  }
+
+  public void setPersonId(String personId) {
+    this.personId = personId;
+  }
+
+  public Timestamp getInoculationTime() {
+    return inoculationTime;
+  }
+
+  public void setInoculationTime(Timestamp inoculationTime) {
+    this.inoculationTime = inoculationTime;
+  }
+
+  public String getInoculationFacility() {
+    return inoculationFacility;
+  }
+
+  public void setInoculationFacility(String inoculationFacility) {
+    this.inoculationFacility = inoculationFacility;
+  }
+
+  public String getVaccineName() {
+    return vaccineName;
+  }
+
+  public void setVaccineName(String vaccineName) {
+    this.vaccineName = vaccineName;
+  }
+
+  public String getInoculationNumber() {
+    return inoculationNumber;
+  }
+
+  public void setInoculationNumber(String inoculationNumber) {
+    this.inoculationNumber = inoculationNumber;
+  }
+
+  @Override
+  public String toString() {
+    return "VaccineInoculationInfo{" +
+            "personId='" + personId + '\'' +
+            ", inoculationTime=" + inoculationTime +
+            ", inoculationFacility='" + inoculationFacility + '\'' +
+            ", vaccineName='" + vaccineName + '\'' +
+            ", inoculationNumber='" + inoculationNumber + '\'' +
+            '}';
+  }
+
 }
