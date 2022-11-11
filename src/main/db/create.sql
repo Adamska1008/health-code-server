@@ -25,10 +25,15 @@ CREATE TABLE IF NOT EXISTS t_user_relation (
 )DEFAULT CHARSET=utf8mb4;
 
 -- 核酸检测试剂表
-CREATE TABLE IF NOT EXISTS t_nucleic_acid_info(
-    nucleic_acid_id         CHAR(20)    NOT NULL,
-    PRIMARY KEY(nucleic_acid_id)
+-- is_transferred:是否已转运（0：未转运，1：已转运）
+CREATE TABLE IF NOT EXISTS t_transfer_code_info(
+    transfer_code  CHAR(20)    NOT NULL,
+    tester_id CHAR(20) NOT NULL ,
+    test_time DATETIME,
+    is_transferred TINYINT CHECK ( is_transferred IN (0,1)),
+    PRIMARY KEY (transfer_code)
 )DEFAULT CHARSET=utf8mb4;
+
 
 -- 核酸检测结果表
 -- test_result 0:阴性 1:阳性
@@ -36,9 +41,9 @@ CREATE TABLE IF NOT EXISTS t_nucleic_acid_test_info (
     person_id           	CHAR(20)    NOT NULL,
     test_time 	          	DATETIME    ,
     test_institution_id    	CHAR(20)    ,
-    nucleic_acid_id        	CHAR(20)    NOT NULL,
+    transfer_code        	CHAR(20)    NOT NULL,
     test_result         	TINYINT    	CHECK(test_result IN(0,1)),
-    PRIMARY KEY(person_id, nucleic_acid_id),
+    PRIMARY KEY(person_id, transfer_code),
     FOREIGN KEY(person_id) REFERENCES t_user_info(person_id),
     FOREIGN KEY(nucleic_acid_id) REFERENCES  t_nucleic_acid_info(nucleic_acid_id)
 )DEFAULT CHARSET=utf8mb4;
