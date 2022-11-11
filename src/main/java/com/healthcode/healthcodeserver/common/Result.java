@@ -11,8 +11,6 @@ import java.util.Objects;
  * 统一的后端向前端传输数据对象
  * 方法统一使用链式调用
  */
-@Getter
-@Setter
 public class Result {
   /*
   statusCode:
@@ -32,18 +30,30 @@ public class Result {
     put(202, "admin: wrong password");
   }};
 
+  /**
+   * 链式调用，设置ok返回值，返回对象本身
+   * @return 修改完的对象本身
+   */
   public Result ok() {
     this.setStatusCode(0);
     this.setMessage("OK");
     return this;
   }
 
+  /**
+   * 链式调用，设置error返回值，返回对象本身
+   * @return 修改完的对象本身
+   */
   public Result error(Integer errorCode) {
     this.statusCode = Objects.requireNonNullElse(errorCode, 1);
-    this.message = errorCodeToInfo.get(this.statusCode);
+    this.message = getErrorCodeToInfo().get(this.statusCode);
     return this;
   }
 
+  /**
+   * 链式调用，设置message返回值，返回对象本身
+   * @return 修改完的对象本身
+   */
   public Result message(String message) {
     this.message = message;
     return this;
@@ -58,5 +68,43 @@ public class Result {
   public Result putData(String key, Object value) {
     this.data.put(key, value);
     return this;
+  }
+
+  public void setMessage(String message) {
+    this.message = message;
+  }
+
+  public void setStatusCode(Integer statusCode) {
+    this.statusCode = statusCode;
+  }
+
+  public Integer getStatusCode() {
+    return statusCode;
+  }
+
+  public static Map<Integer, String> getErrorCodeToInfo() {
+    return errorCodeToInfo;
+  }
+
+  @Override
+  public String toString() {
+    return "Result{" +
+            "statusCode=" + statusCode +
+            ", message='" + message + '\'' +
+            ", data=" + data +
+            '}';
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    Result result = (Result) o;
+    return Objects.equals(statusCode, result.statusCode) && Objects.equals(message, result.message) && Objects.equals(data, result.data);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(statusCode, message, data);
   }
 }

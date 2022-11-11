@@ -8,10 +8,9 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@NoArgsConstructor
-@AllArgsConstructor
+import java.util.Objects;
+
 @TableName("t_identity_application")
-@Data
 public class IdentityApplication {
   @TableId(value = "application_id", type = IdType.ASSIGN_ID)
   private String id;
@@ -27,4 +26,143 @@ public class IdentityApplication {
   private Integer isProcessed;
   private Integer isSucceed;
   private String resultInfo;
+
+  public IdentityApplication() {
+  }
+
+  public IdentityApplication(String id,
+                             String openId,
+                             String applicantName,
+                             String applicantPersonId,
+                             String applicantPhone,
+                             String additionalInfo,
+                             Integer type,
+                             Integer isProcessed,
+                             Integer isSucceed,
+                             String resultInfo) {
+    this.id = id;
+    this.openId = openId;
+    this.applicantName = applicantName;
+    this.applicantPersonId = applicantPersonId;
+    this.applicantPhone = applicantPhone;
+    this.additionalInfo = additionalInfo;
+    this.type = type;
+    this.isProcessed = isProcessed;
+    this.isSucceed = isSucceed;
+    this.resultInfo = resultInfo;
+  }
+
+  public Integer getIsProcessed() {
+    return isProcessed;
+  }
+
+  public Integer getIsSucceed() {
+    return isSucceed;
+  }
+
+  public Integer getType() {
+    return type;
+  }
+
+  public String getAdditionalInfo() {
+    return additionalInfo;
+  }
+
+  public String getApplicantName() {
+    return applicantName;
+  }
+
+  public String getApplicantPersonId() {
+    return applicantPersonId;
+  }
+
+  public String getApplicantPhone() {
+    return applicantPhone;
+  }
+
+  public String getId() {
+    return id;
+  }
+
+  public String getOpenId() {
+    return openId;
+  }
+
+  public String getResultInfo() {
+    return resultInfo;
+  }
+
+  public void setId(String id) {
+    this.id = id;
+  }
+
+  public void setAdditionalInfo(String additionalInfo) {
+    this.additionalInfo = additionalInfo;
+  }
+
+  public void setApplicantName(String applicantName) {
+    this.applicantName = applicantName;
+  }
+
+  public void setApplicantPersonId(String applicantPersonId) {
+    this.applicantPersonId = applicantPersonId;
+  }
+
+  public void setApplicantPhone(String applicantPhone) {
+    this.applicantPhone = applicantPhone;
+  }
+
+  public void setIsProcessed(Integer isProcessed) {
+    this.isProcessed = isProcessed;
+  }
+
+  public void setIsSucceed(Integer isSucceed) {
+    this.isSucceed = isSucceed;
+  }
+
+  public void setOpenId(String openId) {
+    this.openId = openId;
+  }
+
+  public void setResultInfo(String resultInfo) {
+    this.resultInfo = resultInfo;
+  }
+
+  public void setType(Integer type) {
+    this.type = type;
+  }
+
+  @Override
+  public String toString() {
+    return "IdentityApplication{" +
+            "id='" + id + '\'' +
+            ", openId='" + openId + '\'' +
+            ", applicantName='" + applicantName + '\'' +
+            ", applicantPersonId='" + applicantPersonId + '\'' +
+            ", applicantPhone='" + applicantPhone + '\'' +
+            ", additionalInfo='" + additionalInfo + '\'' +
+            ", type=" + type +
+            ", isProcessed=" + isProcessed +
+            ", isSucceed=" + isSucceed +
+            ", resultInfo='" + resultInfo + '\'' +
+            '}';
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    IdentityApplication that = (IdentityApplication) o;
+    return Objects.equals(id, that.id) && Objects.equals(openId, that.openId)
+            && Objects.equals(applicantName, that.applicantName) && Objects.equals(applicantPersonId, that.applicantPersonId)
+            && Objects.equals(applicantPhone, that.applicantPhone) && Objects.equals(additionalInfo, that.additionalInfo)
+            && Objects.equals(type, that.type) && Objects.equals(isProcessed, that.isProcessed)
+            && Objects.equals(isSucceed, that.isSucceed) && Objects.equals(resultInfo, that.resultInfo);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(
+            id, openId, applicantName, applicantPersonId, applicantPhone, additionalInfo, type, isProcessed, isSucceed, resultInfo);
+  }
 }

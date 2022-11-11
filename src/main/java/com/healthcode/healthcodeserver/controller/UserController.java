@@ -13,7 +13,13 @@ import com.healthcode.healthcodeserver.service.VaccineInoculationInfoService;
 import com.healthcode.healthcodeserver.util.WxUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 
 import java.util.HashMap;
 import java.util.List;
@@ -81,32 +87,32 @@ public class UserController {
     }
   }
 
-//  /**
-//   * 第一次登录需要填写表单以获取用户信息
-//   * 用户信息存在userInfo中，openId和sessionKey存在token中
-//   * @param token token
-//   * @param userInfo
-//   * @return
-//   */
-//  @PostMapping("/{appid}/info")
-//  public Result insertUserInfo(@RequestParam("token") String token,
-//                               @RequestParam("userInfo") String userInfo){
-//    Result result = new Result();
-//    JSONObject jsonObject1 = JSONObject.parseObject(userInfo);
-//    String personName = jsonObject1.getString("personName");
-//    String personId = jsonObject1.getString("personId");
-//    String gender = jsonObject1.getString("gender");
-//    String phoneNumber = jsonObject1.getString("phone");
-//    JSONObject jsonObject2 = JSON.parseObject(token);
-//    String openId = jsonObject2.getString("openId");
-//    int insertResult = userService.insertUserInfo(personId,personName,phoneNumber,openId,gender);
-//    if (insertResult==1){
-//      result.ok();
-//    } else {
-//      result.error(1);
-//    }
-//    return result;
-//  }
+  /**
+   * 第一次登录需要填写表单以获取用户信息
+   * 用户信息存在userInfo中，openId和sessionKey存在token中
+   * @param token token
+   * @param userInfo
+   * @return
+   */
+  @PostMapping("/{appid}/info")
+  public Result insertUserInfo(@RequestParam("token") String token,
+                               @RequestParam("userInfo") String userInfo){
+    Result result = new Result();
+    JSONObject jsonObject1 = JSONObject.parseObject(userInfo);
+    String personName = jsonObject1.getString("personName");
+    String personId = jsonObject1.getString("personId");
+    String gender = jsonObject1.getString("gender");
+    String phoneNumber = jsonObject1.getString("phone");
+    JSONObject jsonObject2 = JSON.parseObject(token);
+    String openId = jsonObject2.getString("openId");
+    int insertResult = userService.insertUserInfo(personId,personName,phoneNumber,openId,gender);
+    if (insertResult==1){
+      result.ok();
+    } else {
+      result.error(1);
+    }
+    return result;
+  }
 
   /**
    * 前端发送openid与session_key获取用户信息。
@@ -150,6 +156,10 @@ public class UserController {
 
   /**
    * 获取指定用户的核酸检测信息
+   * @param openId 个人openid
+   * @param sessionKey 会话密钥
+   * @param appid 小程序id
+   * @return Result，包含检测信息列表
    */
   @GetMapping("{appid}/nucleic_test_info")
   public Result getNucleicAcidTestInfo(@RequestParam("openid") String openId,
@@ -170,6 +180,13 @@ public class UserController {
             .putData("test_info", nucleicAcidTestInfos);
   }
 
+  /**
+   * 获取个人疫苗记录
+   * @param openId 个人openid
+   * @param sessionKey 会话密钥
+   * @param appid 小程序id
+   * @return Result，包含疫苗记录列表
+   */
   @GetMapping("{appid}/vaccine_inocu_info")
   public Result getVaccineInoculationInfo(@RequestParam("openid") String openId,
                                           @RequestParam("session_key") String sessionKey,

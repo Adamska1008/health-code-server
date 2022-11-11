@@ -17,18 +17,29 @@ public class IdentityApplicationServiceImpl extends ServiceImpl<IdentityApplicat
   @Autowired
   IdentityApplicationDao identityApplicationDao;
 
+  /**
+   * 获取核酸检测人员申请表
+   * @param limit 限制获取数量
+   * @return 申请表
+   */
   @Override
   public List<IdentityApplication> getTesterApplicationList(int limit) {
     QueryWrapper<IdentityApplication> wrapper = new QueryWrapper<>();
     wrapper.eq("apply_type", 0)
+            .orderByAsc("is_processed")
             .last("LIMIT "+limit);
     return identityApplicationDao.selectList(wrapper);
   }
 
+  /**
+   * 确认某人员是否有申请记录
+   * @param personId 身份证号
+   * @return 是否已申请
+   */
   @Override
-  public Boolean hasApplicationRecord(String id) {
+  public Boolean hasApplicationRecord(String personId) {
     QueryWrapper<IdentityApplication> queryWrapper = new QueryWrapper<>();
-    queryWrapper.eq("applicant_person_id",id);
+    queryWrapper.eq("applicant_person_id", personId);
     return !identityApplicationDao.selectList(queryWrapper).isEmpty();
   }
 

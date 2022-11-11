@@ -8,7 +8,7 @@ import java.util.List;
 public interface IdentityApplicationService extends IService<IdentityApplication> {
   List<IdentityApplication> getTesterApplicationList(int limit);
 
-  Boolean hasApplicationRecord(String id);
+  Boolean hasApplicationRecord(String personId);
 
   void updateApplicantProcessed(String id, Integer isSucceed);
 }

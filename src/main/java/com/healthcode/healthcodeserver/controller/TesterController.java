@@ -3,14 +3,20 @@ package com.healthcode.healthcodeserver.controller;
 import com.alibaba.fastjson.JSONObject;
 import com.healthcode.healthcodeserver.common.Result;
 import com.healthcode.healthcodeserver.entity.IdentityApplication;
-import com.healthcode.healthcodeserver.entity.User;
 import com.healthcode.healthcodeserver.service.IdentityApplicationService;
 import com.healthcode.healthcodeserver.service.TesterService;
 import com.healthcode.healthcodeserver.service.UserService;
 import com.healthcode.healthcodeserver.util.WxUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -31,7 +37,14 @@ public class TesterController {
 
   Map<String, String> openIdToSessionKey = new HashMap<>();
 
-  private Result verifySession(String openId, String sessionKey) {
+  /**
+   * 鉴定session是否合法
+   * @param openId 微信开发的openid
+   * @param sessionKey 会话密钥
+   * @return 是否合法的Result值
+   */
+  private Result verifySession(String openId,
+                               String sessionKey) {
     if (!openIdToSessionKey.containsKey(openId)) {
       log.warn("do not have given openid: "+ openId);
       return new Result().error(null);
@@ -40,13 +53,19 @@ public class TesterController {
       log.warn("receive openid "+openId+" and session_key "+sessionKey+", which do not correspond.");
       return new Result().error(3);
     }
+    log.info("verify session with openid " +openId+" and session_key "+sessionKey);
     return new Result().ok();
   }
 
+  /**
+   * 核酸检测人员登陆
+   * @param code 小程序给定的code值
+   * @param appid 微信小程序appid
+   * @return 若该人员已通过申请，则直接登陆
+   */
   @GetMapping("/{appid}/login")
   public Result code2Session(@RequestParam("code") String code,
                              @PathVariable String appid) {
-//    System.out.println("logIn Started");
     String data = wxUtil.code2Session(code, 1);
     JSONObject jsonObject = JSONObject.parseObject(data);
     log.info("request to build session with code "+ code);
@@ -54,7 +73,6 @@ public class TesterController {
     String openId = jsonObject.getString("openid");
     Result result = new Result();
     jsonObject.forEach(result::putData);
-//    System.out.println("ok here:"+openId);
     result.putData("isTester", testerService.isTester(openId)?1:0);
     if (sessionKey == null || openId == null) {
       return result.error(2);
