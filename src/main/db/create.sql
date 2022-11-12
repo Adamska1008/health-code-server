@@ -28,12 +28,12 @@ CREATE TABLE IF NOT EXISTS t_user_relation (
 -- is_transferred:是否已转运（0：未转运，1：已转运）
 CREATE TABLE IF NOT EXISTS t_transfer_code_info(
     transfer_code  CHAR(20)    NOT NULL,
-    tester_id CHAR(20) NOT NULL ,
+    tester_open_id CHAR(20) NOT NULL ,
     test_time DATETIME,
+    person_number INTEGER,
     is_transferred TINYINT CHECK ( is_transferred IN (0,1)),
     PRIMARY KEY (transfer_code)
 )DEFAULT CHARSET=utf8mb4;
-
 
 -- 核酸检测结果表
 -- test_result 0:阴性 1:阳性
@@ -143,7 +143,7 @@ CREATE TABLE IF NOT EXISTS t_account(
 CREATE TABLE IF NOT EXISTS t_tester(
     open_id     CHAR(20)        NOT NULL,
     person_id   VARCHAR(20)     NOT NULL,
-    `name`      VARCHAR(20)     ,
+    name     VARCHAR(20)     ,
     phone       VARCHAR(20)     ,
     PRIMARY KEY (open_id)
 );
