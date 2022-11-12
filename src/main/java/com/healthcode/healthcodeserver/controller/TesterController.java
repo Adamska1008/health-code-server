@@ -74,11 +74,7 @@ public class TesterController {
     String sessionKey = jsonObject.getString("session_key");
     String openId = jsonObject.getString("openid");
     Result result = new Result();
-    for (Map.Entry<String, Object> entry : jsonObject.entrySet()) {
-      String k = entry.getKey();
-      Object v = entry.getValue();
-      result.putData(k, v);
-    }
+    jsonObject.forEach(result::putData);
     result.putData("isTester", testerService.isTester(openId)?1:0);
     if (sessionKey == null || openId == null) {
       return result.error(2);
