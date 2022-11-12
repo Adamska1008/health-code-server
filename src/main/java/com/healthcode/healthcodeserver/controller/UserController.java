@@ -209,7 +209,7 @@ public class UserController {
    * @param response http请求体
    * @return 申请提交成功的result
    */
-  @PostMapping
+  @PostMapping("/venue_code")
   public Result applyVenueCode(@RequestBody JSONObject response) {
     String openId = response.getString("openid");
     String sessionKey = response.getString("session_key");
@@ -232,10 +232,16 @@ public class UserController {
     return new Result().ok();
   }
 
+
   /**
-   *
+   * 获取场所码申请的状态
+   * @param openId 用户openid
+   * @param sessionKey 用户session_key
+   * @param applicantName 申请人名字
+   * @param placeName 申请的地名
+   * @return 详情见文档
    */
-  @GetMapping
+  @GetMapping("venue_code")
   public Result checkVenueCode(@RequestParam("openid") String openId,
                                @RequestParam("session_key") String sessionKey,
                                @RequestParam("applicant_name") String applicantName,
