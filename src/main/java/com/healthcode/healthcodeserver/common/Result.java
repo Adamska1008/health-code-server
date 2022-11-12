@@ -1,8 +1,5 @@
 package com.healthcode.healthcodeserver.common;
 
-import lombok.Getter;
-import lombok.Setter;
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -23,6 +20,8 @@ public class Result {
   private static final Map<Integer, String> errorCodeToInfo = new HashMap<>(){{
     put(0, "OK");
     put(1, "unknown: Unknown Error");
+    put(2, "invalid token");
+    put(3, "miss correct openid");
     put(101, "user: Failed to fetch session key and openid by code");
     put(102, "user: unregistered session_key");
     put(103, "user: user with given openid not existed");
@@ -68,6 +67,10 @@ public class Result {
   public Result putData(String key, Object value) {
     this.data.put(key, value);
     return this;
+  }
+
+  public String getMessage() {
+    return this.message;
   }
 
   public void setMessage(String message) {

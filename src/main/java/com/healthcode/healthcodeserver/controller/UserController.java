@@ -6,20 +6,12 @@ import com.healthcode.healthcodeserver.common.Result;
 import com.healthcode.healthcodeserver.entity.NucleicAcidTestInfo;
 import com.healthcode.healthcodeserver.entity.User;
 import com.healthcode.healthcodeserver.entity.VaccineInoculationInfo;
-import com.healthcode.healthcodeserver.service.CovidTestInstitutionService;
-import com.healthcode.healthcodeserver.service.NucleicAcidTestInfoService;
-import com.healthcode.healthcodeserver.service.UserService;
-import com.healthcode.healthcodeserver.service.VaccineInoculationInfoService;
+import com.healthcode.healthcodeserver.entity.VenueCodeApplication;
+import com.healthcode.healthcodeserver.service.*;
 import com.healthcode.healthcodeserver.util.WxUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.List;
@@ -40,6 +32,9 @@ public class UserController {
   CovidTestInstitutionService covidTestInstitutionService;
   @Autowired
   WxUtil wxUtil;
+  @Autowired
+  VenueCodeApplicationService venueCodeApplicationService;
+
   Map<String, String> openIdToSessionKey = new HashMap<>();
 
   /**
@@ -172,7 +167,8 @@ public class UserController {
     User user = userService.getUserInfoByOpenId(openId);
     if (user == null) {
       log.warn("no user with such openid");
-      return new Result().error(4);
+      return new Result()
+              .error(4);
     }
     List<NucleicAcidTestInfo> nucleicAcidTestInfos =
             nucleicAcidTestInfoService.getNucleicAcidTestInfoListByPersonId(user.getPersonId());
@@ -198,11 +194,63 @@ public class UserController {
     User user = userService.getUserInfoByOpenId(openId);
     if (user == null) {
       log.warn("no user with such openid");
-      return new Result().error(4);
+      return new Result()
+              .error(103);
     }
     List<VaccineInoculationInfo> vaccineInoculationInfos =
             vaccineInoculationInfoService.getInfoListByPersonId(user.getPersonId());
-    return new Result().ok()
+    return new Result()
+            .ok()
             .putData("test_info", vaccineInoculationInfos);
+  }
+
+  /**
+   * 申请场所码
+   * @param response http请求体
+   * @return 申请提交成功的result
+   */
+  @PostMapping
+  public Result applyVenueCode(@RequestBody JSONObject response) {
+    String openId = response.getString("openid");
+    String sessionKey = response.getString("session_key");
+    Result verifiedResult = verifySession(openId, sessionKey);
+    if (verifiedResult.getStatusCode() != 0) {
+      return verifiedResult;
+    }
+    VenueCodeApplication application = new VenueCodeApplication(
+            null,
+            response.getString("applicant_name"),
+            response.getString("applicant_person_id"),
+            response.getString("location"),
+            response.getString("type"),
+            response.getString("place_name"),
+            0,
+            0,
+            null
+    );
+    venueCodeApplicationService.save(application);
+    return new Result().ok();
+  }
+
+  /**
+   *
+   */
+  @GetMapping
+  public Result checkVenueCode(@RequestParam("openid") String openId,
+                               @RequestParam("session_key") String sessionKey,
+                               @RequestParam("applicant_name") String applicantName,
+                               @RequestParam("place_name") String placeName) {
+    Result verifiedResult = verifySession(openId, sessionKey);
+    if (verifiedResult.getStatusCode() != 0) {
+      return verifiedResult;
+    }
+    log.info(applicantName + "acquire venue code application of place " + placeName);
+    VenueCodeApplication application = venueCodeApplicationService
+            .getApplicationByApplicantNameAndPlaceName(applicantName, placeName);
+    return new Result()
+            .ok()
+            .putData("venue_code_id", application.getId())
+            .putData("result", application.getResult())
+            .putData("result_info", application.getResultInfo());
   }
 }

@@ -45,7 +45,7 @@ CREATE TABLE IF NOT EXISTS t_nucleic_acid_test_info (
     test_result         	TINYINT    	CHECK(test_result IN(0,1)),
     PRIMARY KEY(person_id, transfer_code),
     FOREIGN KEY(person_id) REFERENCES t_user_info(person_id),
-    FOREIGN KEY(nucleic_acid_id) REFERENCES  t_nucleic_acid_info(nucleic_acid_id)
+    FOREIGN KEY(transfer_code) REFERENCES  t_transfer_code_info(transfer_code)
 )DEFAULT CHARSET=utf8mb4;
 
 -- 疫苗接种表
@@ -80,14 +80,15 @@ CREATE table IF NOT EXISTS t_venue_code_info(
 -- is_solved 0: 未处理 1:已处理
 -- code_application_result 0: 申请成功 1:申请失败
 CREATE table IF NOT EXISTS t_venue_code_application(
-    code_application_id     CHAR(20)    NOT NULL,
-    code_application_person VARCHAR(10) ,
-    code_application_locate VARCHAR(40) ,
-    code_application_type   VARCHAR(10) ,
-    code_application_name   VARCHAR(40) ,
-    is_solved               TINYINT CHECK ( is_solved IN (0,1)),
-    code_application_result TINYINT CHECK ( code_application_result IN (0,1)),
-    result_info             VARCHAR(100),
+    code_application_id             CHAR(20)    NOT NULL,
+    code_application_person_name    VARCHAR(30) ,
+    code_application_person_id      VARCHAR(40) ,
+    code_application_locate         VARCHAR(40) ,
+    code_application_type           VARCHAR(10) ,
+    code_application_name           VARCHAR(40) ,
+    is_solved                       TINYINT CHECK ( is_solved IN (0,1)),
+    code_application_result         TINYINT CHECK ( code_application_result IN (0,1)),
+    result_info                     VARCHAR(100),
     PRIMARY KEY (code_application_id)
 )DEFAULT CHARSET=utf8mb4;
 

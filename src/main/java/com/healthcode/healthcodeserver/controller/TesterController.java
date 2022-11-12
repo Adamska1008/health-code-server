@@ -47,14 +47,17 @@ public class TesterController {
                                String sessionKey) {
     if (!openIdToSessionKey.containsKey(openId)) {
       log.warn("do not have given openid: "+ openId);
-      return new Result().error(null);
+      return new Result()
+              .error(3);
     }
     if (!openIdToSessionKey.get(openId).equals(sessionKey)) {
       log.warn("receive openid "+openId+" and session_key "+sessionKey+", which do not correspond.");
-      return new Result().error(3);
+      return new Result()
+              .error(101);
     }
     log.info("verify session with openid " +openId+" and session_key "+sessionKey);
-    return new Result().ok();
+    return new Result()
+            .ok();
   }
 
   /**
@@ -72,7 +75,11 @@ public class TesterController {
     String sessionKey = jsonObject.getString("session_key");
     String openId = jsonObject.getString("openid");
     Result result = new Result();
-    jsonObject.forEach(result::putData);
+    for (Map.Entry<String, Object> entry : jsonObject.entrySet()) {
+      String k = entry.getKey();
+      Object v = entry.getValue();
+      result.putData(k, v);
+    }
     result.putData("isTester", testerService.isTester(openId)?1:0);
     if (sessionKey == null || openId == null) {
       return result.error(2);
@@ -99,7 +106,8 @@ public class TesterController {
       result.putData("status",1);
     } else {//有申请记录
       IdentityApplication identityApplication = new IdentityApplication(
-              null, openId, name, idNumber, phoneNumber, null, 0, 0, 0, null);
+              null, openId, name, idNumber, phoneNumber, null,
+              0, 0, 0, null);
       log.info(name + " wants to apply for tester");
       identityApplicationService.save(identityApplication);
       result.putData("status",0);
@@ -127,6 +135,7 @@ public class TesterController {
     application.setApplicantPhone(form.getString("phone"));
     application.setType(0);
     identityApplicationService.save(application);
-    return new Result().ok();
+    return new Result()
+            .ok();
   }
 }

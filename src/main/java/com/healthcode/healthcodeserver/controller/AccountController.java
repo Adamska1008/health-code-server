@@ -56,6 +56,7 @@ public class AccountController {
       log.info("Wrong password.");
       return new Result().error(202);
     }
+    log.info("Admin with username "+username+" successfully log in.");
     String token = tokenUtil.gen(account);
     return new Result()
             .ok()
@@ -69,8 +70,9 @@ public class AccountController {
    */
   @GetMapping("/get_tester_apply")
   public Result getTesterApplicationInfo(@RequestParam("token") String token) {
+    log.info("admin with token "+token+" acquire tester apply info");
     if (tokenUtil.verify(token)) {
-      log.info("admin with token "+token+" acquire tester apply info");
+      log.info("admin with token "+token+" successfully get acquired.");
       List<IdentityApplication> identityApplications = identityApplicationService.getTesterApplicationList(100);
       return new Result()
               .ok()
@@ -78,7 +80,7 @@ public class AccountController {
     } else {
       log.info("Invalid token.");
       return new Result()
-              .error(null);
+              .error(2);
     }
   }
 
@@ -95,14 +97,20 @@ public class AccountController {
       identityApplicationService.updateApplicantProcessed(application.getId(), application.getIsSucceed());
       if (application.getIsSucceed() == 1) {
         Tester tester = new Tester(
-                application.getOpenId(), application.getApplicantPersonId(),
-                application.getApplicantPhone(), application.getApplicantName());
+                application.getOpenId(),
+                application.getApplicantPersonId(),
+                application.getApplicantPhone(),
+                application.getApplicantName()
+        );
         testerService.save(tester);
       }
-      return new Result().ok();
+      return new Result()
+              .ok();
     } else {
       log.info("unknown token");
-      return new Result().error(null).message("unknown token");
+      return new Result()
+              .error(2)
+              .message("unknown token");
     }
   }
 }
