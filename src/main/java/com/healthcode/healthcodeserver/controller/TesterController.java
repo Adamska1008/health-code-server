@@ -23,7 +23,6 @@ import java.util.Map;
 
 @Slf4j
 @RestController
-@CrossOrigin
 @RequestMapping("/wx/tester")
 public class TesterController {
   @Autowired
@@ -135,7 +134,16 @@ public class TesterController {
     application.setApplicantPhone(form.getString("phone"));
     application.setType(0);
     identityApplicationService.save(application);
-    return new Result()
-            .ok();
+    return new Result().ok();
+  }
+  @PostMapping("/{appid}/testInfo")
+  public Result getTestInfo(@RequestBody JSONObject response){
+    //todo 登陆检查
+    String openId = response.getString("openid");
+    String number = response.getString("number");
+    String personList = response.getString("person");
+    String time = response.getString("time");
+    String transferCode = response.getString("transferCode");
+    return new Result();
   }
 }
