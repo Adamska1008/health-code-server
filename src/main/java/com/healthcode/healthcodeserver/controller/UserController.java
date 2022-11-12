@@ -2,11 +2,9 @@ package com.healthcode.healthcodeserver.controller;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson2.util.JSONObject1O;
 import com.healthcode.healthcodeserver.common.Result;
-import com.healthcode.healthcodeserver.entity.NucleicAcidTestInfo;
-import com.healthcode.healthcodeserver.entity.User;
-import com.healthcode.healthcodeserver.entity.VaccineInoculationInfo;
-import com.healthcode.healthcodeserver.entity.VenueCodeApplication;
+import com.healthcode.healthcodeserver.entity.*;
 import com.healthcode.healthcodeserver.service.*;
 import com.healthcode.healthcodeserver.util.WxUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -34,6 +32,8 @@ public class UserController {
   WxUtil wxUtil;
   @Autowired
   VenueCodeApplicationService venueCodeApplicationService;
+  @Autowired
+  FamilyBingApplicationService familyBingApplicationService;
 
   Map<String, String> openIdToSessionKey = new HashMap<>();
 
@@ -258,5 +258,26 @@ public class UserController {
             .putData("venue_code_id", application.getId())
             .putData("result", application.getResult())
             .putData("result_info", application.getResultInfo());
+  }
+
+  @PostMapping("/family_binding")
+  public Result applyFamilyBinding(@RequestBody JSONObject response) {
+    String openId = response.getString("openid");
+    String sessionKey = response.getString("session_key");
+    Result verifiedResult = verifySession(openId, sessionKey);
+    if (verifiedResult.getStatusCode() != 0) {
+      return verifiedResult;
+    }
+    FamilyBingApplication application = new FamilyBingApplication(
+            null,
+            response.getString("applicant_name"),
+            response.getString("relative_name"),
+            response.getString("relative_person_id"),
+            response.getString("additional_info"),
+            response.getInteger("relation_type"),
+            0, 0, null
+    );
+    familyBingApplicationService.save(application);
+    return new Result().ok();
   }
 }

@@ -102,6 +102,7 @@ CREATE table IF NOT EXISTS t_itinerary_information(
     FOREIGN KEY (venue_id) REFERENCES t_venue_code_info(code_id)
 )DEFAULT CHARSET=utf8mb4;
 
+-- 区域风险等级
 #risk_level 0:低 1:中 2:高 3:常态化
 CREATE TABLE IF NOT EXISTS t_regional_risk_profile(
     profile_id 			CHAR(10) 	NOT NULL,
@@ -117,6 +118,7 @@ CREATE TABLE IF NOT EXISTS t_regional_risk_profile(
     PRIMARY KEY (profile_id)
 )DEFAULT CHARSET=utf8mb4;
 
+-- 区域日常风险等级
 #risk_level 0:低 1:中 2:高 3:常态化
 CREATE TABLE IF NOT EXISTS t_daily_risk_situation(
     situation_id                    CHAR(10)    NOT NULL ,
@@ -130,6 +132,7 @@ CREATE TABLE IF NOT EXISTS t_daily_risk_situation(
     FOREIGN KEY (profile_id) REFERENCES t_regional_risk_profile(profile_id)
 )DEFAULT CHARSET=utf8mb4;
 
+-- 防疫管理人员表
 #category 0:用户 1:核酸检测人员 2:防疫管理人员
 CREATE TABLE IF NOT EXISTS t_account(
     account_id CHAR(20) NOT NULL ,
@@ -148,6 +151,7 @@ CREATE TABLE IF NOT EXISTS t_tester(
     PRIMARY KEY (open_id)
 );
 
+-- 异常申诉表
 # is_investigated 0:已审核 1:未审核
 # is_processed 0:已处理 1:未处理
 CREATE TABLE IF NOT EXISTS t_abnormal_info_appeal_investigate(
@@ -162,7 +166,7 @@ CREATE TABLE IF NOT EXISTS t_abnormal_info_appeal_investigate(
     PRIMARY KEY (appeal_number)
 )DEFAULT CHARSET=utf8mb4;
 
-#apply_type 0:核酸检测人员 1:防疫管理人员
+# apply_type 0:核酸检测人员 1:防疫管理人员
 # is_succeed 0:申请失败 1:申请成功
 # is_processed 0:已处理 1:未处理
 # 方便起见如果是核酸检测人员申请，那么additional_information字段保存申请人身份证号
@@ -179,15 +183,23 @@ CREATE TABLE IF NOT EXISTS t_identity_application(
     PRIMARY KEY(application_id)
 )DEFAULT CHARSET=utf8mb4;
 
-
-CREATE TABLE IF NOT EXISTS t_audit_family_code  (
-    application_id char(20)  NOT NULL,
-    applicant_name char(20)  NOT NULL,
-    additional_information varchar(50)  NOT NULL,
-    appeal_type char(20)  NOT NULL,
-    is_processed TINYINT CHECK ( is_processed IN (0,1)),
-    is_succeed TINYINT CHECK ( is_succeed IN (0,1)),
-    result_info VARCHAR(50),
+-- 申请绑定家人健康码
+/*
+appeal type:
+0: 配偶
+1: 血亲
+2：姻亲
+ */
+CREATE TABLE IF NOT EXISTS t_bind_family_application  (
+    application_id          CHAR(20)    NOT NULL,
+    applicant_name          CHAR(20)    NOT NULL,
+    relative_name           CHAR(20)    NOT NULL,
+    relative_person_id      CHAR(20)    NOT NULL,
+    additional_information  VARCHAR(50) ,
+    relation_type           TINYINT     NOT NULL    CHECK (relation_type IN (0, 1, 2)),
+    is_processed            TINYINT     CHECK (is_processed IN (0, 1)),
+    is_succeed              TINYINT     CHECK (is_succeed IN (0, 1)),
+    result_info             VARCHAR(50),
     PRIMARY KEY(application_id)
 )DEFAULT CHARSET=utf8mb4;
 
