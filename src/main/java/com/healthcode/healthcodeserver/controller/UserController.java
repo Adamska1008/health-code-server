@@ -34,6 +34,8 @@ public class UserController {
   VenueCodeApplicationService venueCodeApplicationService;
   @Autowired
   FamilyBingApplicationService familyBingApplicationService;
+  @Autowired
+  UserRelationService userRelationService;
 
   Map<String, String> openIdToSessionKey = new HashMap<>();
 
@@ -229,7 +231,9 @@ public class UserController {
             null
     );
     venueCodeApplicationService.save(application);
-    return new Result().ok();
+    return new Result()
+            .ok()
+            .putData("application_id", application.getId());
   }
 
 
@@ -237,29 +241,30 @@ public class UserController {
    * 获取场所码申请的状态
    * @param openId 用户openid
    * @param sessionKey 用户session_key
-   * @param applicantName 申请人名字
-   * @param placeName 申请的地名
    * @return 详情见文档
    */
   @GetMapping("venue_code")
   public Result checkVenueCode(@RequestParam("openid") String openId,
                                @RequestParam("session_key") String sessionKey,
-                               @RequestParam("applicant_name") String applicantName,
-                               @RequestParam("place_name") String placeName) {
+                               @RequestParam("applicant_name") String application_id) {
     Result verifiedResult = verifySession(openId, sessionKey);
     if (verifiedResult.getStatusCode() != 0) {
       return verifiedResult;
     }
-    log.info(applicantName + "acquire venue code application of place " + placeName);
-    VenueCodeApplication application = venueCodeApplicationService
-            .getApplicationByApplicantNameAndPlaceName(applicantName, placeName);
+    VenueCodeApplication application = venueCodeApplicationService.getById(application_id);
     return new Result()
             .ok()
+            .putData("processed", application.getIsSolved())
             .putData("venue_code_id", application.getId())
             .putData("result", application.getResult())
             .putData("result_info", application.getResultInfo());
   }
 
+  /**
+   * 绑定家属健康码申请
+   * @param response
+   * @return
+   */
   @PostMapping("/family_binding")
   public Result applyFamilyBinding(@RequestBody JSONObject response) {
     String openId = response.getString("openid");
@@ -278,6 +283,56 @@ public class UserController {
             0, 0, null
     );
     familyBingApplicationService.save(application);
-    return new Result().ok();
+    return new Result()
+            .ok()
+            .putData("application_id", application.getId());
+  }
+
+  @GetMapping("/family_binding")
+  public Result checkFamilyBindingApplication(@RequestParam("openid") String openId,
+                                              @RequestParam("session_key") String sessionKey,
+                                              @RequestParam("application_id") String id) {
+    Result verifiedResult = verifySession(openId, sessionKey);
+    if (verifiedResult.getStatusCode() != 0) {
+      return verifiedResult;
+    }
+    FamilyBingApplication application = familyBingApplicationService.getById(id);
+    return new Result()
+            .ok()
+            .putData("processed", application.getIsProcessed())
+            .putData("succeed", application.getIsSucceed());
+  }
+
+  @GetMapping("/family_profile")
+  public Result getFamilyPageInfo(@RequestParam("openid") String openId,
+                                  @RequestParam("session_key") String sessionKey,
+                                  @RequestParam("person_id") String person_id) {
+    Result verifiedResult = verifySession(openId, sessionKey);
+    if (verifiedResult.getStatusCode() != 0) {
+      return verifiedResult;
+    }
+    User user = userService.getUserInfoByOpenId(openId);
+    UserRelation relation = userRelationService.getRelationByTwoIds(user.getPersonId(), person_id);
+    if (relation == null) {
+      return new Result().error(null).message("Unregistered relation.");
+    }
+    user = userService.getUserInfoByPersonId(person_id);
+    NucleicAcidTestInfo latestInfo = nucleicAcidTestInfoService.getLatestTestInfoByPersonId(person_id);
+    String testInstitutionName = covidTestInstitutionService.getNameById(latestInfo.getTestInstitutionId());
+
+    JSONObject latestTest = new JSONObject();
+    latestTest.put("result", latestInfo.getTestResult());
+    latestTest.put("test_time", latestInfo.getTestTime());
+    latestTest.put("institution_name", testInstitutionName);
+
+    List<VaccineInoculationInfo> vaccineInoculationInfoList =
+            vaccineInoculationInfoService.getInfoListByPersonId(person_id);
+
+    log.info("return info of user with openid "+openId);
+    return new Result().ok()
+            .putData("name", user.getName())
+            .putData("health_code_color", user.getHealthCodeColor())
+            .putData("latest_test", latestTest)
+            .putData("vaccine_inoculation_info", vaccineInoculationInfoList);
   }
 }
