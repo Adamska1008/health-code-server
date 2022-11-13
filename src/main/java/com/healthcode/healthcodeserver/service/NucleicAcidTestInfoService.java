@@ -8,4 +8,5 @@ import java.util.List;
 public interface NucleicAcidTestInfoService extends IService<NucleicAcidTestInfo> {
   List<NucleicAcidTestInfo> getNucleicAcidTestInfoListByPersonId(String personId);
   NucleicAcidTestInfo getLatestTestInfoByPersonId(String personId);
+  public boolean transferCodeExists(String transferCode);
 }

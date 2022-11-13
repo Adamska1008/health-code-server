@@ -28,7 +28,7 @@ CREATE TABLE IF NOT EXISTS t_user_relation (
 -- is_transferred:是否已转运（0：未转运，1：已转运）
 CREATE TABLE IF NOT EXISTS t_transfer_code_info(
     transfer_code  CHAR(20)    NOT NULL,
-    tester_open_id CHAR(20) NOT NULL ,
+    tester_open_id CHAR(40) NOT NULL ,
     test_time DATETIME,
     person_number INTEGER,
     is_transferred TINYINT CHECK ( is_transferred IN (0,1)),

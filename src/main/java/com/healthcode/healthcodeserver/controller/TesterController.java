@@ -1,11 +1,13 @@
 package com.healthcode.healthcodeserver.controller;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.healthcode.healthcodeserver.common.Result;
 import com.healthcode.healthcodeserver.entity.IdentityApplication;
-import com.healthcode.healthcodeserver.service.IdentityApplicationService;
-import com.healthcode.healthcodeserver.service.TesterService;
-import com.healthcode.healthcodeserver.service.UserService;
+import com.healthcode.healthcodeserver.entity.NucleicAcidTestInfo;
+import com.healthcode.healthcodeserver.entity.TransferCodeInfo;
+import com.healthcode.healthcodeserver.service.*;
 import com.healthcode.healthcodeserver.util.WxUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +20,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
+import java.sql.Timestamp;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Slf4j
@@ -33,6 +37,12 @@ public class TesterController {
   IdentityApplicationService identityApplicationService;
   @Autowired
   TesterService testerService;
+
+  @Autowired
+  TransferCodeInfoService transferCodeInfoService;
+
+  @Autowired
+  NucleicAcidTestInfoService nucleicAcidTestInfoService;
 
   Map<String, String> openIdToSessionKey = new HashMap<>();
 
@@ -80,6 +90,8 @@ public class TesterController {
       return result.error(2);
     } else {
       openIdToSessionKey.put(openId, sessionKey);
+      log.info("result",result);
+      System.out.println("result "+result);
       return result.ok();
     }
   }
@@ -96,6 +108,7 @@ public class TesterController {
       log.info("user with openid "+openId + " did not fetch session_key.");
       return verifiedResult;
     }
+
     Result result = new Result();
     if (identityApplicationService.hasApplicationRecord(idNumber)){
       result.putData("status",1);
@@ -135,11 +148,44 @@ public class TesterController {
   @PostMapping("/{appid}/testInfo")
   public Result getTestInfo(@RequestBody JSONObject response){
     //todo 登陆检查
+    Result result = new Result();
     String openId = response.getString("openid");
     String number = response.getString("number");
-    String personList = response.getString("person");
+    JSONArray personList = response.getJSONArray("person");
     String time = response.getString("time");
     String transferCode = response.getString("transferCode");
-    return new Result();
+    //向转运码表插入一条数据
+    TransferCodeInfo transferCodeInfo = new TransferCodeInfo(transferCode,openId,Timestamp.valueOf(time),(Integer.parseInt(number)), (short) 0);
+    //transferCode已经使用过，则无效，直接返回错误信息
+    if (!transferCodeInfoService.save(transferCodeInfo)){
+      result.putData("submitResult",2);
+      return result.ok();
+    }
+
+    //向核酸检测表插入数据,当前不考虑person的phone和name属性
+    int size = personList.size();
+    for (int i=0;i<size;i++){
+      JSONObject jsonObject = personList.getJSONObject(i);
+      NucleicAcidTestInfo nucleicAcidTestInfo = new NucleicAcidTestInfo();
+      nucleicAcidTestInfo.setTestTime(Timestamp.valueOf(jsonObject.getString("time")));
+      nucleicAcidTestInfo.setTransferCode(transferCode);
+      nucleicAcidTestInfo.setPersonId(jsonObject.getString("idNumber"));
+      if(!nucleicAcidTestInfoService.save(nucleicAcidTestInfo)){
+        result.putData("submitResult",1);
+        return result;
+      };
+    }
+    result.putData("submitResult",1);
+
+    return result.ok();
   }
+  @GetMapping("/{appid}/notTransferredInfo")
+  public Result getNotTransferredInfo(@RequestParam("openid") String openId){
+    Result result = new Result();
+    List<TransferCodeInfo> notTransferredList = transferCodeInfoService.getNotTransferredByOpenId(openId);
+    String jsonString = JSON.toJSONString(notTransferredList);
+    result.putData("transferList",jsonString);
+    return result.ok();
+  }
+
 }
