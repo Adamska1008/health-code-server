@@ -19,6 +19,37 @@ public class UserControllerTest {
   }
 
   @Test
+  public void insertUserInfoTest(){
+    String token = "2d783y";
+    String userinfo = "y928he81u";
+    Result result = userController.insertUserInfo(  token,userinfo);
+    System.out.println(JSON.toJSON(result));
+  }
+
+  @Test
   public void getMainPageInfoTest() {
+    String openid = "a8rgf23r7r4y54y";
+    String sessionKey ="f34rat34ter";
+    String appid = "d2378y";
+    Result result = userController.getMainPageInfo(openid,sessionKey,appid);
+    System.out.println(JSON.toJSON(result));
+  }
+
+  @Test
+  public  void getNucleicAcidTestInfoTest(){
+    String openid = "a8rgf23r7r4y54y";
+    String sessionKey ="f34rat34ter";
+    String appid = "d2378y";
+    Result result = userController.getNucleicAcidTestInfo(openid,sessionKey,appid);
+    System.out.println(JSON.toJSON(result));
+  }
+
+  @Test
+  public  void getVaccineInoculationInfoTest(){
+    String openid = "a8rgf23r7r4y54y";
+    String sessionKey ="f34rat34ter";
+    String appid = "d2378y";
+    Result result = userController.getVaccineInoculationInfo(openid,sessionKey,appid);
+    System.out.println(JSON.toJSON(result));
   }
 }

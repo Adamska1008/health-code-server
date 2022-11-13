@@ -69,6 +69,10 @@ public class Result {
     return this;
   }
 
+  public Map<String, Object> getData() {
+    return data;
+  }
+
   public String getMessage() {
     return this.message;
   }
