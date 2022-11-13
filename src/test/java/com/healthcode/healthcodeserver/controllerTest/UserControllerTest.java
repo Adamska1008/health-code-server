@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson2.JSON;
 import com.healthcode.healthcodeserver.common.Result;
 import com.healthcode.healthcodeserver.controller.UserController;
+import com.healthcode.healthcodeserver.service.TesterService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -64,4 +65,5 @@ public class UserControllerTest {
       System.out.println(jsonObject.getString("name"));
     }
   }
+
 }

@@ -13,4 +13,8 @@ public class TesterServiceTest {
   public void test(){
     System.out.println(testerService.isTester("1"));
   }
+  @Test
+  public void isTester(){
+    System.out.println(testerService.isTester("ojKoj52igjq_xw7MpIKZ4LUZJnH8"));
+  }
 }

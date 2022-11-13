@@ -25,6 +25,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@CrossOrigin
 @Slf4j
 @RestController
 @RequestMapping("/wx/tester")
@@ -91,11 +92,20 @@ public class TesterController {
     } else {
       openIdToSessionKey.put(openId, sessionKey);
       log.info("result",result);
-      System.out.println("result "+result);
       return result.ok();
     }
   }
 
+  /**
+   * 登陆小程序人员不是核酸检测人员时需要提交表单以申请权限，这里处理申请信息
+   * @param openId
+   * @param sessionKey
+   * @param name
+   * @param idNumber
+   * @param phoneNumber
+   * @param appId
+   * @return 返回的是申请的提交结果，result的data封装了status属性，为1表示申请成功，为0表示申请失败
+   */
   @GetMapping("/{appid}/apply")
   public Result getApplicationInfo(@RequestParam("openid") String openId,
                                    @RequestParam("sessionKey") String sessionKey,
@@ -145,6 +155,13 @@ public class TesterController {
     identityApplicationService.save(application);
     return new Result().ok();
   }
+
+  /**
+   * 从参数体中获得转运码相关的openid、number等信息，其中person中存储了核酸检测表相关信息
+   * 这个函数根据这些信息分别向核酸检测表和核酸转运码表插入数据
+   * @param response
+   * @return result的data中封装了submitResult属性，为1表示插入成功，为2表示转运码使用过已失效
+   */
   @PostMapping("/{appid}/testInfo")
   public Result getTestInfo(@RequestBody JSONObject response){
     //todo 登陆检查
@@ -179,6 +196,12 @@ public class TesterController {
 
     return result.ok();
   }
+
+  /**
+   * 返回没有进行转运的转运码信息
+   * @param openId
+   * @return 在Result的data中封装未转运信息
+   */
   @GetMapping("/{appid}/notTransferredInfo")
   public Result getNotTransferredInfo(@RequestParam("openid") String openId){
     Result result = new Result();
