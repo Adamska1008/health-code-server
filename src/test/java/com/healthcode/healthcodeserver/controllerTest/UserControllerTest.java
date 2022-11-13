@@ -1,5 +1,7 @@
 package com.healthcode.healthcodeserver.controllerTest;
 
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson2.JSON;
 import com.healthcode.healthcodeserver.common.Result;
 import com.healthcode.healthcodeserver.controller.UserController;
@@ -51,5 +53,15 @@ public class UserControllerTest {
     String appid = "d2378y";
     Result result = userController.getVaccineInoculationInfo(openid,sessionKey,appid);
     System.out.println(JSON.toJSON(result));
+  }
+  @Test
+  public void JSONTest(){
+    String personList = "[{name=fy, idNumber=1, phone=1}, {name=fy, idNumber=1, phone=1, time=2022-11-13 15:03:14}]";
+    JSONArray jsonArray = com.alibaba.fastjson.JSON.parseArray(personList);
+    int size = jsonArray.size();
+    for (int i=0;i<size;i++){
+      JSONObject jsonObject = jsonArray.getJSONObject(i);
+      System.out.println(jsonObject.getString("name"));
+    }
   }
 }

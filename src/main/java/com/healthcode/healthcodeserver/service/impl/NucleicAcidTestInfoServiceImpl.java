@@ -31,4 +31,11 @@ public class NucleicAcidTestInfoServiceImpl
     queryWrapper.last("LIMIT 1");
     return nucleicAcidTestInfoDao.selectOne(queryWrapper);
   }
+
+  @Override
+  public boolean transferCodeExists(String transferCode) {
+    QueryWrapper queryWrapper = new QueryWrapper();
+    queryWrapper.eq("transfer_code",transferCode);
+    return !nucleicAcidTestInfoDao.selectList(queryWrapper).isEmpty();
+  }
 }

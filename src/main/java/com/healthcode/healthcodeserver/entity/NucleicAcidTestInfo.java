@@ -12,7 +12,7 @@ public class NucleicAcidTestInfo {
   @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
   private Timestamp testTime;
   private String testInstitutionId;
-  private String nucleicAcidId;
+  private String transferCode;
   /*
   0: 阴性
   1: 阳性
@@ -22,15 +22,15 @@ public class NucleicAcidTestInfo {
   public NucleicAcidTestInfo() {
   }
 
-  public NucleicAcidTestInfo(String personId, Timestamp testTime, String testInstitutionId, String nucleicAcidId) {
+  public NucleicAcidTestInfo(String personId, Timestamp testTime, String testInstitutionId, String transferCode) {
     this.personId = personId;
     this.testTime = testTime;
     this.testInstitutionId = testInstitutionId;
-    this.nucleicAcidId = nucleicAcidId;
+    this.transferCode = transferCode;
   }
 
-  public String getNucleicAcidId() {
-    return nucleicAcidId;
+  public String getTransferCode() {
+    return transferCode;
   }
 
   public Short getTestResult() {
@@ -49,8 +49,8 @@ public class NucleicAcidTestInfo {
     return testTime;
   }
 
-  public void setNucleicAcidId(String nucleicAcidId) {
-    this.nucleicAcidId = nucleicAcidId;
+  public void setTransferCode(String transferCode) {
+    this.transferCode = transferCode;
   }
 
   public void setPersonId(String personId) {
@@ -75,7 +75,7 @@ public class NucleicAcidTestInfo {
             "personId='" + personId + '\'' +
             ", testTime=" + testTime +
             ", testInstitutionId='" + testInstitutionId + '\'' +
-            ", nucleicAcidId='" + nucleicAcidId + '\'' +
+            ", transferCode='" + transferCode + '\'' +
             ", testResult=" + testResult +
             '}';
   }
@@ -85,11 +85,11 @@ public class NucleicAcidTestInfo {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
     NucleicAcidTestInfo that = (NucleicAcidTestInfo) o;
-    return Objects.equals(personId, that.personId) && Objects.equals(testTime, that.testTime) && Objects.equals(testInstitutionId, that.testInstitutionId) && Objects.equals(nucleicAcidId, that.nucleicAcidId) && Objects.equals(testResult, that.testResult);
+    return Objects.equals(personId, that.personId) && Objects.equals(testTime, that.testTime) && Objects.equals(testInstitutionId, that.testInstitutionId) && Objects.equals(transferCode, that.transferCode) && Objects.equals(testResult, that.testResult);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(personId, testTime, testInstitutionId, nucleicAcidId, testResult);
+    return Objects.hash(personId, testTime, testInstitutionId, transferCode, testResult);
   }
 }
