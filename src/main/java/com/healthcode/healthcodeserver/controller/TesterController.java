@@ -94,7 +94,7 @@ public class TesterController {
       return result.error(2);
     } else {
       openIdToSessionKey.put(openId, sessionKey);
-      log.info("result",result);
+      log.info("result " + result);
       return result.ok();
     }
   }

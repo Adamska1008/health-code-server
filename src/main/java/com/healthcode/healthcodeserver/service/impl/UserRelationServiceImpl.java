@@ -13,6 +13,12 @@ public class UserRelationServiceImpl extends ServiceImpl<UserRelationDao, UserRe
   @Autowired
   UserRelationDao userRelationDao;
 
+  /**
+   * 通过二人的身份证判断关系是否存在
+   * @param personIdA 申请人
+   * @param personIdB 被申请人
+   * @return 是否存在
+   */
   public UserRelation getRelationByTwoIds(String personIdA, String personIdB) {
     QueryWrapper<UserRelation> wrapper = new QueryWrapper<>();
     wrapper.eq("person_id_a", personIdA);

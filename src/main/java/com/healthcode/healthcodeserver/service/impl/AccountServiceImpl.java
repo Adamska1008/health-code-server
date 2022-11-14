@@ -13,6 +13,13 @@ public class AccountServiceImpl extends ServiceImpl<AccountDao, Account> impleme
   @Autowired
   AccountDao accountDao;
 
+  /**
+   * 登陆验证
+   * @param userName 用户名
+   * @param userPassword 密码
+   * @param category 账户类型
+   * @return 是否合法
+   */
   @Override
   public boolean accountIsValid(String userName, String userPassword, int category) {
     QueryWrapper<Account> queryWrapper = new QueryWrapper<>();

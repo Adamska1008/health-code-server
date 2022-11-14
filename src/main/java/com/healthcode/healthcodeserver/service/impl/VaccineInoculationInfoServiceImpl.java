@@ -14,6 +14,12 @@ import java.util.List;
 public class VaccineInoculationInfoServiceImpl extends ServiceImpl<VaccineInoculationInfoDao, VaccineInoculationInfo> implements VaccineInoculationInfoService {
   @Autowired
   VaccineInoculationInfoDao vaccineInoculationInfoDao;
+
+  /**
+   * 通过personId获取信息列表
+   * @param id 身份证号
+   * @return 疫苗接种信息列表
+   */
   @Override
   public List<VaccineInoculationInfo> getInfoListByPersonId(String id) {
     QueryWrapper<VaccineInoculationInfo> queryWrapper = new QueryWrapper<>();

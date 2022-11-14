@@ -4,9 +4,6 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import java.util.Objects;
 
@@ -14,7 +11,6 @@ import java.util.Objects;
 public class IdentityApplication {
   @TableId(value = "application_id", type = IdType.ASSIGN_ID)
   private String id;
-
   private String openId;
   private String applicantName;
   private String applicantPersonId;

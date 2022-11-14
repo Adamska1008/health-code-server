@@ -1,5 +1,6 @@
 package com.healthcode.healthcodeserver.controller;
 
+import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.healthcode.healthcodeserver.common.Result;
 import com.healthcode.healthcodeserver.entity.Account;
@@ -86,21 +87,21 @@ public class AccountController {
 
   /**
    * 前端向后端返回处理完的申请
-   * @param token token
-   * @param application 申请条目
+   * @Param request 请求
    * @return Result
    */
   @PostMapping("/post_tester_apply")
-  public Result postTesterApplicationInfo(@RequestParam("token") String token,
-                                          @RequestBody IdentityApplication application) {
+  public Result postTesterApplicationInfo(@RequestBody JSONObject request) {
+    String token = request.getString("token");
     if (tokenUtil.verify(token)) {
-      identityApplicationService.updateApplicantProcessed(application.getId(), application.getIsSucceed());
-      if (application.getIsSucceed() == 1) {
+      Integer isSucceed = request.getInteger("is_succeed");
+      identityApplicationService.updateApplicantProcessed(request.getString("application_id"), isSucceed);
+      if (isSucceed == 0) {
         Tester tester = new Tester(
-                application.getOpenId(),
-                application.getApplicantPersonId(),
-                application.getApplicantPhone(),
-                application.getApplicantName()
+                request.getString("openid"),
+                request.getString("applicant_person_id"),
+                request.getString("applicant_phone"),
+                request.getString("applicant_name")
         );
         testerService.save(tester);
       }

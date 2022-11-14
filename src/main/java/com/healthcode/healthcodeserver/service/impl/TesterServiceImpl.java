@@ -12,6 +12,12 @@ import org.springframework.stereotype.Service;
 public class TesterServiceImpl extends ServiceImpl<TesterDao, Tester> implements TesterService {
   @Autowired
   TesterDao testerDao;
+
+  /**
+   * 查询是否存在对应openid的测试者
+   * @param openId 小程序openid
+   * @return 是否存在
+   */
   @Override
   public Boolean isTester(String openId) {
     QueryWrapper<Tester> queryWrapper = new QueryWrapper<>();
