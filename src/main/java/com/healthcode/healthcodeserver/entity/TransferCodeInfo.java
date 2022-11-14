@@ -8,13 +8,13 @@ import java.sql.Timestamp;
 public class TransferCodeInfo {
   private String transferCode;
   private String tester_open_id;
-  private Timestamp testTime;
+  private String testTime;
   private int personNumber;
   private short isTransferred;
 
   public TransferCodeInfo(String transferCode,
                           String tester_open_id,
-                          Timestamp testTime,
+                          String testTime,
                           int personNumber,
                           short isTransferred) {
     this.transferCode = transferCode;
@@ -43,11 +43,11 @@ public class TransferCodeInfo {
     this.tester_open_id = tester_open_id;
   }
 
-  public Timestamp getTestTime() {
+  public String getTestTime() {
     return testTime;
   }
 
-  public void setTestTime(Timestamp testTime) {
+  public void setTestTime(String testTime) {
     this.testTime = testTime;
   }
 
