@@ -48,4 +48,8 @@ public class TesterServiceTest {
     System.out.println(testerService.isTester(openId_7));
     System.out.println(testerService.isTester(openId_8));
   }
+  @Test
+  public void isTester(){
+    System.out.println(testerService.isTester("ojKoj52igjq_xw7MpIKZ4LUZJnH8"));
+  }
 }

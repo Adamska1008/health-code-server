@@ -142,9 +142,10 @@ CREATE TABLE IF NOT EXISTS t_account(
     PRIMARY KEY (account_id)
 )DEFAULT CHARSET=utf8mb4;
 
+drop table t_tester;
 #核酸检测人员表
 CREATE TABLE IF NOT EXISTS t_tester(
-    open_id     CHAR(20)        NOT NULL,
+    open_id     CHAR(40)        NOT NULL,
     person_id   VARCHAR(20)     NOT NULL,
     name     VARCHAR(20)     ,
     phone       VARCHAR(20)     ,
@@ -172,6 +173,7 @@ CREATE TABLE IF NOT EXISTS t_abnormal_info_appeal_investigate(
 # 方便起见如果是核酸检测人员申请，那么additional_information字段保存申请人身份证号
 CREATE TABLE IF NOT EXISTS t_identity_application(
     application_id          CHAR(20)  NOT NULL,
+    open_id                 CHAR(40),
     applicant_name          CHAR(20)  NOT NULL,
     applicant_person_id     CHAR(20)  NOT NULL,
     applicant_phone         CHAR(20)  NOT NULL,
