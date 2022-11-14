@@ -3,6 +3,8 @@ package com.healthcode.healthcodeserver.controller;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson2.util.JSONObject1O;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.healthcode.healthcodeserver.common.Result;
 import com.healthcode.healthcodeserver.entity.*;
 import com.healthcode.healthcodeserver.service.*;
@@ -11,6 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.sql.Timestamp;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -36,6 +39,8 @@ public class UserController {
   FamilyBingApplicationService familyBingApplicationService;
   @Autowired
   UserRelationService userRelationService;
+  @Autowired
+  ItineraryInfoService itineraryInfoService;
 
   Map<String, String> openIdToSessionKey = new HashMap<>();
 
@@ -151,6 +156,26 @@ public class UserController {
             .putData("vaccine_inoculation_info", vaccineInoculationInfoList);
   }
 
+  @PostMapping("/change_info")
+  public Result changeUserInfo(@RequestBody JSONObject request) {
+    String openId = request.getString("openid");
+    String sessionKey = request.getString("session_key");
+    Result verifiedResult = verifySession(openId, sessionKey);
+    if (verifiedResult.getStatusCode() != 0) {
+      return verifiedResult;
+    }
+    User user = userService.getUserInfoByOpenId(openId);
+    String personId = user.getPersonId();
+    UpdateWrapper<User> wrapper = new UpdateWrapper<>();
+    wrapper.eq("person_id", personId);
+    if (request.getString("phone_number") != null) {
+      String phoneNumber = request.getString("phone_number");
+      wrapper.set("phone_number", phoneNumber);
+    }
+    userService.update(null, wrapper);
+    return new Result().ok();
+  }
+
   /**
    * 获取指定用户的核酸检测信息
    * @param openId 个人openid
@@ -208,27 +233,25 @@ public class UserController {
 
   /**
    * 申请场所码
-   * @param response http请求体
+   * @param request http请求体
    * @return 申请提交成功的result
    */
   @PostMapping("/venue_code")
-  public Result applyVenueCode(@RequestBody JSONObject response) {
-    String openId = response.getString("openid");
-    String sessionKey = response.getString("session_key");
+  public Result applyVenueCode(@RequestBody JSONObject request) {
+    String openId = request.getString("openid");
+    String sessionKey = request.getString("session_key");
     Result verifiedResult = verifySession(openId, sessionKey);
     if (verifiedResult.getStatusCode() != 0) {
       return verifiedResult;
     }
     VenueCodeApplication application = new VenueCodeApplication(
             null,
-            response.getString("applicant_name"),
-            response.getString("applicant_person_id"),
-            response.getString("location"),
-            response.getString("type"),
-            response.getString("place_name"),
-            0,
-            0,
-            null
+            request.getString("applicant_name"),
+            request.getString("applicant_person_id"),
+            request.getString("location"),
+            request.getString("type"),
+            request.getString("place_name"),
+            0, 0, null
     );
     venueCodeApplicationService.save(application);
     return new Result()
@@ -241,17 +264,18 @@ public class UserController {
    * 获取场所码申请的状态
    * @param openId 用户openid
    * @param sessionKey 用户session_key
+   * @param applicationId 申请id
    * @return 详情见文档
    */
   @GetMapping("venue_code")
   public Result checkVenueCode(@RequestParam("openid") String openId,
                                @RequestParam("session_key") String sessionKey,
-                               @RequestParam("applicant_name") String application_id) {
+                               @RequestParam("application_id") String applicationId) {
     Result verifiedResult = verifySession(openId, sessionKey);
     if (verifiedResult.getStatusCode() != 0) {
       return verifiedResult;
     }
-    VenueCodeApplication application = venueCodeApplicationService.getById(application_id);
+    VenueCodeApplication application = venueCodeApplicationService.getById(applicationId);
     return new Result()
             .ok()
             .putData("processed", application.getIsSolved())
@@ -288,6 +312,21 @@ public class UserController {
             .putData("application_id", application.getId());
   }
 
+  @PostMapping("/scan_venue_code")
+  public Result scanVenueCode(@RequestParam("openid") String openId,
+                              @RequestParam("session_key") String sessionKey,
+                              @RequestParam("venue_id") String venueId) {
+    Result verifiedResult = verifySession(openId, sessionKey);
+    if (verifiedResult.getStatusCode() != 0) {
+      return verifiedResult;
+    }
+    User user = userService.getUserInfoByOpenId(openId);
+    String personId = user.getPersonId();
+    ItineraryInfo itineraryInfo = new ItineraryInfo(personId, venueId, new Timestamp(System.currentTimeMillis()));
+    itineraryInfoService.save(itineraryInfo);
+    return new Result().ok();
+  }
+
   /**
    * 查看绑定家属健康码的申请结果
    * @param openId 用户小程序openid
@@ -314,24 +353,24 @@ public class UserController {
    * 查看家属健康码信息，
    * @param openId 用户小程序openid
    * @param sessionKey 会话密钥
-   * @param person_id 被查询用户的身份证号
+   * @param personId 被查询用户的身份证号
    * @return 数据类似于个人主界面信息，详情见文档
    */
   @GetMapping("/family_profile")
   public Result getFamilyPageInfo(@RequestParam("openid") String openId,
                                   @RequestParam("session_key") String sessionKey,
-                                  @RequestParam("person_id") String person_id) {
+                                  @RequestParam("person_id") String personId) {
     Result verifiedResult = verifySession(openId, sessionKey);
     if (verifiedResult.getStatusCode() != 0) {
       return verifiedResult;
     }
     User user = userService.getUserInfoByOpenId(openId);
-    UserRelation relation = userRelationService.getRelationByTwoIds(user.getPersonId(), person_id);
+    UserRelation relation = userRelationService.getRelationByTwoIds(user.getPersonId(), personId);
     if (relation == null) {
       return new Result().error(null).message("Unregistered relation.");
     }
-    user = userService.getUserInfoByPersonId(person_id);
-    NucleicAcidTestInfo latestInfo = nucleicAcidTestInfoService.getLatestTestInfoByPersonId(person_id);
+    user = userService.getUserInfoByPersonId(personId);
+    NucleicAcidTestInfo latestInfo = nucleicAcidTestInfoService.getLatestTestInfoByPersonId(personId);
     String testInstitutionName = covidTestInstitutionService.getNameById(latestInfo.getTestInstitutionId());
 
     JSONObject latestTest = new JSONObject();
@@ -340,7 +379,7 @@ public class UserController {
     latestTest.put("institution_name", testInstitutionName);
 
     List<VaccineInoculationInfo> vaccineInoculationInfoList =
-            vaccineInoculationInfoService.getInfoListByPersonId(person_id);
+            vaccineInoculationInfoService.getInfoListByPersonId(personId);
 
     log.info("return info of user with openid "+openId);
     return new Result().ok()

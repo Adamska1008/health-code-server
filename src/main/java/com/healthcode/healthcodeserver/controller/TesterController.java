@@ -91,7 +91,7 @@ public class TesterController {
       return result.error(2);
     } else {
       openIdToSessionKey.put(openId, sessionKey);
-      log.info("result",result);
+      log.info("result " + result);
       return result.ok();
     }
   }
@@ -159,18 +159,18 @@ public class TesterController {
   /**
    * 从参数体中获得转运码相关的openid、number等信息，其中person中存储了核酸检测表相关信息
    * 这个函数根据这些信息分别向核酸检测表和核酸转运码表插入数据
-   * @param response
+   * @param request
    * @return result的data中封装了submitResult属性，为1表示插入成功，为2表示转运码使用过已失效
    */
   @PostMapping("/{appid}/testInfo")
-  public Result getTestInfo(@RequestBody JSONObject response){
+  public Result getTestInfo(@RequestBody JSONObject request){
     //todo 登陆检查
     Result result = new Result();
-    String openId = response.getString("openid");
-    String number = response.getString("number");
-    JSONArray personList = response.getJSONArray("person");
-    String time = response.getString("time");
-    String transferCode = response.getString("transferCode");
+    String openId = request.getString("openid");
+    String number = request.getString("number");
+    JSONArray personList = request.getJSONArray("person");
+    String time = request.getString("time");
+    String transferCode = request.getString("transferCode");
     //向转运码表插入一条数据
     TransferCodeInfo transferCodeInfo = new TransferCodeInfo(transferCode,openId,Timestamp.valueOf(time),(Integer.parseInt(number)), (short) 0);
     //transferCode已经使用过，则无效，直接返回错误信息
@@ -190,7 +190,7 @@ public class TesterController {
       if(!nucleicAcidTestInfoService.save(nucleicAcidTestInfo)){
         result.putData("submitResult",1);
         return result;
-      };
+      }
     }
     result.putData("submitResult",1);
 
@@ -199,7 +199,7 @@ public class TesterController {
 
   /**
    * 返回没有进行转运的转运码信息
-   * @param openId
+   * @param openId 用户openid
    * @return 在Result的data中封装未转运信息
    */
   @GetMapping("/{appid}/notTransferredInfo")
