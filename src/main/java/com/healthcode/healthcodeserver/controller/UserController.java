@@ -262,24 +262,24 @@ public class UserController {
 
   /**
    * 绑定家属健康码申请
-   * @param response
-   * @return
+   * @param request POST请求的请求体
+   * @return 返回的Result data 中包含申请id，前端需要保存此id以用于查询申请的结果
    */
   @PostMapping("/family_binding")
-  public Result applyFamilyBinding(@RequestBody JSONObject response) {
-    String openId = response.getString("openid");
-    String sessionKey = response.getString("session_key");
+  public Result applyFamilyBinding(@RequestBody JSONObject request) {
+    String openId = request.getString("openid");
+    String sessionKey = request.getString("session_key");
     Result verifiedResult = verifySession(openId, sessionKey);
     if (verifiedResult.getStatusCode() != 0) {
       return verifiedResult;
     }
     FamilyBingApplication application = new FamilyBingApplication(
             null,
-            response.getString("applicant_name"),
-            response.getString("relative_name"),
-            response.getString("relative_person_id"),
-            response.getString("additional_info"),
-            response.getInteger("relation_type"),
+            request.getString("applicant_name"),
+            request.getString("relative_name"),
+            request.getString("relative_person_id"),
+            request.getString("additional_info"),
+            request.getInteger("relation_type"),
             0, 0, null
     );
     familyBingApplicationService.save(application);
@@ -288,6 +288,13 @@ public class UserController {
             .putData("application_id", application.getId());
   }
 
+  /**
+   * 查看绑定家属健康码的申请结果
+   * @param openId 用户小程序openid
+   * @param sessionKey 会话密钥
+   * @param id 申请id
+   * @return Result内容说明见文档
+   */
   @GetMapping("/family_binding")
   public Result checkFamilyBindingApplication(@RequestParam("openid") String openId,
                                               @RequestParam("session_key") String sessionKey,
@@ -303,6 +310,13 @@ public class UserController {
             .putData("succeed", application.getIsSucceed());
   }
 
+  /**
+   * 查看家属健康码信息，
+   * @param openId 用户小程序openid
+   * @param sessionKey 会话密钥
+   * @param person_id 被查询用户的身份证号
+   * @return 数据类似于个人主界面信息，详情见文档
+   */
   @GetMapping("/family_profile")
   public Result getFamilyPageInfo(@RequestParam("openid") String openId,
                                   @RequestParam("session_key") String sessionKey,

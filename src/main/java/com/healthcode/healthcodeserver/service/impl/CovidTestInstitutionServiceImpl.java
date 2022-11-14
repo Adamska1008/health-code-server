@@ -17,6 +17,11 @@ public class CovidTestInstitutionServiceImpl
   @Autowired
   CovidTestInstitutionDao covidTestInstitutionDao;
 
+  /**
+   * 通过id获取机构名
+   * @param id 机构id
+   * @return 机构名
+   */
   public String getNameById(String id) {
     CovidTestInstitution institution = covidTestInstitutionDao.selectById(id);
     return institution.getName();

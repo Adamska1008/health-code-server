@@ -15,9 +15,14 @@ public class TransferCodeInfoServiceImpl extends ServiceImpl<TransferCodeInfoDao
   @Autowired
   TransferCodeInfoDao transferCodeInfoDao;
 
+  /**
+   * 通过openid获取没有转运的试剂信息
+   * @param openId 小程序openid
+   * @return 没有转运的试剂信息列表
+   */
   @Override
   public List<TransferCodeInfo> getNotTransferredByOpenId(String openId) {
-    QueryWrapper queryWrapper = new QueryWrapper<>();
+    QueryWrapper<TransferCodeInfo> queryWrapper = new QueryWrapper<>();
     queryWrapper.eq("tester_open_id",openId);
     queryWrapper.eq("is_transferred",0);
     return transferCodeInfoDao.selectList(queryWrapper);

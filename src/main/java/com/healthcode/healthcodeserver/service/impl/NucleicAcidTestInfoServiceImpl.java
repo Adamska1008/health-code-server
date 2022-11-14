@@ -16,6 +16,11 @@ public class NucleicAcidTestInfoServiceImpl
   @Autowired
   private NucleicAcidTestInfoDao nucleicAcidTestInfoDao;
 
+  /**
+   * 通过身份证获取核酸检测信息表
+   * @param personId 身份证
+   * @return 核酸检测信息表
+   */
   @Override
   public List<NucleicAcidTestInfo> getNucleicAcidTestInfoListByPersonId(String personId) {
     QueryWrapper<NucleicAcidTestInfo> queryWrapper = new QueryWrapper<>();
@@ -23,6 +28,11 @@ public class NucleicAcidTestInfoServiceImpl
     return nucleicAcidTestInfoDao.selectList(queryWrapper);
   }
 
+  /**
+   * 通过身份证号获取最新测试信息
+   * @param personId 身份证号
+   * @return 最新测试信息（一条）
+   */
   @Override
   public NucleicAcidTestInfo getLatestTestInfoByPersonId(String personId) {
     QueryWrapper<NucleicAcidTestInfo> queryWrapper = new QueryWrapper<>();
@@ -32,9 +42,14 @@ public class NucleicAcidTestInfoServiceImpl
     return nucleicAcidTestInfoDao.selectOne(queryWrapper);
   }
 
+  /**
+   * 转运码是否存在
+   * @param transferCode 转运码
+   * @return 是否存在
+   */
   @Override
   public boolean transferCodeExists(String transferCode) {
-    QueryWrapper queryWrapper = new QueryWrapper();
+    QueryWrapper<NucleicAcidTestInfo> queryWrapper = new QueryWrapper<>();
     queryWrapper.eq("transfer_code",transferCode);
     return !nucleicAcidTestInfoDao.selectList(queryWrapper).isEmpty();
   }
