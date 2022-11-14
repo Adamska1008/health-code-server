@@ -11,7 +11,6 @@ import java.util.Objects;
 public class IdentityApplication {
   @TableId(value = "application_id", type = IdType.ASSIGN_ID)
   private String id;
-
   private String openId;
   private String applicantName;
   private String applicantPersonId;
