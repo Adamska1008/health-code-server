@@ -26,5 +26,5 @@ public interface NucleicAcidTestInfoService extends IService<NucleicAcidTestInfo
    * @param transferCode 转运码
    * @return 是否存在
    */
-  public boolean transferCodeExists(String transferCode);
+  boolean transferCodeExists(String transferCode);
 }

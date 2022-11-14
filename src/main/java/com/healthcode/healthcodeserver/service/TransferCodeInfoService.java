@@ -11,5 +11,5 @@ public interface TransferCodeInfoService extends IService<TransferCodeInfo> {
    * @param openId 小程序openid
    * @return 没有转运的试剂信息列表
    */
-  public List<TransferCodeInfo> getNotTransferredByOpenId(String openId);
+  List<TransferCodeInfo> getNotTransferredByOpenId(String openId);
 }

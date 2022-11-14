@@ -3,7 +3,6 @@ package com.healthcode.healthcodeserver.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.healthcode.healthcodeserver.dao.IdentityApplicationDao;
 import com.healthcode.healthcodeserver.entity.IdentityApplication;
 import com.healthcode.healthcodeserver.service.IdentityApplicationService;

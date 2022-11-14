@@ -1,7 +1,6 @@
 package com.healthcode.healthcodeserver.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.healthcode.healthcodeserver.entity.User;
 import com.healthcode.healthcodeserver.entity.UserRelation;
 
 public interface UserRelationService extends IService<UserRelation> {
@@ -11,5 +10,5 @@ public interface UserRelationService extends IService<UserRelation> {
    * @param personIdB 被申请人
    * @return 是否存在
    */
-  public UserRelation getRelationByTwoIds(String personIdA, String personIdB);
+  UserRelation getRelationByTwoIds(String personIdA, String personIdB);
 }
