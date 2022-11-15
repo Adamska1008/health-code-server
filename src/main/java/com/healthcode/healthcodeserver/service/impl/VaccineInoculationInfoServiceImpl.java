@@ -11,7 +11,9 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class VaccineInoculationInfoServiceImpl extends ServiceImpl<VaccineInoculationInfoDao, VaccineInoculationInfo> implements VaccineInoculationInfoService {
+public class VaccineInoculationInfoServiceImpl
+        extends ServiceImpl<VaccineInoculationInfoDao, VaccineInoculationInfo>
+        implements VaccineInoculationInfoService {
   @Autowired
   VaccineInoculationInfoDao vaccineInoculationInfoDao;
 

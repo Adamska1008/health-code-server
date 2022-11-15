@@ -388,4 +388,11 @@ public class UserController {
             .putData("latest_test", latestTest)
             .putData("vaccine_inoculation_info", vaccineInoculationInfoList);
   }
+
+
+  @PostMapping("/remote_report")
+  public Result remoteReport(@RequestBody JSONObject params) {
+
+    return new Result().ok();
+  }
 }

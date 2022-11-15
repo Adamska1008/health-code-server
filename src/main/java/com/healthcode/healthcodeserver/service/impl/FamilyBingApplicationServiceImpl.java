@@ -7,5 +7,7 @@ import com.healthcode.healthcodeserver.service.FamilyBingApplicationService;
 import org.springframework.stereotype.Service;
 
 @Service
-public class FamilyBingApplicationServiceImpl extends ServiceImpl<FamilyBingApplicationDao, FamilyBingApplication> implements FamilyBingApplicationService {
+public class FamilyBingApplicationServiceImpl
+        extends ServiceImpl<FamilyBingApplicationDao, FamilyBingApplication>
+        implements FamilyBingApplicationService {
 }

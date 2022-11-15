@@ -12,7 +12,9 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class IdentityApplicationServiceImpl extends ServiceImpl<IdentityApplicationDao,IdentityApplication> implements IdentityApplicationService {
+public class IdentityApplicationServiceImpl
+        extends ServiceImpl<IdentityApplicationDao,IdentityApplication>
+        implements IdentityApplicationService {
   @Autowired
   IdentityApplicationDao identityApplicationDao;
 

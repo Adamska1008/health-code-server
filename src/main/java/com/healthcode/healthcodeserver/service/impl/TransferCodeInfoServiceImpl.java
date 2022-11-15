@@ -11,7 +11,9 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class TransferCodeInfoServiceImpl extends ServiceImpl<TransferCodeInfoDao, TransferCodeInfo> implements TransferCodeInfoService {
+public class TransferCodeInfoServiceImpl
+        extends ServiceImpl<TransferCodeInfoDao, TransferCodeInfo>
+        implements TransferCodeInfoService {
   @Autowired
   TransferCodeInfoDao transferCodeInfoDao;
 

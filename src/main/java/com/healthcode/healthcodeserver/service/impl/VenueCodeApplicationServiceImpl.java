@@ -9,7 +9,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class VenueCodeApplicationServiceImpl extends ServiceImpl<VenueCodeApplicationDao, VenueCodeApplication> implements VenueCodeApplicationService {
+public class VenueCodeApplicationServiceImpl
+        extends ServiceImpl<VenueCodeApplicationDao, VenueCodeApplication>
+        implements VenueCodeApplicationService {
   @Autowired
   VenueCodeApplicationDao venueCodeApplicationDao;
 

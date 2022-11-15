@@ -7,5 +7,7 @@ import com.healthcode.healthcodeserver.service.ItineraryInfoService;
 import org.springframework.stereotype.Service;
 
 @Service
-public class ItineraryInfoServiceImpl extends ServiceImpl<ItineraryInfoDao, ItineraryInfo> implements ItineraryInfoService {
+public class ItineraryInfoServiceImpl
+        extends ServiceImpl<ItineraryInfoDao, ItineraryInfo>
+        implements ItineraryInfoService {
 }

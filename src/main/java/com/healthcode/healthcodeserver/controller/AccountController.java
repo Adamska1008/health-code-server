@@ -2,6 +2,7 @@ package com.healthcode.healthcodeserver.controller;
 
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.healthcode.healthcodeserver.common.Result;
 import com.healthcode.healthcodeserver.entity.Account;
 import com.healthcode.healthcodeserver.entity.IdentityApplication;
@@ -73,7 +74,7 @@ public class AccountController {
   public Result getTesterApplicationInfo(@RequestParam("token") String token) {
     log.info("admin with token "+token+" acquire tester apply info");
     if (tokenUtil.verify(token)) {
-      log.info("admin with token "+token+" successfully get acquired.");
+      log.info("admin with token "+token+" successfully get application list.");
       List<IdentityApplication> identityApplications = identityApplicationService.getTesterApplicationList(100);
       return new Result()
               .ok()
@@ -94,8 +95,15 @@ public class AccountController {
   public Result postTesterApplicationInfo(@RequestBody JSONObject request) {
     String token = request.getString("token");
     if (tokenUtil.verify(token)) {
+      log.info("Account with token " + token + " post processed application.");
       Integer isSucceed = request.getInteger("is_succeed");
-      identityApplicationService.updateApplicantProcessed(request.getString("application_id"), isSucceed);
+      String resultInfo = request.getString("resultInfo");
+      String applicationId = request.getString("application_id");
+      UpdateWrapper<IdentityApplication> wrapper = new UpdateWrapper<>();
+      wrapper.eq("application_id", applicationId);
+      wrapper.set("is_succeed", isSucceed);
+      wrapper.set("result_info", resultInfo);
+      identityApplicationService.update(wrapper);
       if (isSucceed == 0) {
         Tester tester = new Tester(
                 request.getString("openid"),

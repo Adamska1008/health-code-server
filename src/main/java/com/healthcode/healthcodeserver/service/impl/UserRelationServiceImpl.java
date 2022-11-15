@@ -9,7 +9,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class UserRelationServiceImpl extends ServiceImpl<UserRelationDao, UserRelation> implements UserRelationService {
+public class UserRelationServiceImpl
+        extends ServiceImpl<UserRelationDao, UserRelation>
+        implements UserRelationService {
   @Autowired
   UserRelationDao userRelationDao;
 

@@ -102,17 +102,21 @@ CREATE table IF NOT EXISTS t_itinerary_information(
     FOREIGN KEY (venue_id) REFERENCES t_venue_code_info(code_id)
 )DEFAULT CHARSET=utf8mb4;
 
+-- 异地报备
+-- _from _to 为省级信息
 CREATE TABLE IF NOT EXISTS t_remote_reporting(
     report_id       CHAR(20)    NOT NULL,
     person_name     CHAR(20)    NOT NULL,
     person_id       CHAR(20)    NOT NULL,
     img_url         VARCHAR(40) NOT NULL,
-
+    _from           VARCHAR(20) NOT NULL,
+    _to             VARCHAR(20) NOT NULL,
+    additional_info VARCHAR(100)NOT NULL,
     PRIMARY KEY (report_id)
 )DEFAULT CHARSET=utf8mb4;
 
 -- 区域风险等级
-#risk_level 0:低 1:中 2:高 3:常态化
+#risk_level 0:常态化 1:低 2:中 3:高
 CREATE TABLE IF NOT EXISTS t_regional_risk_profile(
     profile_id 			CHAR(10) 	NOT NULL,
     province 			VARCHAR(10),
@@ -156,7 +160,7 @@ drop table t_tester;
 CREATE TABLE IF NOT EXISTS t_tester(
     open_id     CHAR(40)        NOT NULL,
     person_id   VARCHAR(20)     NOT NULL,
-    name     VARCHAR(20)     ,
+    name        VARCHAR(20)        ,
     phone       VARCHAR(20)     ,
     PRIMARY KEY (open_id)
 );
