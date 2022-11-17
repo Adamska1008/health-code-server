@@ -64,6 +64,7 @@ INSERT INTO
     t_identity_application(application_id, applicant_name, applicant_person_id, applicant_phone, additional_information, apply_type, is_processed, is_succeed, result_info)
 VALUES
     ('341435234546546544','fy','341435234546546544','13317278716','2428935897293745',0,0,0,null);
+
 INSERT INTO t_transfer_code_info(transfer_code, tester_open_id, test_time, person_number, is_transferred)
 VALUES
     ('JSON123456789','ojKoj52igjq_xw7MpIKZ4LUZJnH8','2022-11-13 16:58:14',1,0),
