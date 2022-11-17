@@ -3,6 +3,9 @@ package com.healthcode.healthcodeserver.controller;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.healthcode.healthcodeserver.common.Result;
 import com.healthcode.healthcodeserver.entity.IdentityApplication;
 import com.healthcode.healthcodeserver.entity.NucleicAcidTestInfo;
@@ -159,20 +162,21 @@ public class TesterController {
   /**
    * 从参数体中获得转运码相关的openid、number等信息，其中person中存储了核酸检测表相关信息
    * 这个函数根据这些信息分别向核酸检测表和核酸转运码表插入数据
-   * @param request
+   * @param response
    * @return result的data中封装了submitResult属性，为1表示插入成功，为2表示转运码使用过已失效
    */
-  @PostMapping("/{appid}/testInfo")
-  public Result getTestInfo(@RequestBody JSONObject request){
+  @PostMapping("/{appid}/test_info")
+  public Result getTestInfo(@RequestBody JSONObject response){
+    String sessionKey = response.getString("session_key");
+    String openId = response.getString("openid");
     //todo 登陆检查
     Result result = new Result();
-    String openId = request.getString("openid");
-    String number = request.getString("number");
-    JSONArray personList = request.getJSONArray("person");
-    String time = request.getString("time");
-    String transferCode = request.getString("transferCode");
+    String number = response.getString("number");
+    JSONArray personList = response.getJSONArray("person");
+    String time = response.getString("time");
+    String transferCode = response.getString("transferCode");
     //向转运码表插入一条数据
-    TransferCodeInfo transferCodeInfo = new TransferCodeInfo(transferCode,openId,Timestamp.valueOf(time),(Integer.parseInt(number)), (short) 0);
+    TransferCodeInfo transferCodeInfo = new TransferCodeInfo(transferCode,openId,time,(Integer.parseInt(number)), (short) 0);
     //transferCode已经使用过，则无效，直接返回错误信息
     if (!transferCodeInfoService.save(transferCodeInfo)){
       result.putData("submitResult",2);
@@ -190,7 +194,7 @@ public class TesterController {
       if(!nucleicAcidTestInfoService.save(nucleicAcidTestInfo)){
         result.putData("submitResult",1);
         return result;
-      }
+      };
     }
     result.putData("submitResult",1);
 
@@ -199,15 +203,47 @@ public class TesterController {
 
   /**
    * 返回没有进行转运的转运码信息
-   * @param openId 用户openid
+   * @param openId
    * @return 在Result的data中封装未转运信息
    */
-  @GetMapping("/{appid}/notTransferredInfo")
-  public Result getNotTransferredInfo(@RequestParam("openid") String openId){
+  @GetMapping("/{appid}/not_transferred_info")
+  public Result getNotTransferredInfo(@RequestParam("openid") String openId,
+                                      @RequestParam("session_key") String sessionKey,
+                                      @RequestParam("pageCurrent") String pageCurrent,
+                                      @RequestParam("pageSize") String pageSize){
     Result result = new Result();
-    List<TransferCodeInfo> notTransferredList = transferCodeInfoService.getNotTransferredByOpenId(openId);
-    String jsonString = JSON.toJSONString(notTransferredList);
-    result.putData("transferList",jsonString);
+    QueryWrapper queryWrapper = new QueryWrapper<>();
+    queryWrapper.eq("tester_open_id",openId);
+    queryWrapper.eq("is_transferred",0);
+    Page<TransferCodeInfo> page = new Page<>(Integer.parseInt(pageCurrent),Integer.parseInt(pageSize));
+    IPage<TransferCodeInfo> iPage = transferCodeInfoService.page(page,queryWrapper);
+    result.putData("total",iPage.getTotal());
+    result.putData("records",iPage.getRecords());
+    return result.ok();
+  }
+  @PostMapping("/{appid}/transfer")
+  public Result transfer(@RequestBody JSONObject response){
+    Result result = new Result();
+    String openId = response.getString("openid");
+    String sessionKey = response.getString("session_key");
+    List<String> list = response.getJSONArray("list");
+    log.info("list"+list);
+    transferCodeInfoService.transferList(list);
+    return result.ok();
+  }
+  @GetMapping("/{appid}/transferred_info")
+  public Result getTransferredInfo(@RequestParam("openid") String openId,
+                                      @RequestParam("session_key") String sessionKey,
+                                      @RequestParam("pageCurrent") String pageCurrent,
+                                      @RequestParam("pageSize") String pageSize){
+    Result result = new Result();
+    QueryWrapper queryWrapper = new QueryWrapper<>();
+    queryWrapper.eq("tester_open_id",openId);
+    queryWrapper.eq("is_transferred",1);
+    Page<TransferCodeInfo> page = new Page<>(Integer.parseInt(pageCurrent),Integer.parseInt(pageSize));
+    IPage<TransferCodeInfo> iPage = transferCodeInfoService.page(page,queryWrapper);
+    result.putData("total",iPage.getTotal());
+    result.putData("records",iPage.getRecords());
     return result.ok();
   }
 
