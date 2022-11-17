@@ -221,5 +221,30 @@ public class TesterController {
     result.putData("records",iPage.getRecords());
     return result.ok();
   }
+  @PostMapping("/{appid}/transfer")
+  public Result transfer(@RequestBody JSONObject response){
+    Result result = new Result();
+    String openId = response.getString("openid");
+    String sessionKey = response.getString("session_key");
+    List<String> list = response.getJSONArray("list");
+    log.info("list"+list);
+    transferCodeInfoService.transferList(list);
+    return result.ok();
+  }
+  @GetMapping("/{appid}/transferred_info")
+  public Result getTransferredInfo(@RequestParam("openid") String openId,
+                                      @RequestParam("session_key") String sessionKey,
+                                      @RequestParam("pageCurrent") String pageCurrent,
+                                      @RequestParam("pageSize") String pageSize){
+    Result result = new Result();
+    QueryWrapper queryWrapper = new QueryWrapper<>();
+    queryWrapper.eq("tester_open_id",openId);
+    queryWrapper.eq("is_transferred",1);
+    Page<TransferCodeInfo> page = new Page<>(Integer.parseInt(pageCurrent),Integer.parseInt(pageSize));
+    IPage<TransferCodeInfo> iPage = transferCodeInfoService.page(page,queryWrapper);
+    result.putData("total",iPage.getTotal());
+    result.putData("records",iPage.getRecords());
+    return result.ok();
+  }
 
 }

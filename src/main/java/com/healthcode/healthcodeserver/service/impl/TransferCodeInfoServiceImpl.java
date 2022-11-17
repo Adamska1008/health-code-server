@@ -1,6 +1,7 @@
 package com.healthcode.healthcodeserver.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.healthcode.healthcodeserver.dao.TransferCodeInfoDao;
 import com.healthcode.healthcodeserver.entity.TransferCodeInfo;
@@ -26,5 +27,13 @@ public class TransferCodeInfoServiceImpl extends ServiceImpl<TransferCodeInfoDao
     queryWrapper.eq("tester_open_id",openId);
     queryWrapper.eq("is_transferred",0);
     return transferCodeInfoDao.selectList(queryWrapper);
+  }
+
+  @Override
+  public int transferList(List list) {
+    UpdateWrapper updateWrapper = new UpdateWrapper();
+    updateWrapper.in("transfer_code",list);
+    updateWrapper.set("is_transferred",1);
+    return transferCodeInfoDao.update(null,updateWrapper);
   }
 }

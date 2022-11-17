@@ -11,6 +11,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @SpringBootTest
 public class TesterServiceTest {
   @Autowired
@@ -70,5 +73,12 @@ public class TesterServiceTest {
     System.out.println("总页数"+iPage.getPages());
     System.out.println("总记录数"+iPage.getTotal());
     iPage.getRecords().forEach(System.out::println);
+  }
+  @Test
+  public void selectTransferList(){
+    List<String> list = new ArrayList<>();
+    list.add("JSON122537789");
+    list.add("JSON122543789");
+    transferCodeInfoService.transferList(list);
   }
 }
