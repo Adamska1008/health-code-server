@@ -56,56 +56,20 @@ VALUES
 INSERT INTO
     t_identity_application(application_id, applicant_name, applicant_person_id, applicant_phone, additional_information, apply_type, is_processed, is_succeed, result_info)
 VALUES
-    ('341435234546546544','fy','341435234546546544','13317278716','2428935897293745',0,0,0,null);
-
-INSERT INTO
-    t_transfer_code_info(transfer_code, tester_open_id, test_time, person_number, is_transferred)
-VALUES
-    ('JSON123456789','ojKoj52igjq_xw7MpIKZ4LUZJnH8','2022-11-13 16:58:14',1,0);
-INSERT INTO
-    t_transfer_code_info(transfer_code, tester_open_id, test_time, person_number, is_transferred)
-VALUES
-    ('JSON112322789','ojKoj52igjq_xw7MpIKZ4LUZJnH8','2022-11-13 16:58:14',1,0);
-INSERT INTO
-    t_transfer_code_info(transfer_code, tester_open_id, test_time, person_number, is_transferred)
-VALUES
-    ('JSON145674789','ojKoj52igjq_xw7MpIKZ4LUZJnH8','2022-11-13 16:58:14',1,0);
-INSERT INTO
-    t_transfer_code_info(transfer_code, tester_open_id, test_time, person_number, is_transferred)
-VALUES
-    ('JSON123789989','ojKoj52igjq_xw7MpIKZ4LUZJnH8','2022-11-13 16:58:14',1,0);
-INSERT INTO
-    t_transfer_code_info(transfer_code, tester_open_id, test_time, person_number, is_transferred)
-VALUES
-    ('JSON112333789','ojKoj52igjq_xw7MpIKZ4LUZJnH8','2022-11-13 16:58:14',1,0);
-INSERT INTO
-    t_transfer_code_info(transfer_code, tester_open_id, test_time, person_number, is_transferred)
-VALUES
-    ('JSON154777789','ojKoj52igjq_xw7MpIKZ4LUZJnH8','2022-11-13 16:58:14',1,0);
-INSERT INTO
-    t_transfer_code_info(transfer_code, tester_open_id, test_time, person_number, is_transferred)
-VALUES
-    ('JSON128579789','ojKoj52igjq_xw7MpIKZ4LUZJnH8','2022-11-13 16:58:14',1,0);
-INSERT INTO
-    t_transfer_code_info(transfer_code, tester_open_id, test_time, person_number, is_transferred)
-VALUES
-    ('JSON124698789','ojKoj52igjq_xw7MpIKZ4LUZJnH8','2022-11-13 16:58:14',1,0);
-INSERT INTO
-    t_transfer_code_info(transfer_code, tester_open_id, test_time, person_number, is_transferred)
-VALUES
-    ('JSON122537789','ojKoj52igjq_xw7MpIKZ4LUZJnH8','2022-11-13 16:58:14',1,0);
-INSERT INTO
-    t_transfer_code_info(transfer_code, tester_open_id, test_time, person_number, is_transferred)
-VALUES
-    ('JSON128749789','ojKoj52igjq_xw7MpIKZ4LUZJnH8','2022-11-13 16:58:14',1,0);
-INSERT INTO
-    t_transfer_code_info(transfer_code, tester_open_id, test_time, person_number, is_transferred)
-VALUES
+    ('341435234546546544','fy','341435234546546544','13317278716','2428935897293745',0,0,0,null),
+    ('JSON123456789','ojKoj52igjq_xw7MpIKZ4LUZJnH8','2022-11-13 16:58:14',1,0),
+    ('JSON112322789','ojKoj52igjq_xw7MpIKZ4LUZJnH8','2022-11-13 16:58:14',1,0),
+    ('JSON145674789','ojKoj52igjq_xw7MpIKZ4LUZJnH8','2022-11-13 16:58:14',1,0),
+    ('JSON123789989','ojKoj52igjq_xw7MpIKZ4LUZJnH8','2022-11-13 16:58:14',1,0),
+    ('JSON112333789','ojKoj52igjq_xw7MpIKZ4LUZJnH8','2022-11-13 16:58:14',1,0),
+    ('JSON154777789','ojKoj52igjq_xw7MpIKZ4LUZJnH8','2022-11-13 16:58:14',1,0),
+    ('JSON128579789','ojKoj52igjq_xw7MpIKZ4LUZJnH8','2022-11-13 16:58:14',1,0),
+    ('JSON124698789','ojKoj52igjq_xw7MpIKZ4LUZJnH8','2022-11-13 16:58:14',1,0),
+    ('JSON122537789','ojKoj52igjq_xw7MpIKZ4LUZJnH8','2022-11-13 16:58:14',1,0),
+    ('JSON128749789','ojKoj52igjq_xw7MpIKZ4LUZJnH8','2022-11-13 16:58:14',1,0),
     ('JSON122543789','ojKoj52igjq_xw7MpIKZ4LUZJnH8','2022-11-13 16:58:14',1,0);
 
 INSERT INTO
     t_tester(open_id, person_id, name, phone)
 VALUES
     ('ojKoj52igjq_xw7MpIKZ4LUZJnH8','341435234546546544','fy',13317278715);
-
-DELETE FROM t_tester WHERE name = 'fy';
