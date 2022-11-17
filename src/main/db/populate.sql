@@ -1,3 +1,4 @@
+-- 用户样例信息
 INSERT INTO
     t_user_info(person_id, person_name, phone_number, wx_openid, gender, health_code_color)
 VALUES
@@ -8,12 +9,14 @@ VALUES
        ('745221196308105087', '傅强', '18626544578', null, 1, 2),
        ('341435234546546544','fy','13317278715','ojKoj52igjq_xw7MpIKZ4LUZJnH8',0,0);
 
+-- 用户关系样例信息
 INSERT INTO
     t_user_relation(person_id_a, person_id_b, relation)
 VALUES
        ('35341719961123514X', '457342192208107100', 0),
        ('725341186604107764', '73151418061117368X', 2);
 
+-- 核酸试剂信息
 INSERT INTO
     t_nucleic_acid_info(nucleic_acid_id)
 VALUES
@@ -25,6 +28,7 @@ VALUES
        ('30446016663405972408'),
        ('83228500583705034446');
 
+-- 疫苗检测信息
 INSERT INTO
     t_covid_test_institution(institution_id, institution_locate_area, institution_name)
 VALUES
@@ -33,26 +37,29 @@ VALUES
        ('74280262060094563874', '海南省 三沙市 中沙群岛的岛礁及其海域', 'C医院'),
        ('65527919204620368784', '山东省 菏泽市 定陶县',  'D医院');
 
+-- 核酸检测信息
 INSERT INTO
-    t_nucleic_acid_test_info(person_id, test_time, test_institution_id, nucleic_acid_id, test_result)
+    t_nucleic_acid_test_info(person_id, test_time, test_institution_id, transfer_code, test_result)
 VALUES
        ('35341719961123514X', '1992-07-06 15:12:09', '04466936245247713632', '70673882276605554562', '0'),
        ('457342192208107100', '1994-03-18 18:03:04', '46312353322876452624', '71744404055443795171', '1'),
-       ('457342192208107100', '2008-09-24 13:56:58', '74280262060094563874', '30446016663405972408', '0');
+       ('454342192208107100', '2008-09-24 13:56:58', '74280262060094563874', '30446016663405972408', '0'),
+       ('457342192208107100', '2021-03-02 14:14:14', '46312353322876452624', '83228500583705034446', '0');
 
+-- 管理员信息
 INSERT INTO
     t_account(account_id, username, password,category)
 VALUES
        ('1','admin','123456',2);
 
-
+-- 疫苗接种信息
 INSERT INTO
     t_vaccine_inoculation_info(person_id, inoculation_time, inoculation_facility, vaccine_name, inoculation_number)
 VALUES
        ('457342192208107100', '2008-01-15 08:06:34', '治之水', '么关最', 1),
        ('457342192208107100', '1990-08-25 09:41:56', '日问儿政龙按', '组队机美表', 2);
 
-
+-- 核酸检测人员身份认证信息
 INSERT INTO
     t_identity_application(application_id, applicant_name, applicant_person_id, applicant_phone, additional_information, apply_type, is_processed, is_succeed, result_info)
 VALUES
