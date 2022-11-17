@@ -102,3 +102,10 @@ INSERT INTO
     t_transfer_code_info(transfer_code, tester_open_id, test_time, person_number, is_transferred)
 VALUES
     ('JSON122543789','ojKoj52igjq_xw7MpIKZ4LUZJnH8','2022-11-13 16:58:14',1,0);
+
+INSERT INTO
+    t_tester(open_id, person_id, name, phone)
+VALUES
+    ('ojKoj52igjq_xw7MpIKZ4LUZJnH8','341435234546546544','fy',13317278715);
+
+DELETE FROM t_tester WHERE name = 'fy';
