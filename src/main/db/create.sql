@@ -35,6 +35,13 @@ CREATE TABLE IF NOT EXISTS t_transfer_code_info(
     PRIMARY KEY (transfer_code)
 )DEFAULT CHARSET=utf8mb4;
 
+-- 核酸试剂表
+CREATE TABLE IF NOT EXISTS t_nucleic_acid_info(
+    nucleic_acid_id      CHAR(20)    NOT NULL,
+    PRIMARY KEY (nucleic_acid_id)
+);
+
+
 -- 核酸检测结果表
 -- test_result 0:阴性 1:阳性
 CREATE TABLE IF NOT EXISTS t_nucleic_acid_test_info (
@@ -70,7 +77,7 @@ CREATE table  IF NOT EXISTS t_covid_test_institution(
 CREATE table IF NOT EXISTS t_venue_code_info(
     code_id             CHAR(20)    NOT NULL,
     venue_type          VARCHAR(10) ,
-    venue_location   VARCHAR(40) ,
+    venue_location   VARCHAR(50) ,
     venue_name          VARCHAR(40) ,
     PRIMARY KEY (code_id)
 )DEFAULT CHARSET=utf8mb4;
@@ -154,7 +161,6 @@ CREATE TABLE IF NOT EXISTS t_account(
     PRIMARY KEY (account_id)
 )DEFAULT CHARSET=utf8mb4;
 
-drop table t_tester;
 #核酸检测人员表
 CREATE TABLE IF NOT EXISTS t_tester(
     open_id     CHAR(40)        NOT NULL,
