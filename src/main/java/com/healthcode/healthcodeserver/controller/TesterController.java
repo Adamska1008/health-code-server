@@ -14,14 +14,7 @@ import com.healthcode.healthcodeserver.service.*;
 import com.healthcode.healthcodeserver.util.WxUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.*;
 
 import java.sql.Timestamp;
 import java.util.HashMap;
@@ -101,21 +94,16 @@ public class TesterController {
 
   /**
    * 登陆小程序人员不是核酸检测人员时需要提交表单以申请权限，这里处理申请信息
-   * @param openId
-   * @param sessionKey
-   * @param name
-   * @param idNumber
-   * @param phoneNumber
-   * @param appId
+   * @param response
    * @return 返回的是申请的提交结果，result的data封装了status属性，为1表示申请成功，为0表示申请失败
    */
-  @GetMapping("/{appid}/apply")
-  public Result getApplicationInfo(@RequestParam("openid") String openId,
-                                   @RequestParam("sessionKey") String sessionKey,
-                                   @RequestParam("name") String name,
-                                   @RequestParam("idNumber") String idNumber,
-                                   @RequestParam("phoneNumber") String phoneNumber,
-                                   @PathVariable("appid") String appId){
+  @PostMapping("/{appid}/apply")
+  public Result getApplicationInfo(@RequestBody JSONObject response){
+    String openId = response.getString("openid");
+    String sessionKey = response.getString("sessionKey");
+    String idNumber = response.getString("idNumber");
+    String name = response.getString("name");
+    String phoneNumber = response.getString("phoneNumber");
     Result verifiedResult = verifySession(openId, sessionKey);
     if (verifiedResult.getStatusCode() != 0) {
       log.info("user with openid "+openId + " did not fetch session_key.");
@@ -167,9 +155,15 @@ public class TesterController {
    */
   @PostMapping("/{appid}/test_info")
   public Result getTestInfo(@RequestBody JSONObject response){
+    log.info("test_info.response"+response);
     String sessionKey = response.getString("session_key");
     String openId = response.getString("openid");
-    //todo 登陆检查
+    Result verifiedResult = verifySession(openId, sessionKey);
+
+    if (verifiedResult.getStatusCode() != 0) {
+      return verifiedResult;
+    }
+
     Result result = new Result();
     String number = response.getString("number");
     JSONArray personList = response.getJSONArray("person");
@@ -211,6 +205,11 @@ public class TesterController {
                                       @RequestParam("session_key") String sessionKey,
                                       @RequestParam("pageCurrent") String pageCurrent,
                                       @RequestParam("pageSize") String pageSize){
+    Result verifiedResult = verifySession(openId, sessionKey);
+    if (verifiedResult.getStatusCode() != 0) {
+      return verifiedResult;
+    }
+
     Result result = new Result();
     QueryWrapper queryWrapper = new QueryWrapper<>();
     queryWrapper.eq("tester_open_id",openId);
@@ -221,21 +220,47 @@ public class TesterController {
     result.putData("records",iPage.getRecords());
     return result.ok();
   }
+
+  /**
+   * 接受转运码，将转运码信息变为已转运
+   * @param response
+   * @return
+   */
   @PostMapping("/{appid}/transfer")
   public Result transfer(@RequestBody JSONObject response){
     Result result = new Result();
     String openId = response.getString("openid");
     String sessionKey = response.getString("session_key");
+
+    Result verifiedResult = verifySession(openId, sessionKey);
+    if (verifiedResult.getStatusCode() != 0) {
+      return verifiedResult;
+    }
+
     List<String> list = response.getJSONArray("list");
     log.info("list"+list);
     transferCodeInfoService.transferList(list);
     return result.ok();
   }
+
+  /**
+   * 向前端发送已转运的信息
+   * @param openId
+   * @param sessionKey
+   * @param pageCurrent
+   * @param pageSize
+   * @return
+   */
   @GetMapping("/{appid}/transferred_info")
   public Result getTransferredInfo(@RequestParam("openid") String openId,
                                       @RequestParam("session_key") String sessionKey,
                                       @RequestParam("pageCurrent") String pageCurrent,
                                       @RequestParam("pageSize") String pageSize){
+    Result verifiedResult = verifySession(openId, sessionKey);
+    if (verifiedResult.getStatusCode() != 0) {
+      return verifiedResult;
+    }
+
     Result result = new Result();
     QueryWrapper queryWrapper = new QueryWrapper<>();
     queryWrapper.eq("tester_open_id",openId);
