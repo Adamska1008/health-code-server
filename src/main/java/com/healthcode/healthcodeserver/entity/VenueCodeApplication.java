@@ -17,7 +17,7 @@ public class VenueCodeApplication {
   private String applicantPersonId;
   @TableField("code_application_locate")
   private String location;
-  @TableField("code_application_locate")
+  @TableField("code_application_type")
   private String type;
   @TableField("code_application_name")
   private String placeName;

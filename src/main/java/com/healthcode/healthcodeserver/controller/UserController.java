@@ -41,6 +41,8 @@ public class UserController {
   UserRelationService userRelationService;
   @Autowired
   ItineraryInfoService itineraryInfoService;
+  @Autowired
+  RemoteReportingService remoteReportingService;
 
   Map<String, String> openIdToSessionKey = new HashMap<>();
 
@@ -280,6 +282,9 @@ public class UserController {
             .ok()
             .putData("processed", application.getIsSolved())
             .putData("venue_code_id", application.getId())
+            .putData("venue_type", application.getType())
+            .putData("place_name", application.getPlaceName())
+            .putData("location", application.getLocation())
             .putData("result", application.getResult())
             .putData("result_info", application.getResultInfo());
   }
@@ -390,9 +395,29 @@ public class UserController {
   }
 
 
+  /**
+   * 传参content-type为application/json
+   * @param params JSON格式消息体
+   * @return Result含义见文档
+   */
   @PostMapping("/remote_report")
   public Result remoteReport(@RequestBody JSONObject params) {
-
-    return new Result().ok();
+    String openId = params.getString("openid");
+    String sessionKey = params.getString("sessionKey");
+    Result verifiedResult = verifySession(openId, sessionKey);
+    if (verifiedResult.getStatusCode() != 0) {
+      return verifiedResult;
+    }
+    String personName = params.getString("person_name");
+    String personId = params.getString("person_id");
+    String from = params.getString("from");
+    String to = params.getString("to");
+    RemoteReporting reporting = new RemoteReporting(
+            null, personName, personId, null, from, to, null
+    );
+    remoteReportingService.save(reporting);
+    return new Result()
+            .ok()
+            .putData("report_id", reporting.getId());
   }
 }

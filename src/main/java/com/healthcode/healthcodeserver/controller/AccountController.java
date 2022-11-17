@@ -1,15 +1,13 @@
 package com.healthcode.healthcodeserver.controller;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.healthcode.healthcodeserver.common.Result;
-import com.healthcode.healthcodeserver.entity.Account;
-import com.healthcode.healthcodeserver.entity.IdentityApplication;
-import com.healthcode.healthcodeserver.entity.Tester;
-import com.healthcode.healthcodeserver.service.AccountService;
-import com.healthcode.healthcodeserver.service.IdentityApplicationService;
-import com.healthcode.healthcodeserver.service.TesterService;
+import com.healthcode.healthcodeserver.dao.VenueCodeInfoDao;
+import com.healthcode.healthcodeserver.entity.*;
+import com.healthcode.healthcodeserver.service.*;
 import com.healthcode.healthcodeserver.util.TokenUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
+import java.util.Comparator;
 import java.util.List;
 
 @CrossOrigin
@@ -36,6 +35,14 @@ public class AccountController {
   TokenUtil tokenUtil;
   @Autowired
   IdentityApplicationService identityApplicationService;
+  @Autowired
+  UserService userService;
+  @Autowired
+  ItineraryInfoService itineraryInfoService;
+  @Autowired
+  VenueCodeInfoService venueCodeInfoService;
+  @Autowired
+  RemoteReportingService remoteReportingService;
 
   /**
    * 管理员登陆获取验证token
@@ -87,7 +94,7 @@ public class AccountController {
   }
 
   /**
-   * 前端向后端返回处理完的申请
+   * 前端向后端返回处理完的检测人员申请
    * @Param request 请求
    * @return Result
    */
@@ -122,4 +129,52 @@ public class AccountController {
               .message("unknown token");
     }
   }
+
+  @GetMapping("/remote_report")
+  public Result getRemoteReport(@RequestParam("token") String token) {
+    if (!tokenUtil.verify("token")) {
+      return new Result()
+              .error(2)
+              .message("unknown token");
+    }
+    log.info("admin with token " + token + " get remote report");
+    List<RemoteReporting> remoteReportings = remoteReportingService.list();
+    return new Result()
+            .ok()
+            .putData("reporting_list", remoteReportings);
+  }
+
+  /**
+   * 获取指定身份证号码用户的行程信息
+   * @param token 用户通信凭证
+   * @param personId 身份证号
+   * @return Result内容参考文档
+   */
+  @GetMapping("/itinerary")
+  public Result getItinerary(@RequestParam("token") String token,
+                             @RequestParam("person_id") String personId) {
+    if (!tokenUtil.verify(token)) {
+      return new Result()
+              .error(2)
+              .message("unknown token");
+    }
+    Result result = new Result().ok();
+    User user = userService.getUserInfoByPersonId(personId);
+    QueryWrapper<ItineraryInfo> wrapper = new QueryWrapper<>();
+    JSONArray jsonArray = new JSONArray();
+    wrapper.eq("person_id", personId);
+    List<ItineraryInfo> itineraryInfos = itineraryInfoService.list(wrapper);
+    itineraryInfos.sort(Comparator.comparing(ItineraryInfo::getRecordTime));
+    for (var itineraryInfo : itineraryInfos) {
+      JSONObject object = new JSONObject();
+      object.put("person_name", user.getName());
+      String venueName = venueCodeInfoService.getVenueNameById(itineraryInfo.getVenueId());
+      object.put("venue_name", venueName);
+      object.put("record_time", itineraryInfo.getRecordTime());
+      jsonArray.add(object);
+    }
+    return result.putData("itinerary_info", jsonArray);
+  }
+
+
 }
