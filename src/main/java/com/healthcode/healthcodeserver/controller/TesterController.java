@@ -10,6 +10,7 @@ import com.healthcode.healthcodeserver.common.Result;
 import com.healthcode.healthcodeserver.entity.IdentityApplication;
 import com.healthcode.healthcodeserver.entity.NucleicAcidTestInfo;
 import com.healthcode.healthcodeserver.entity.TransferCodeInfo;
+import com.healthcode.healthcodeserver.entity.User;
 import com.healthcode.healthcodeserver.service.*;
 import com.healthcode.healthcodeserver.util.WxUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -269,6 +270,35 @@ public class TesterController {
     IPage<TransferCodeInfo> iPage = transferCodeInfoService.page(page,queryWrapper);
     result.putData("total",iPage.getTotal());
     result.putData("records",iPage.getRecords());
+    return result.ok();
+  }
+
+  /**
+   * 客户端扫码后会传入一个openId，此接口根据这个openId返回用户信息
+   * @param openId
+   * @param sessionKey
+   * @param sampledOpenId
+   * @return
+   */
+  @GetMapping("/{appid}/sampled_info")
+  public Result getSampledPersonInfo(@RequestParam("openid") String openId,
+                                     @RequestParam("session_key") String sessionKey,
+                                     @RequestParam("sampledOpenId") String sampledOpenId){
+    Result verifiedResult = verifySession(openId, sessionKey);
+    if (verifiedResult.getStatusCode() != 0) {
+      return verifiedResult;
+    }
+
+    Result result = new Result();
+    User user = userService.getUserInfoByOpenId(sampledOpenId);
+    if (user == null){
+      result.putData("requestStatus",0);
+    } else {
+      result.putData("requestStatus",1);
+      result.putData("name",user.getName());
+      result.putData("idNumber",user.getPersonId());
+      result.putData("phone",user.getPhoneNumber());
+    }
     return result.ok();
   }
 
