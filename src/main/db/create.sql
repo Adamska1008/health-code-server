@@ -27,8 +27,8 @@ CREATE TABLE IF NOT EXISTS t_user_relation (
 -- 核酸检测试剂表
 -- is_transferred:是否已转运（0：未转运，1：已转运）
 CREATE TABLE IF NOT EXISTS t_transfer_code_info(
-    transfer_code  CHAR(20)    NOT NULL,
-    tester_open_id CHAR(40) NOT NULL ,
+    transfer_code  CHAR(20)     NOT NULL,
+    tester_open_id CHAR(40)     NOT NULL ,
     test_time DATETIME,
     person_number INTEGER,
     is_transferred TINYINT CHECK ( is_transferred IN (0,1)),
@@ -51,7 +51,6 @@ CREATE TABLE IF NOT EXISTS t_nucleic_acid_test_info (
     transfer_code        	CHAR(20)    NOT NULL,
     test_result         	TINYINT    	CHECK(test_result IN(0,1)),
     PRIMARY KEY(person_id, transfer_code),
-    FOREIGN KEY(person_id) REFERENCES t_user_info(person_id),
     FOREIGN KEY(transfer_code) REFERENCES  t_transfer_code_info(transfer_code)
 )DEFAULT CHARSET=utf8mb4;
 
@@ -117,6 +116,8 @@ CREATE TABLE IF NOT EXISTS t_remote_reporting(
     img_url         VARCHAR(40) NOT NULL,
     _from           VARCHAR(20) NOT NULL,
     _to             VARCHAR(20) NOT NULL,
+    is_checked      TINYINT     NOT NULL,
+    is_allowed      TINYINT     NOT NULL,
     additional_info VARCHAR(100),
     PRIMARY KEY (report_id)
 )DEFAULT CHARSET=utf8mb4;
@@ -174,15 +175,15 @@ CREATE TABLE IF NOT EXISTS t_tester(
 # is_investigated 0:已审核 1:未审核
 # is_processed 0:已处理 1:未处理
 CREATE TABLE IF NOT EXISTS t_abnormal_info_application(
-    appeal_id               CHAR(20) NOT NULL ,
+    application_id          CHAR(20) NOT NULL ,
     person_name             VARCHAR(20),
-    person_telephone        VARCHAR(20),
+    person_phone            VARCHAR(20),
     additional_information  VARCHAR(50),
-    appeal_type             VARCHAR(10),
+    type                    VARCHAR(10),
     is_investigated         TINYINT CHECK ( is_investigated IN (0,1)),
     is_processed            TINYINT CHECK ( is_processed IN (0,1)),
-    appeal_result           VARCHAR(20) ,
-    PRIMARY KEY (appeal_id)
+    result                  VARCHAR(20) ,
+    PRIMARY KEY (application_id)
 )DEFAULT CHARSET=utf8mb4;
 
 # apply_type 0:核酸检测人员 1:防疫管理人员

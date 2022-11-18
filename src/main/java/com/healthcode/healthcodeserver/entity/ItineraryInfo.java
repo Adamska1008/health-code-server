@@ -1,5 +1,6 @@
 package com.healthcode.healthcodeserver.entity;
 
+import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 
 import java.sql.Timestamp;

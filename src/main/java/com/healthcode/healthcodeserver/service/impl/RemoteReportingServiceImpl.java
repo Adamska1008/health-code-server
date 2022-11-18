@@ -20,6 +20,8 @@ public class RemoteReportingServiceImpl
   @Override
   public List<RemoteReporting> listByLimit(int limit) {
     QueryWrapper<RemoteReporting> wrapper = new QueryWrapper<>();
+    wrapper.orderByAsc("is_allowed");
+    wrapper.orderByAsc("is_checked");
     wrapper.last("LIMIT "+limit);
     return remoteReportingDao.selectList(wrapper);
   }

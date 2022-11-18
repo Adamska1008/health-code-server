@@ -19,6 +19,8 @@ public class RemoteReporting {
   @TableField("_to")
   private String to;
   private String additionalInfo;
+  private Short isChecked;
+  private Short isAllowed;
 
   public RemoteReporting() {
   }
@@ -29,7 +31,9 @@ public class RemoteReporting {
                          String imgUrl,
                          String from,
                          String to,
-                         String additionalInfo) {
+                         String additionalInfo,
+                         Short isChecked,
+                         Short isAllowed) {
     this.id = id;
     this.personName = personName;
     this.personId = personId;
@@ -37,6 +41,8 @@ public class RemoteReporting {
     this.from = from;
     this.to = to;
     this.additionalInfo = additionalInfo;
+    this.isAllowed = isAllowed;
+    this.isChecked = isChecked;
   }
 
   public String getPersonId() {
@@ -67,6 +73,14 @@ public class RemoteReporting {
     return to;
   }
 
+  public Short getIsAllowed() {
+    return isAllowed;
+  }
+
+  public Short getIsChecked() {
+    return isChecked;
+  }
+
   public void setPersonId(String personId) {
     this.personId = personId;
   }
@@ -95,6 +109,14 @@ public class RemoteReporting {
     this.to = to;
   }
 
+  public void setIsAllowed(Short isAllowed) {
+    this.isAllowed = isAllowed;
+  }
+
+  public void setIsChecked(Short isChecked) {
+    this.isChecked = isChecked;
+  }
+
   @Override
   public String toString() {
     return "RemoteReporting{" +
@@ -105,6 +127,8 @@ public class RemoteReporting {
             ", from='" + from + '\'' +
             ", to='" + to + '\'' +
             ", additionalInfo='" + additionalInfo + '\'' +
+            ", isChecked=" + isChecked +
+            ", isAllowed=" + isAllowed +
             '}';
   }
 
@@ -112,13 +136,13 @@ public class RemoteReporting {
   public boolean equals(Object o) {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
-    RemoteReporting that = (RemoteReporting) o;
-    return Objects.equals(id, that.id) && Objects.equals(personName, that.personName) && Objects.equals(personId, that.personId) && Objects.equals(imgUrl, that.imgUrl) && Objects.equals(from, that.from) && Objects.equals(to, that.to) && Objects.equals(additionalInfo, that.additionalInfo);
+    RemoteReporting reporting = (RemoteReporting) o;
+    return Objects.equals(id, reporting.id) && Objects.equals(personName, reporting.personName) && Objects.equals(personId, reporting.personId) && Objects.equals(imgUrl, reporting.imgUrl) && Objects.equals(from, reporting.from) && Objects.equals(to, reporting.to) && Objects.equals(additionalInfo, reporting.additionalInfo) && Objects.equals(isChecked, reporting.isChecked) && Objects.equals(isAllowed, reporting.isAllowed);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(id, personName, personId, imgUrl, from, to, additionalInfo);
+    return Objects.hash(id, personName, personId, imgUrl, from, to, additionalInfo, isChecked, isAllowed);
   }
 }
 

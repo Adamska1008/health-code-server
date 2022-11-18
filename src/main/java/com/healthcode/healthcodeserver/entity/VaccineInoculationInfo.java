@@ -3,18 +3,26 @@ package com.healthcode.healthcodeserver.entity;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.sql.Timestamp;
 
 @TableName("t_vaccine_inoculation_info")
 public class VaccineInoculationInfo {
+  @JsonProperty("person_id")
   @TableId
   private String personId;
   @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+  @JsonProperty("inoculation_time")
   private Timestamp inoculationTime;
+  @JsonProperty("inoculation_facility")
   private String inoculationFacility;
+  @JsonProperty("vaccine_name")
   private String vaccineName;
+  @JsonProperty("inoculation_number")
   private String inoculationNumber;
+  @JsonProperty("test_result")
+  private Integer testResult;
 
   public VaccineInoculationInfo(String personId,
                                 Timestamp inoculationTime,
@@ -29,6 +37,10 @@ public class VaccineInoculationInfo {
   }
 
   public VaccineInoculationInfo() {
+  }
+
+  public Integer getTestResult() {
+    return testResult;
   }
 
   public String getPersonId() {
@@ -69,6 +81,10 @@ public class VaccineInoculationInfo {
 
   public void setInoculationNumber(String inoculationNumber) {
     this.inoculationNumber = inoculationNumber;
+  }
+
+  public void setTestResult(Integer testResult) {
+    this.testResult = testResult;
   }
 
   @Override

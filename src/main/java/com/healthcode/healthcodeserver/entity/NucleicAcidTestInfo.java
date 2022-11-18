@@ -2,16 +2,21 @@ package com.healthcode.healthcodeserver.entity;
 
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.sql.Timestamp;
 import java.util.Objects;
 
 @TableName("t_nucleic_acid_test_info")
 public class NucleicAcidTestInfo {
+  @JsonProperty("person_id")
   private String personId;
+  @JsonProperty("test_time")
   @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
   private Timestamp testTime;
+  @JsonProperty("test_institution_id")
   private String testInstitutionId;
+  @JsonProperty("transfer_code")
   private String transferCode;
   /*
   0: 阴性

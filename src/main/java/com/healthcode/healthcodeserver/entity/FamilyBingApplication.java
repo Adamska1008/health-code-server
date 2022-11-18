@@ -24,7 +24,7 @@ public class FamilyBingApplication {
   private Integer relationType;
   @TableField("is_processed")
   private Integer isProcessed;
-  @TableField("isSucceed")
+  @TableField("is_succeed")
   private Integer isSucceed;
   @TableField("result_info")
   private String resultInfo;

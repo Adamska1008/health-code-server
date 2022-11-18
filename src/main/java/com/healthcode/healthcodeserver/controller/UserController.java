@@ -10,6 +10,7 @@ import com.healthcode.healthcodeserver.entity.*;
 import com.healthcode.healthcodeserver.service.*;
 import com.healthcode.healthcodeserver.util.WxUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -158,10 +159,17 @@ public class UserController {
             .putData("vaccine_inoculation_info", vaccineInoculationInfoList);
   }
 
+  /**
+   *
+   * @param openId 微信用户openid
+   * @param sessionKey 会话密钥
+   * @param phoneNumber 需要i需改的手机号
+   * @return Result内容见文档
+   */
   @PostMapping("/change_info")
-  public Result changeUserInfo(@RequestBody JSONObject request) {
-    String openId = request.getString("openid");
-    String sessionKey = request.getString("session_key");
+  public Result changeUserInfo(@Param("openid") String openId,
+                               @Param("session_key") String sessionKey,
+                               @Param("phone_number") String phoneNumber) {
     Result verifiedResult = verifySession(openId, sessionKey);
     if (verifiedResult.getStatusCode() != 0) {
       return verifiedResult;
@@ -170,8 +178,7 @@ public class UserController {
     String personId = user.getPersonId();
     UpdateWrapper<User> wrapper = new UpdateWrapper<>();
     wrapper.eq("person_id", personId);
-    if (request.getString("phone_number") != null) {
-      String phoneNumber = request.getString("phone_number");
+    if (phoneNumber != null) {
       wrapper.set("phone_number", phoneNumber);
     }
     userService.update(null, wrapper);
@@ -202,7 +209,7 @@ public class UserController {
     List<NucleicAcidTestInfo> nucleicAcidTestInfos =
             nucleicAcidTestInfoService.getNucleicAcidTestInfoListByPersonId(user.getPersonId());
     return new Result().ok()
-            .putData("test_info", nucleicAcidTestInfos);
+            .putData("info_list", nucleicAcidTestInfos);
   }
 
   /**
@@ -230,7 +237,7 @@ public class UserController {
             vaccineInoculationInfoService.getInfoListByPersonId(user.getPersonId());
     return new Result()
             .ok()
-            .putData("test_info", vaccineInoculationInfos);
+            .putData("info_list", vaccineInoculationInfos);
   }
 
   /**
@@ -290,6 +297,28 @@ public class UserController {
   }
 
   /**
+   * 扫描场所码，将场所码+person_id+时间戳包装成一个行程信息保存到数据库
+   * @param openId 用户openid
+   * @param sessionKey 会话密钥
+   * @param venueId 场所码id
+   * @return Result内容见文档
+   */
+  @PostMapping("/scan_venue_code")
+  public Result scanVenueCode(@RequestParam("openid") String openId,
+                              @RequestParam("session_key") String sessionKey,
+                              @RequestParam("venue_id") String venueId) {
+    Result verifiedResult = verifySession(openId, sessionKey);
+    if (verifiedResult.getStatusCode() != 0) {
+      return verifiedResult;
+    }
+    User user = userService.getUserInfoByOpenId(openId);
+    String personId = user.getPersonId();
+    ItineraryInfo itineraryInfo = new ItineraryInfo(personId, venueId, new Timestamp(System.currentTimeMillis()));
+    itineraryInfoService.save(itineraryInfo);
+    return new Result().ok();
+  }
+
+  /**
    * 绑定家属健康码申请
    * @param request POST请求的请求体
    * @return 返回的Result data 中包含申请id，前端需要保存此id以用于查询申请的结果
@@ -315,21 +344,6 @@ public class UserController {
     return new Result()
             .ok()
             .putData("application_id", application.getId());
-  }
-
-  @PostMapping("/scan_venue_code")
-  public Result scanVenueCode(@RequestParam("openid") String openId,
-                              @RequestParam("session_key") String sessionKey,
-                              @RequestParam("venue_id") String venueId) {
-    Result verifiedResult = verifySession(openId, sessionKey);
-    if (verifiedResult.getStatusCode() != 0) {
-      return verifiedResult;
-    }
-    User user = userService.getUserInfoByOpenId(openId);
-    String personId = user.getPersonId();
-    ItineraryInfo itineraryInfo = new ItineraryInfo(personId, venueId, new Timestamp(System.currentTimeMillis()));
-    itineraryInfoService.save(itineraryInfo);
-    return new Result().ok();
   }
 
   /**
@@ -408,16 +422,46 @@ public class UserController {
     if (verifiedResult.getStatusCode() != 0) {
       return verifiedResult;
     }
+    log.info("User with openid " + openId + " post remote report.");
     String personName = params.getString("person_name");
     String personId = params.getString("person_id");
     String from = params.getString("from");
     String to = params.getString("to");
     RemoteReporting reporting = new RemoteReporting(
-            null, personName, personId, null, from, to, null
+            null, personName, personId, null,
+            from, to, null, (short) 0, (short) 0
     );
     remoteReportingService.save(reporting);
     return new Result()
             .ok()
             .putData("report_id", reporting.getId());
+  }
+
+  /**
+   * 查看异地报备的结果，是否允许
+   * @param openId 用户openid
+   * @param sessionKey 会话密钥
+   * @param reportId 唯一标识报备的id
+   * @return Result含义见文档
+   */
+  @GetMapping("/remote_report")
+  public Result checkRemoteReporting(@RequestParam("openid") String openId,
+                                     @RequestParam("session_key") String sessionKey,
+                                     @RequestParam("report_id") String reportId) {
+    Result verifiedResult = verifySession(openId, sessionKey);
+    if (verifiedResult.getStatusCode() != 0) {
+      return verifiedResult;
+    }
+    log.info("User with openid " + openId + " check remote report.");
+    RemoteReporting reporting = remoteReportingService.getById(reportId);
+    if (reporting == null) {
+      return new Result().error(null).message("wrong report id");
+    }
+    Short isChecked = reporting.getIsChecked();
+    Short isAllowed = reporting.getIsAllowed();
+    return new Result()
+            .ok()
+            .putData("is_checked", isChecked)
+            .putData("is_allowed", isAllowed);
   }
 }

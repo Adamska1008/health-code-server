@@ -5,7 +5,6 @@ import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.healthcode.healthcodeserver.common.Result;
-import com.healthcode.healthcodeserver.dao.VenueCodeInfoDao;
 import com.healthcode.healthcodeserver.entity.*;
 import com.healthcode.healthcodeserver.service.*;
 import com.healthcode.healthcodeserver.util.TokenUtil;
@@ -43,6 +42,10 @@ public class AccountController {
   VenueCodeInfoService venueCodeInfoService;
   @Autowired
   RemoteReportingService remoteReportingService;
+  @Autowired
+  AbnormalInfoService abnormalInfoService;
+  @Autowired
+  FamilyBingApplicationService familyBingApplicationService;
 
   /**
    * 管理员登陆获取验证token
@@ -104,11 +107,12 @@ public class AccountController {
     if (tokenUtil.verify(token)) {
       log.info("Account with token " + token + " post processed application.");
       Integer isSucceed = request.getInteger("is_succeed");
-      String resultInfo = request.getString("resultInfo");
+      String resultInfo = request.getString("result_info");
       String applicationId = request.getString("application_id");
       UpdateWrapper<IdentityApplication> wrapper = new UpdateWrapper<>();
       wrapper.eq("application_id", applicationId);
       wrapper.set("is_succeed", isSucceed);
+      wrapper.set("is_processed", 1);
       wrapper.set("result_info", resultInfo);
       identityApplicationService.update(wrapper);
       if (isSucceed == 0) {
@@ -138,10 +142,30 @@ public class AccountController {
               .message("unknown token");
     }
     log.info("admin with token " + token + " get remote report");
-    List<RemoteReporting> remoteReportings = remoteReportingService.list();
+    List<RemoteReporting> remoteReportings = remoteReportingService.listByLimit(100);
     return new Result()
             .ok()
             .putData("reporting_list", remoteReportings);
+  }
+
+  @PostMapping("remote_report")
+  public Result postRemoteReport(@RequestBody JSONObject request) {
+    String token = request.getString("token");
+    if (!tokenUtil.verify("token")) {
+      return new Result()
+              .error(2)
+              .message("unknown token");
+    }
+    log.info("admin with token " + token + " post remote report");
+    Integer isAllowed = request.getInteger("is_allowed");
+    Integer isChecked = request.getInteger("is_checked");
+    String reportId = request.getString("report_id");
+    UpdateWrapper<RemoteReporting> wrapper = new UpdateWrapper<>();
+    wrapper.eq("report_id", reportId);
+    wrapper.set("is_allowed", isAllowed);
+    wrapper.set("is_checked", isChecked);
+    remoteReportingService.update(wrapper);
+    return new Result().ok();
   }
 
   /**
@@ -176,5 +200,39 @@ public class AccountController {
     return result.putData("itinerary_info", jsonArray);
   }
 
+  /**
+   * 获取异常信息申诉的列表
+   * @param token 用户通信凭证
+   * @return Result内容见文档
+   */
+  @GetMapping("abnormal")
+  public Result getAbnormalInfo(@RequestParam("token") String token) {
+    if (!tokenUtil.verify(token)) {
+      return new Result()
+              .error(2);
+    }
+    log.info("admin with token " + token + " get abnormal info");
+    List<AbnormalInfo> abnormalInfos = abnormalInfoService.listByLimit(100);
+    return new Result()
+            .ok()
+            .putData("abnormal_list", abnormalInfos);
+  }
 
+  /**
+   *
+   * @param token
+   * @return
+   */
+  @GetMapping("/family_binding")
+  public Result getFamilyBinding(@RequestParam("token") String token) {
+    if (!tokenUtil.verify(token)) {
+    return new Result()
+            .error(2);
+    }
+    log.info("admin with token " + token + " get family_binding info");
+    List<FamilyBingApplication> applications = familyBingApplicationService.listByLimit(100);
+    return new Result()
+            .ok()
+            .putData("application_list", applications);
+  }
 }
