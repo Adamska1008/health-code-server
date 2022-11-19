@@ -21,8 +21,7 @@ public class VaccineInoculationInfo {
   private String vaccineName;
   @JsonProperty("inoculation_number")
   private String inoculationNumber;
-  @JsonProperty("test_result")
-  private Integer testResult;
+
 
   public VaccineInoculationInfo(String personId,
                                 Timestamp inoculationTime,
@@ -39,9 +38,6 @@ public class VaccineInoculationInfo {
   public VaccineInoculationInfo() {
   }
 
-  public Integer getTestResult() {
-    return testResult;
-  }
 
   public String getPersonId() {
     return personId;
@@ -83,9 +79,6 @@ public class VaccineInoculationInfo {
     this.inoculationNumber = inoculationNumber;
   }
 
-  public void setTestResult(Integer testResult) {
-    this.testResult = testResult;
-  }
 
   @Override
   public String toString() {

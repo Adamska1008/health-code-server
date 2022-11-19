@@ -7,4 +7,6 @@ import java.util.List;
 
 public interface RemoteReportingService extends IService<RemoteReporting> {
   public List<RemoteReporting> listByLimit(int limit);
+
+  public List<RemoteReporting> listByPage(int page, int size);
 }

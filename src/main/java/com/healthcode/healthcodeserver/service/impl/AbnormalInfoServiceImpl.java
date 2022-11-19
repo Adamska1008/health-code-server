@@ -1,6 +1,7 @@
 package com.healthcode.healthcodeserver.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.healthcode.healthcodeserver.dao.AbnormalInfoDao;
 import com.healthcode.healthcodeserver.entity.AbnormalInfo;
@@ -25,5 +26,14 @@ public class AbnormalInfoServiceImpl
     wrapper.orderByAsc("is_processed");
     wrapper.last("LIMIT "+limit);
     return abnormalInfoDao.selectList(wrapper);
+  }
+
+  @Override
+  public List<AbnormalInfo> listByPage(int page, int size) {
+    Page<AbnormalInfo> infoPage = new Page<>(page, size);
+    QueryWrapper<AbnormalInfo> wrapper = new QueryWrapper<>();
+    wrapper.lt("is_checked", 1);
+    abnormalInfoDao.selectPage(infoPage, wrapper);
+    return infoPage.getRecords();
   }
 }

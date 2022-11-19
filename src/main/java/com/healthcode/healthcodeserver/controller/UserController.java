@@ -1,10 +1,12 @@
 package com.healthcode.healthcodeserver.controller;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson2.util.JSONObject1O;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.healthcode.healthcodeserver.common.Result;
 import com.healthcode.healthcodeserver.entity.*;
 import com.healthcode.healthcodeserver.service.*;
@@ -44,6 +46,8 @@ public class UserController {
   ItineraryInfoService itineraryInfoService;
   @Autowired
   RemoteReportingService remoteReportingService;
+  @Autowired
+  VenueCodeInfoService venueCodeInfoService;
 
   Map<String, String> openIdToSessionKey = new HashMap<>();
 
@@ -136,24 +140,25 @@ public class UserController {
       return verifiedResult;
     }
     User user = userService.getUserInfoByOpenId(openId);
-      if (user == null) {
+    if (user == null) {
       log.warn("no user with such openid");
       return new Result().error(4);
     }
     NucleicAcidTestInfo latestInfo = nucleicAcidTestInfoService.getLatestTestInfoByPersonId(user.getPersonId());
-    String testInstitutionName = covidTestInstitutionService.getNameById(latestInfo.getTestInstitutionId());
-
     JSONObject latestTest = new JSONObject();
-    latestTest.put("result", latestInfo.getTestResult());
-    latestTest.put("test_time", latestInfo.getTestTime());
-    latestTest.put("institution_name", testInstitutionName);
-
+    if (latestInfo != null) {
+      String testInstitutionName = covidTestInstitutionService.getNameById(latestInfo.getTestInstitutionId());
+      latestTest.put("result", latestInfo.getTestResult());
+      latestTest.put("test_time", latestInfo.getTestTime());
+      latestTest.put("institution_name", testInstitutionName);
+    }
     List<VaccineInoculationInfo> vaccineInoculationInfoList =
             vaccineInoculationInfoService.getInfoListByPersonId(user.getPersonId());
 
     log.info("return info of user with openid "+openId);
     return new Result().ok()
             .putData("name", user.getName())
+            .putData("person_id", user.getPersonId())
             .putData("health_code_color", user.getHealthCodeColor())
             .putData("latest_test", latestTest)
             .putData("vaccine_inoculation_info", vaccineInoculationInfoList);
@@ -208,8 +213,19 @@ public class UserController {
     }
     List<NucleicAcidTestInfo> nucleicAcidTestInfos =
             nucleicAcidTestInfoService.getNucleicAcidTestInfoListByPersonId(user.getPersonId());
+    JSONArray infoList = new JSONArray();
+    for (var info : nucleicAcidTestInfos) {
+      JSONObject jsonInfo = new JSONObject();
+      jsonInfo.put("person_id", info.getPersonId());
+      jsonInfo.put("test_result", info.getTestResult());
+      jsonInfo.put("test_time", info.getTestTime());
+      jsonInfo.put("transfer_code", info.getTransferCode());
+      CovidTestInstitution covidTestInstitution = covidTestInstitutionService.getById(info.getTestInstitutionId());
+      jsonInfo.put("institution_name", covidTestInstitution.getName());
+      infoList.add(jsonInfo);
+    }
     return new Result().ok()
-            .putData("info_list", nucleicAcidTestInfos);
+            .putData("info_list", infoList);
   }
 
   /**
@@ -315,7 +331,12 @@ public class UserController {
     String personId = user.getPersonId();
     ItineraryInfo itineraryInfo = new ItineraryInfo(personId, venueId, new Timestamp(System.currentTimeMillis()));
     itineraryInfoService.save(itineraryInfo);
-    return new Result().ok();
+    VenueCodeInfo venueCodeInfo = venueCodeInfoService.getById(venueId);
+    return new Result()
+            .ok()
+            .putData("venue_name", venueCodeInfo.getVenueName())
+            .putData("venue_type", venueCodeInfo.getVenueType())
+            .putData("location", venueCodeInfo.getVenueLocation());
   }
 
   /**
@@ -403,6 +424,7 @@ public class UserController {
     log.info("return info of user with openid "+openId);
     return new Result().ok()
             .putData("name", user.getName())
+            .putData("person_id", user.getPersonId())
             .putData("health_code_color", user.getHealthCodeColor())
             .putData("latest_test", latestTest)
             .putData("vaccine_inoculation_info", vaccineInoculationInfoList);

@@ -18,11 +18,14 @@ public class NucleicAcidTestInfo {
   private String testInstitutionId;
   @JsonProperty("transfer_code")
   private String transferCode;
-  /*
+  @JsonProperty("test_result")
+    /*
   0: 阴性
   1: 阳性
    */
   private Short testResult;
+
+
 
   public NucleicAcidTestInfo() {
   }

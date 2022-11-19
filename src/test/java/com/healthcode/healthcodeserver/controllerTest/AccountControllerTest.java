@@ -45,37 +45,4 @@ public class AccountControllerTest {
     Result result_5 = accountController.adminLogIn(username_2,password_2);
     System.out.println(JSON.toJSON(result_5));
   }
-
-  /**
-   * 测试函数 getTesterApplicationInfoTest
-   * 用来测试函数    accountController.getTesterApplicationInfo(String token);
-   * token 的值包括
-   * null
-   * 34268grf
-   * d127hy897hye1eh8q7heq
-   * 087很轻易地我
-   * 0
-   * 98jk.u'p;349853
-   */
-  @Test
-  public  void  getTesterApplicationInfoTest(){
-    String token_0 = "34268grf";
-    String token_1 = "d127hy897hye1eh8q7heq";
-    String token_2 = "087很轻易地我";
-    String token_3 = "0";
-    String token_4 = "98jk.u'p;349853";
-    Result result_0 = accountController.getTesterApplicationInfo(null);
-    System.out.println(JSON.toJSON(result_0));
-    Result result_1 = accountController.getTesterApplicationInfo(token_0);
-    System.out.println(JSON.toJSON(result_1));
-    Result result_2 = accountController.getTesterApplicationInfo(token_1);
-    System.out.println(JSON.toJSON(result_2));
-    Result result_3 = accountController.getTesterApplicationInfo(token_2);
-    System.out.println(JSON.toJSON(result_3));
-    Result result_4 = accountController.getTesterApplicationInfo(token_3);
-    System.out.println(JSON.toJSON(result_4));
-    Result result_5 = accountController.getTesterApplicationInfo(token_4);
-    System.out.println(JSON.toJSON(result_5));
-  }
-
 }

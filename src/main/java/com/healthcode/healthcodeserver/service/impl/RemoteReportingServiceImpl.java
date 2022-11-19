@@ -1,6 +1,7 @@
 package com.healthcode.healthcodeserver.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.healthcode.healthcodeserver.dao.RemoteReportingDao;
 import com.healthcode.healthcodeserver.entity.RemoteReporting;
@@ -17,6 +18,11 @@ public class RemoteReportingServiceImpl
   @Autowired
   RemoteReportingDao remoteReportingDao;
 
+  /**
+   *
+   * @param limit
+   * @return
+   */
   @Override
   public List<RemoteReporting> listByLimit(int limit) {
     QueryWrapper<RemoteReporting> wrapper = new QueryWrapper<>();
@@ -24,5 +30,20 @@ public class RemoteReportingServiceImpl
     wrapper.orderByAsc("is_checked");
     wrapper.last("LIMIT "+limit);
     return remoteReportingDao.selectList(wrapper);
+  }
+
+  /**
+   *
+   * @param page
+   * @param size
+   * @return
+   */
+  @Override
+  public List<RemoteReporting> listByPage(int page, int size) {
+    Page<RemoteReporting> reportingPage = new Page<>(page, size);
+    QueryWrapper<RemoteReporting> wrapper = new QueryWrapper<>();
+    wrapper.lt("is_checked", 1);
+    remoteReportingDao.selectPage(reportingPage, wrapper);
+    return reportingPage.getRecords();
   }
 }

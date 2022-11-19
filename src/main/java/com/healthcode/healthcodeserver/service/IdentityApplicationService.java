@@ -13,6 +13,8 @@ public interface IdentityApplicationService extends IService<IdentityApplication
    */
   List<IdentityApplication> getTesterApplicationList(int limit);
 
+  List<IdentityApplication> getByPage(int page, int size);
+
   /**
    * 确认某人员是否有申请记录
    * @param personId 身份证号

@@ -7,4 +7,6 @@ import java.util.List;
 
 public interface FamilyBingApplicationService extends IService<FamilyBingApplication> {
   List<FamilyBingApplication> listByLimit(int limit);
+
+  List<FamilyBingApplication> listByPage(Integer page, Integer size);
 }

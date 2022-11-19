@@ -2,13 +2,16 @@ package com.healthcode.healthcodeserver.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.healthcode.healthcodeserver.dao.IdentityApplicationDao;
 import com.healthcode.healthcodeserver.entity.IdentityApplication;
 import com.healthcode.healthcodeserver.service.IdentityApplicationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.awt.desktop.QuitEvent;
 import java.util.List;
 
 @Service
@@ -30,6 +33,22 @@ public class IdentityApplicationServiceImpl
             .orderByAsc("is_processed")
             .last("LIMIT "+limit);
     return identityApplicationDao.selectList(wrapper);
+  }
+
+  /**
+   *
+   * @param page
+   * @param size
+   * @return
+   */
+  @Override
+  public List<IdentityApplication> getByPage(int page, int size) {
+    Page<IdentityApplication> applicationPage = new Page<>(page, size);
+    QueryWrapper<IdentityApplication> wrapper = new QueryWrapper<>();
+    wrapper.lt("is_processed", 1);
+    wrapper.eq("apply_type", 0);
+    identityApplicationDao.selectPage(applicationPage, wrapper);
+    return applicationPage.getRecords();
   }
 
   /**

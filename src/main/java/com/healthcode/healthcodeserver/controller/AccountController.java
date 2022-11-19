@@ -81,13 +81,26 @@ public class AccountController {
    * @return 检测人员申请列表
    */
   @GetMapping("/get_tester_apply")
-  public Result getTesterApplicationInfo(@RequestParam("token") String token) {
+  public Result getTesterApplicationInfo(@RequestParam("token") String token,
+                                         @RequestParam("page") Integer page,
+                                         @RequestParam("size") Integer size) {
     log.info("admin with token "+token+" acquire tester apply info");
     if (tokenUtil.verify(token)) {
       log.info("admin with token "+token+" successfully get application list.");
-      List<IdentityApplication> identityApplications = identityApplicationService.getTesterApplicationList(100);
+      // 统计未处理的数据条数
+      QueryWrapper<IdentityApplication> wrapper = new QueryWrapper<>();
+      wrapper.lt("is_processed", 1);
+      long tot = identityApplicationService.count(wrapper);
+
+      List<IdentityApplication> identityApplications;
+      if (page == null) {
+        identityApplications = identityApplicationService.getTesterApplicationList(100);
+      } else {
+        identityApplications = identityApplicationService.getByPage(page, size);
+      }
       return new Result()
               .ok()
+              .putData("total", tot)
               .putData("application_list", identityApplications);
     } else {
       log.info("Invalid token.");
@@ -134,36 +147,57 @@ public class AccountController {
     }
   }
 
+  /**
+   *
+   * @param token
+   * @return
+   */
   @GetMapping("/remote_report")
-  public Result getRemoteReport(@RequestParam("token") String token) {
-    if (!tokenUtil.verify("token")) {
+  public Result getRemoteReport(@RequestParam("token") String token,
+                                @RequestParam("page") Integer page,
+                                @RequestParam("size") Integer size) {
+    if (!tokenUtil.verify(token)) {
       return new Result()
               .error(2)
               .message("unknown token");
     }
     log.info("admin with token " + token + " get remote report");
-    List<RemoteReporting> remoteReportings = remoteReportingService.listByLimit(100);
+    QueryWrapper<RemoteReporting> wrapper = new QueryWrapper<>();
+    wrapper.lt("is_checked", 1);
+    long tot = remoteReportingService.count(wrapper);
+
+    List<RemoteReporting> remoteReportings;
+    if (page == null) {
+      remoteReportings = remoteReportingService.listByLimit(100);
+    } else {
+      remoteReportings = remoteReportingService.listByPage(page, size);
+    }
     return new Result()
             .ok()
+            .putData("total", tot)
             .putData("reporting_list", remoteReportings);
   }
 
+  /**
+   *
+   * @param request
+   * @return
+   */
   @PostMapping("remote_report")
   public Result postRemoteReport(@RequestBody JSONObject request) {
     String token = request.getString("token");
-    if (!tokenUtil.verify("token")) {
+    if (!tokenUtil.verify(token)) {
       return new Result()
               .error(2)
               .message("unknown token");
     }
     log.info("admin with token " + token + " post remote report");
     Integer isAllowed = request.getInteger("is_allowed");
-    Integer isChecked = request.getInteger("is_checked");
     String reportId = request.getString("report_id");
     UpdateWrapper<RemoteReporting> wrapper = new UpdateWrapper<>();
     wrapper.eq("report_id", reportId);
     wrapper.set("is_allowed", isAllowed);
-    wrapper.set("is_checked", isChecked);
+    wrapper.set("is_checked", 1);
     remoteReportingService.update(wrapper);
     return new Result().ok();
   }
@@ -205,17 +239,47 @@ public class AccountController {
    * @param token 用户通信凭证
    * @return Result内容见文档
    */
-  @GetMapping("abnormal")
-  public Result getAbnormalInfo(@RequestParam("token") String token) {
+  @GetMapping("/abnormal")
+  public Result getAbnormalInfo(@RequestParam("token") String token,
+                                @RequestParam("page") Integer page,
+                                @RequestParam("size") Integer size) {
     if (!tokenUtil.verify(token)) {
       return new Result()
               .error(2);
     }
     log.info("admin with token " + token + " get abnormal info");
-    List<AbnormalInfo> abnormalInfos = abnormalInfoService.listByLimit(100);
+    QueryWrapper<AbnormalInfo> wrapper = new QueryWrapper<>();
+    wrapper.lt("is_checked", 1);
+    long tot = abnormalInfoService.count(wrapper);
+
+    List<AbnormalInfo> abnormalInfos;
+    if (page == null) {
+      abnormalInfos = abnormalInfoService.listByLimit(100);
+    } else {
+      abnormalInfos = abnormalInfoService.listByPage(page, size);
+    }
     return new Result()
             .ok()
+            .putData("total", tot)
             .putData("abnormal_list", abnormalInfos);
+  }
+
+  @PostMapping("/abnormal")
+  public Result postAbnormalInfo(@RequestBody JSONObject request) {
+    String token = request.getString("token");
+    if (!tokenUtil.verify(token)) {
+      return new Result()
+              .error(2);
+    }
+    log.info("admin with token " + token + " post abnormal info");
+    String applicationId = request.getString("application_id");
+    Integer isProcessed = request.getInteger("is_processed");
+    UpdateWrapper<AbnormalInfo> wrapper = new UpdateWrapper<>();
+    wrapper.eq("application_id", applicationId);
+    wrapper.set("is_investigated", 1);
+    wrapper.set("is_processed", isProcessed);
+    abnormalInfoService.update(wrapper);
+    return new Result().ok();
   }
 
   /**
@@ -224,15 +288,27 @@ public class AccountController {
    * @return
    */
   @GetMapping("/family_binding")
-  public Result getFamilyBinding(@RequestParam("token") String token) {
+  public Result getFamilyBinding(@RequestParam("token") String token,
+                                 @RequestParam("page") Integer page,
+                                 @RequestParam("size") Integer size) {
     if (!tokenUtil.verify(token)) {
     return new Result()
             .error(2);
     }
     log.info("admin with token " + token + " get family_binding info");
-    List<FamilyBingApplication> applications = familyBingApplicationService.listByLimit(100);
+    QueryWrapper<FamilyBingApplication> wrapper = new QueryWrapper<>();
+    wrapper.lt("is_processed", 1);
+    long tot = familyBingApplicationService.count(wrapper);
+
+    List<FamilyBingApplication> applications;
+    if (page == null) {
+      applications = familyBingApplicationService.listByLimit(100);
+    } else {
+      applications = familyBingApplicationService.listByPage(page, size);
+    }
     return new Result()
             .ok()
+            .putData("total", tot)
             .putData("application_list", applications);
   }
 }
