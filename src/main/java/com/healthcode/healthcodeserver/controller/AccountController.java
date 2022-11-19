@@ -249,7 +249,7 @@ public class AccountController {
     }
     log.info("admin with token " + token + " get abnormal info");
     QueryWrapper<AbnormalInfo> wrapper = new QueryWrapper<>();
-    wrapper.lt("is_checked", 1);
+    wrapper.lt("is_investigated", 1);
     long tot = abnormalInfoService.count(wrapper);
 
     List<AbnormalInfo> abnormalInfos;
@@ -264,6 +264,11 @@ public class AccountController {
             .putData("abnormal_list", abnormalInfos);
   }
 
+  /**
+   *
+   * @param request
+   * @return
+   */
   @PostMapping("/abnormal")
   public Result postAbnormalInfo(@RequestBody JSONObject request) {
     String token = request.getString("token");
@@ -292,7 +297,7 @@ public class AccountController {
                                  @RequestParam("page") Integer page,
                                  @RequestParam("size") Integer size) {
     if (!tokenUtil.verify(token)) {
-    return new Result()
+      return new Result()
             .error(2);
     }
     log.info("admin with token " + token + " get family_binding info");
@@ -310,5 +315,30 @@ public class AccountController {
             .ok()
             .putData("total", tot)
             .putData("application_list", applications);
+  }
+
+
+  /**
+   *
+   * @param request
+   * @return
+   */
+  @PostMapping("/family_binding")
+  public Result postFamilyBinding(@RequestBody JSONObject request) {
+    String token = request.getString("token");
+    if (!tokenUtil.verify(token)) {
+      return new Result()
+              .error(2);
+    }
+    String applicationId = request.getString("application_id");
+    Integer isSucceed = request.getInteger("is_succeed");
+    String resultInfo = request.getString("result_info");
+    UpdateWrapper<FamilyBingApplication> wrapper = new UpdateWrapper<>();
+    wrapper.eq("application_id", applicationId);
+    wrapper.set("is_succeed", isSucceed);
+    wrapper.set("is_processed", 1);
+    wrapper.set("result_info", resultInfo);
+    familyBingApplicationService.update(wrapper);
+    return new Result().ok();
   }
 }

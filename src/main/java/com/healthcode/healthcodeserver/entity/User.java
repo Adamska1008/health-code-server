@@ -19,14 +19,14 @@ public class User {
   // 0: 男; 1: 女
   private Short gender;
   // health_code_color 0:绿 1:黄 2:绿
-  private String healthCodeColor;
+  private Integer healthCodeColor;
 
   public User(String personId,
               String name,
               String phoneNumber,
               String openId,
               Short gender,
-              String healthCodeColor) {
+              Integer healthCodeColor) {
     this.personId = personId;
     this.name = name;
     this.phoneNumber = phoneNumber;
@@ -78,11 +78,11 @@ public class User {
     this.gender = gender;
   }
 
-  public String getHealthCodeColor() {
+  public Integer getHealthCodeColor() {
     return healthCodeColor;
   }
 
-  public void setHealthCodeColor(String healthCodeColor) {
+  public void setHealthCodeColor(Integer healthCodeColor) {
     this.healthCodeColor = healthCodeColor;
   }
 

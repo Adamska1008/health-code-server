@@ -14,3 +14,7 @@ test_app:
 
 server:
   port: 8080
+
+imgs:
+  remote_report:
+    path: /public/img/remote_report/

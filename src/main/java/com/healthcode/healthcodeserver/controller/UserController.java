@@ -14,8 +14,12 @@ import com.healthcode.healthcodeserver.util.WxUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.IOException;
 import java.sql.Timestamp;
 import java.util.HashMap;
 import java.util.List;
@@ -48,6 +52,8 @@ public class UserController {
   RemoteReportingService remoteReportingService;
   @Autowired
   VenueCodeInfoService venueCodeInfoService;
+  @Value("${imgs.remote_report.path}")
+  String remoteReportImgPath;
 
   Map<String, String> openIdToSessionKey = new HashMap<>();
 
@@ -122,6 +128,28 @@ public class UserController {
     }
     return result;
   }
+
+  @PostMapping("/register_user_info")
+  public Result registerUserInfo(@RequestBody JSONObject request) {
+    String openId = request.getString("openid");
+    String sessionKey = request.getString("session_key");
+    Result verifiedResult = verifySession(openId, sessionKey);
+    if (verifiedResult.getStatusCode() != 0) {
+      return verifiedResult;
+    }
+    log.info("register new user with openid " + openId);
+    User user = new User(
+            request.getString("person_id"),
+            request.getString("person_name"),
+            request.getString("phone_number"),
+            openId,
+            request.getShort("person_gender"),
+            0
+    );
+    return new Result().ok();
+  }
+
+
 
   /**
    * 前端发送openid与session_key获取用户信息。
@@ -439,7 +467,7 @@ public class UserController {
   @PostMapping("/remote_report")
   public Result remoteReport(@RequestBody JSONObject params) {
     String openId = params.getString("openid");
-    String sessionKey = params.getString("sessionKey");
+    String sessionKey = params.getString("session_key");
     Result verifiedResult = verifySession(openId, sessionKey);
     if (verifiedResult.getStatusCode() != 0) {
       return verifiedResult;
@@ -450,13 +478,50 @@ public class UserController {
     String from = params.getString("from");
     String to = params.getString("to");
     RemoteReporting reporting = new RemoteReporting(
-            null, personName, personId, null,
+            null, personName, personId, "",
             from, to, null, (short) 0, (short) 0
     );
     remoteReportingService.save(reporting);
     return new Result()
             .ok()
             .putData("report_id", reporting.getId());
+  }
+
+  /**
+   *
+   * @param openId
+   * @param sessionKey
+   * @param file
+   * @param reportId
+   * @return
+   * @throws IOException
+   */
+  @PostMapping(value = "/remote_report_img", headers = "content-type=multipart/form-data")
+  public Result remoteReportImg(@RequestParam("openid") String openId,
+                                @RequestParam("session_key") String sessionKey,
+                                @RequestParam("file") MultipartFile file,
+                                @RequestParam("report_id") String reportId) throws IOException {
+    Result verifiedResult = verifySession(openId, sessionKey);
+    if (verifiedResult.getStatusCode() != 0) {
+      return verifiedResult;
+    }
+    log.info("user with openid " + openId + " upload remote report image." );
+    File dir = new File(remoteReportImgPath);
+    if (!dir.exists()) {
+      dir.mkdirs();
+    }
+    String path = remoteReportImgPath + file.getOriginalFilename();
+    File newFile = new File(path);
+    if (!newFile.exists()) {
+      newFile.createNewFile();
+    }
+    file.transferTo(newFile);
+    RemoteReporting reporting = remoteReportingService.getById(reportId);
+    if (reporting == null) {
+      return new Result().error(null).message("invalid report id");
+    }
+    reporting.setImgUrl(path);
+    return new Result().ok();
   }
 
   /**

@@ -7,7 +7,7 @@ VALUES
        ('725341186604107764', '贾芳', '18641528264', null, 1, 1),
        ('73151418061117368X', '唐秀兰', '18655727623', null, 0, 1),
        ('745221196308105087', '傅强', '18626544578', null, 1, 2),
-       ('341435234546546544','fy','13317278715','oHbzp53Ax8GW3td4vmkV2Pp3H904',0,0);
+       ('341435234546546544', 'fy','13317278715','oHbzp53Ax8GW3td4vmkV2Pp3H904',0,0);
 
 -- 用户关系样例信息
 INSERT INTO
@@ -84,4 +84,14 @@ VALUES
 INSERT INTO
     t_tester(open_id, person_id, name, phone)
 VALUES
-    ('ojKoj52igjq_xw7MpIKZ4LUZJnH8','341435234546546544','fy',13317278715);
+    ('ojKoj52igjq_xw7MpIKZ4LUZJnH8','341435234546546544','fy',14726539856),
+    ('oHuj10yIBhfyjn14rw9gskjsajkiI','321656489621646658','孙权',13317278715),
+    ('oHujp9yIBhfyjn14rw9gskjsajkiI','341435234546546544','曹孟德',13546879568),
+    ('oHujp6yIBhfyjn14rw9gskjsajkiI','654653426845625632','董卓',16578946253);
+
+
+
+INSERT INTO
+    t_abnormal_info_application(application_id, person_name, person_phone, additional_information, type, is_investigated, is_processed, result)
+VALUES
+       ('341414893546542344', 'fy', '114514514', null, '健康码', 0, 0, null);

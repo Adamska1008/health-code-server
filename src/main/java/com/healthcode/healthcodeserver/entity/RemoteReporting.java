@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.Objects;
 
@@ -11,15 +12,21 @@ import java.util.Objects;
 public class RemoteReporting {
   @TableId(value = "report_id", type = IdType.ASSIGN_ID)
   private String id;
+  @JsonProperty(value = "person_name")
   private String personName;
+  @JsonProperty(value = "person_id")
   private String personId;
+  @JsonProperty(value = "img_url")
   private String imgUrl;
   @TableField("_from")
   private String from;
   @TableField("_to")
   private String to;
+  @JsonProperty("additional_info")
   private String additionalInfo;
+  @JsonProperty("is_checked")
   private Short isChecked;
+  @JsonProperty("is_allowed")
   private Short isAllowed;
 
   public RemoteReporting() {

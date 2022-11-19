@@ -52,7 +52,7 @@ public class UserServiceImpl extends ServiceImpl<UserDao,User> implements UserSe
     user.setName(personName);
     int genderNumber = Integer.parseInt(gender);
     user.setGender((short)(genderNumber));
-    user.setHealthCodeColor("0");
+    user.setHealthCodeColor(0);
     user.setOpenId(wxOpenId);
     return userDao.insert(user);
   }
