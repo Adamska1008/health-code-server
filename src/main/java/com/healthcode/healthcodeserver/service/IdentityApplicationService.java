@@ -28,4 +28,23 @@ public interface IdentityApplicationService extends IService<IdentityApplication
    * @param isSucceed 是否成功
    */
   void updateApplicantProcessed(String id, Integer isSucceed);
+
+  /**
+   * 某人的申请是否成功
+   * @param openId
+   * @return
+   */
+  boolean applicationSucceed(String openId);
+
+  /**
+   * 某人的申请是否已处理
+   * @param openId
+   * @return
+   */
+  boolean applicationProcessed(String openId);
+
+  /**
+   * 根据openId判断是否有申请记录
+   */
+  boolean hasApplicationRecordByOpenId(String openId);
 }
