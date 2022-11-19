@@ -57,4 +57,49 @@ public class IdentityApplicationServiceImpl
             .set("is_succeed", isSucceed);
     identityApplicationDao.update(null, wrapper);
   }
+
+  /**
+   * 获取某人的申请是否成功
+   * @param openId
+   * @return
+   */
+  @Override
+  public boolean applicationSucceed(String openId) {
+    QueryWrapper queryWrapper = new QueryWrapper<>();
+    queryWrapper.eq("open_id",openId);
+    IdentityApplication identityApplication = identityApplicationDao.selectOne(queryWrapper);
+    if (identityApplication.getIsSucceed()==1){
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  /**
+   * 获取某人申请是否处理
+   * @return
+   */
+  @Override
+  public boolean applicationProcessed(String openId) {
+    QueryWrapper queryWrapper = new QueryWrapper<>();
+    queryWrapper.eq("open_id",openId);
+    IdentityApplication identityApplication = identityApplicationDao.selectOne(queryWrapper);
+    if (identityApplication.getIsProcessed() == 1){
+      return false;
+    } else {
+      return true;
+    }
+  }
+
+  /**
+   * 根据openId判断是否有申请记录
+   * @param openId
+   * @return
+   */
+  @Override
+  public boolean hasApplicationRecordByOpenId(String openId) {
+    QueryWrapper queryWrapper = new QueryWrapper<>();
+    queryWrapper.eq("open_id",openId);
+    return !identityApplicationDao.selectList(queryWrapper).isEmpty();
+  }
 }

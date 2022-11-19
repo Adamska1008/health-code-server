@@ -83,7 +83,20 @@ public class TesterController {
     String openId = jsonObject.getString("openid");
     Result result = new Result();
     jsonObject.forEach(result::putData);
-    result.putData("isTester", testerService.isTester(openId)?1:0);
+    if (testerService.isTester(openId)){
+      result.putData("isTester",1);
+    } else {
+      if (identityApplicationService.hasApplicationRecordByOpenId(openId)){
+        if (identityApplicationService.applicationProcessed(openId)){
+          result.putData("isTester",3);
+        } else {
+          result.putData("isTester",2);
+        }
+      } else {
+        result.putData("isTester",0);
+      }
+
+    }
     if (sessionKey == null || openId == null) {
       return result.error(2);
     } else {
@@ -112,12 +125,12 @@ public class TesterController {
     }
 
     Result result = new Result();
-    if (identityApplicationService.hasApplicationRecord(idNumber)){
+    if (identityApplicationService.hasApplicationRecord(idNumber)){//有申请记录
       result.putData("status",1);
-    } else {//有申请记录
+    } else {
       IdentityApplication identityApplication = new IdentityApplication(
               null, openId, name, idNumber, phoneNumber, null,
-              0, 0, 0, null);
+              0, 0, null, null);
       log.info(name + " wants to apply for tester");
       identityApplicationService.save(identityApplication);
       result.putData("status",0);
