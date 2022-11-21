@@ -125,7 +125,7 @@ public class TesterController {
     }
 
     Result result = new Result();
-    if (identityApplicationService.hasApplicationRecord(idNumber)){//有申请记录
+    if (identityApplicationService.hasApplicationRecordByOpenId(openId)){//有申请记录
       result.putData("status",1);
     } else {
       IdentityApplication identityApplication = new IdentityApplication(

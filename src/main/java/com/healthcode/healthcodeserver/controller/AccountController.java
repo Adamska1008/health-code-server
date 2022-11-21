@@ -128,7 +128,7 @@ public class AccountController {
       wrapper.set("is_processed", 1);
       wrapper.set("result_info", resultInfo);
       identityApplicationService.update(wrapper);
-      if (isSucceed == 0) {
+      if (isSucceed == 1) {
         Tester tester = new Tester(
                 request.getString("openid"),
                 request.getString("applicant_person_id"),
