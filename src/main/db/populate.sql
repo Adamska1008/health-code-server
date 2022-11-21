@@ -95,3 +95,13 @@ INSERT INTO
     t_abnormal_info_application(application_id, person_name, person_phone, additional_information, type, is_investigated, is_processed, result)
 VALUES
        ('341414893546542344', 'fy', '114514514', null, '健康码', 0, 0, null);
+
+INSERT INTO
+    t_remote_reporting(report_id, person_name, person_id, img_url, _from, _to, is_checked, is_allowed, additional_info)
+VALUES
+       ('413687893546542344', 'fy', '341435234546546544', '', '湖南省','湖北省', 0, 0, null);
+
+INSERT INTO
+    t_bind_family_application(application_id, applicant_name, relative_name, relative_person_id, additional_information, relation_type, is_processed, is_succeed, result_info)
+VALUES
+       ('413687124546542344', 'fy', '姜洋', '18133654025', null, 0, 0, 0, null);

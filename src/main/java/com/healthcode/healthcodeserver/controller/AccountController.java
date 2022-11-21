@@ -167,8 +167,8 @@ public class AccountController {
     long tot = remoteReportingService.count(wrapper);
 
     List<RemoteReporting> remoteReportings;
-    if (page == null) {
-      remoteReportings = remoteReportingService.listByLimit(100);
+    if (page == null || size == null) {
+      return new Result().error(0).message("not given page or size");
     } else {
       remoteReportings = remoteReportingService.listByPage(page, size);
     }

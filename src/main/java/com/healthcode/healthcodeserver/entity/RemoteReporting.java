@@ -11,6 +11,7 @@ import java.util.Objects;
 @TableName("t_remote_reporting")
 public class RemoteReporting {
   @TableId(value = "report_id", type = IdType.ASSIGN_ID)
+  @JsonProperty("report_id")
   private String id;
   @JsonProperty(value = "person_name")
   private String personName;

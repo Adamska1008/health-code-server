@@ -207,6 +207,7 @@ public class UserController {
     if (verifiedResult.getStatusCode() != 0) {
       return verifiedResult;
     }
+    log.info("user with openid" + openId + " change info");
     User user = userService.getUserInfoByOpenId(openId);
     String personId = user.getPersonId();
     UpdateWrapper<User> wrapper = new UpdateWrapper<>();
@@ -214,7 +215,7 @@ public class UserController {
     if (phoneNumber != null) {
       wrapper.set("phone_number", phoneNumber);
     }
-    userService.update(null, wrapper);
+    userService.update(wrapper);
     return new Result().ok();
   }
 
