@@ -103,7 +103,7 @@ public class IdentityApplicationServiceImpl
     QueryWrapper queryWrapper = new QueryWrapper<>();
     queryWrapper.eq("open_id",openId);
     IdentityApplication identityApplication = identityApplicationDao.selectOne(queryWrapper);
-    if (identityApplication.getIsProcessed() == 1){
+    if (identityApplication.getIsProcessed() == 0){
       return false;
     } else {
       return true;
