@@ -9,14 +9,14 @@ public interface UserService extends IService<User> {
    * @param personId 身份证号
    * @return 对应的User对象数据
    */
-  User getUserInfoByPersonId(String personId);
+  User getByPersonId(String personId);
 
   /**
    * 通过用户小程序openid获取用户信息
    * @param openId 用户小程序openid
    * @return 对应的User对象数据
    */
-  User getUserInfoByOpenId(String openId);
+  User getByOpenId(String openId);
 
   /**
    * 插入用户信息

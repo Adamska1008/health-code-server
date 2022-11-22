@@ -3,16 +3,12 @@ package com.healthcode.healthcodeserver.controller;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.alibaba.fastjson2.util.JSONObject1O;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.healthcode.healthcodeserver.common.Result;
 import com.healthcode.healthcodeserver.entity.*;
 import com.healthcode.healthcodeserver.service.*;
 import com.healthcode.healthcodeserver.util.WxUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
@@ -52,6 +48,8 @@ public class UserController {
   RemoteReportingService remoteReportingService;
   @Autowired
   VenueCodeInfoService venueCodeInfoService;
+  @Autowired
+  AbnormalInfoService abnormalInfoService;
   @Value("${imgs.remote_report.path}")
   String remoteReportImgPath;
 
@@ -167,7 +165,7 @@ public class UserController {
     if (verifiedResult.getStatusCode() != 0) {
       return verifiedResult;
     }
-    User user = userService.getUserInfoByOpenId(openId);
+    User user = userService.getByOpenId(openId);
     if (user == null) {
       log.warn("no user with such openid");
       return new Result().error(4);
@@ -200,15 +198,15 @@ public class UserController {
    * @return Result内容见文档
    */
   @PostMapping("/change_info")
-  public Result changeUserInfo(@Param("openid") String openId,
-                               @Param("session_key") String sessionKey,
-                               @Param("phone_number") String phoneNumber) {
+  public Result changeUserInfo(@RequestParam("openid") String openId,
+                               @RequestParam("session_key") String sessionKey,
+                               @RequestParam("phone_number") String phoneNumber) {
     Result verifiedResult = verifySession(openId, sessionKey);
     if (verifiedResult.getStatusCode() != 0) {
       return verifiedResult;
     }
     log.info("user with openid" + openId + " change info");
-    User user = userService.getUserInfoByOpenId(openId);
+    User user = userService.getByOpenId(openId);
     String personId = user.getPersonId();
     UpdateWrapper<User> wrapper = new UpdateWrapper<>();
     wrapper.eq("person_id", personId);
@@ -234,7 +232,7 @@ public class UserController {
     if (verifiedResult.getStatusCode() != 0) {
       return verifiedResult;
     }
-    User user = userService.getUserInfoByOpenId(openId);
+    User user = userService.getByOpenId(openId);
     if (user == null) {
       log.warn("no user with such openid");
       return new Result()
@@ -272,7 +270,7 @@ public class UserController {
     if (verifiedResult.getStatusCode() != 0) {
       return verifiedResult;
     }
-    User user = userService.getUserInfoByOpenId(openId);
+    User user = userService.getByOpenId(openId);
     if (user == null) {
       log.warn("no user with such openid");
       return new Result()
@@ -356,7 +354,7 @@ public class UserController {
     if (verifiedResult.getStatusCode() != 0) {
       return verifiedResult;
     }
-    User user = userService.getUserInfoByOpenId(openId);
+    User user = userService.getByOpenId(openId);
     String personId = user.getPersonId();
     ItineraryInfo itineraryInfo = new ItineraryInfo(personId, venueId, new Timestamp(System.currentTimeMillis()));
     itineraryInfoService.save(itineraryInfo);
@@ -433,12 +431,12 @@ public class UserController {
     if (verifiedResult.getStatusCode() != 0) {
       return verifiedResult;
     }
-    User user = userService.getUserInfoByOpenId(openId);
+    User user = userService.getByOpenId(openId);
     UserRelation relation = userRelationService.getRelationByTwoIds(user.getPersonId(), personId);
     if (relation == null) {
       return new Result().error(null).message("Unregistered relation.");
     }
-    user = userService.getUserInfoByPersonId(personId);
+    user = userService.getByPersonId(personId);
     NucleicAcidTestInfo latestInfo = nucleicAcidTestInfoService.getLatestTestInfoByPersonId(personId);
     String testInstitutionName = covidTestInstitutionService.getNameById(latestInfo.getTestInstitutionId());
 
@@ -458,7 +456,6 @@ public class UserController {
             .putData("latest_test", latestTest)
             .putData("vaccine_inoculation_info", vaccineInoculationInfoList);
   }
-
 
   /**
    * 传参content-type为application/json
@@ -543,6 +540,7 @@ public class UserController {
     log.info("User with openid " + openId + " check remote report.");
     RemoteReporting reporting = remoteReportingService.getById(reportId);
     if (reporting == null) {
+      log.info("Do not have given report with report id " + reportId + ".");
       return new Result().error(null).message("wrong report id");
     }
     Short isChecked = reporting.getIsChecked();
@@ -551,5 +549,58 @@ public class UserController {
             .ok()
             .putData("is_checked", isChecked)
             .putData("is_allowed", isAllowed);
+  }
+
+  /**
+   *
+   * @param request
+   * @return
+   */
+  @PostMapping("/abnormal")
+  public Result postAbnormalInfo(@RequestBody JSONObject request) {
+    String openId = request.getString("openid");
+    String sessionKey = request.getString("sessionKey");
+    Result verifiedResult = verifySession(openId, sessionKey);
+    if (verifiedResult.getStatusCode() != 0) {
+      return verifiedResult;
+    }
+    log.info("User with openid " + openId + " post abnormal info application.");
+    AbnormalInfo info = new AbnormalInfo(
+      null,
+      request.getString("person_name"),
+      request.getString("phone_number"),
+      request.getString("additional_info"),
+      request.getString("type"),
+      (short)0, (short)0
+    );
+    abnormalInfoService.save(info);
+    return new Result()
+            .ok()
+            .putData("application_id", info.getId());
+  }
+
+  /**
+   *
+   * @param openId
+   * @param sessionKey
+   * @param applicationId
+   * @return
+   */
+  @GetMapping("/abnormal")
+  public Result checkAbnormalInfo(@RequestParam("openid") String openId,
+                                  @RequestParam("session_key") String sessionKey,
+                                  @RequestParam("application_id") String applicationId ) {
+    Result verifiedResult = verifySession(openId, sessionKey);
+    if (verifiedResult.getStatusCode() != 0) {
+      return verifiedResult;
+    }
+    log.info("User with openid " + openId + " check abnormal info application.");
+    AbnormalInfo info = abnormalInfoService.getById(applicationId);
+    Short isInvestigated = info.getIsInvestigated();
+    Short isProcessed = info.getIsProcessed();
+    return new Result()
+            .ok()
+            .putData("is_investigated", isInvestigated)
+            .putData("is_processed", isProcessed);
   }
 }

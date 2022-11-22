@@ -20,13 +20,13 @@ public class UserServiceTest {
 
   @Test
   public void getUserInfoByPersonIdTest(String personId) {
-    User user = userService.getUserInfoByPersonId(personId);
+    User user = userService.getByPersonId(personId);
     System.out.println(JSON.toJSON(user));
   }
 
   @Test
   public void getUserInfoByOpenIdTest(String openId) {
-    User user = userService.getUserInfoByOpenId(openId);
+    User user = userService.getByOpenId(openId);
     System.out.println(JSON.toJSON(user));
   }
 
@@ -64,7 +64,7 @@ public class UserServiceTest {
      */
   @Test
   public void insertUserInfoTest(){
-    //User user = userService.getUserInfoByOpenId(openId);
+    //User user = userService.getByOpenId(openId);
     //System.out.println(user);
       String personId_0 = "1312d1";
       String personName_0 = "iuut";

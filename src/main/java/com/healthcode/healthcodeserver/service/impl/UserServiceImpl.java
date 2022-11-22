@@ -19,7 +19,7 @@ public class UserServiceImpl extends ServiceImpl<UserDao,User> implements UserSe
    * @return 对应的User对象数据
    */
   @Override
-  public User getUserInfoByPersonId(String personId) {
+  public User getByPersonId(String personId) {
     QueryWrapper<User> queryWrapper = new QueryWrapper<>();
     queryWrapper.eq("person_id",personId);
     return userDao.selectOne(queryWrapper);
@@ -30,7 +30,7 @@ public class UserServiceImpl extends ServiceImpl<UserDao,User> implements UserSe
    * @param openId 用户小程序openid
    * @return 对应的User对象数据
    */
-  public User getUserInfoByOpenId(String openId) {
+  public User getByOpenId(String openId) {
     QueryWrapper<User> queryWrapper = new QueryWrapper<>();
     queryWrapper.eq("wx_openid",openId);
     return userDao.selectOne(queryWrapper);

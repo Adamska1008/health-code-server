@@ -1,9 +1,11 @@
 package com.healthcode.healthcodeserver.entity;
 
+import com.alibaba.fastjson.annotation.JSONField;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.Objects;
@@ -11,22 +13,24 @@ import java.util.Objects;
 @TableName("t_bind_family_application")
 public class FamilyBingApplication {
   @TableId(value = "application_id", type = IdType.ASSIGN_ID)
+  @JsonProperty("application_id")
   private String id;
-  @TableField("applicant_name")
+  @JsonProperty("applicant_name")
   private String applicantName;
-  @TableField("relative_name")
+  @JsonProperty("relative_name")
   private String relativeName;
-  @TableField("relative_person_id")
+  @JsonProperty("relative_person_id")
   private String relativePersonId;
   @TableField("additional_information")
+  @JsonProperty("additional_information")
   private String additionalInfo;
-  @TableField("relation_type")
+  @JsonProperty("relation_type")
   private Integer relationType;
-  @TableField("is_processed")
+  @JsonProperty("is_processed")
   private Integer isProcessed;
-  @TableField("is_succeed")
+  @JsonProperty("is_succeed")
   private Integer isSucceed;
-  @TableField("result_info")
+  @JsonProperty("result_info")
   private String resultInfo;
 
   public FamilyBingApplication() {

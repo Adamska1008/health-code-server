@@ -1,6 +1,5 @@
 package com.healthcode.healthcodeserver.controller;
 
-import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -303,7 +302,7 @@ public class TesterController {
     }
 
     Result result = new Result();
-    User user = userService.getUserInfoByOpenId(sampledOpenId);
+    User user = userService.getByOpenId(sampledOpenId);
     if (user == null){
       result.putData("requestStatus",0);
     } else {

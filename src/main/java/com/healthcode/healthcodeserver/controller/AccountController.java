@@ -46,6 +46,12 @@ public class AccountController {
   AbnormalInfoService abnormalInfoService;
   @Autowired
   FamilyBingApplicationService familyBingApplicationService;
+  @Autowired
+  NucleicAcidTestInfoService nucleicAcidTestInfoService;
+  @Autowired
+  CovidTestInstitutionService covidTestInstitutionService;
+  @Autowired
+  VaccineInoculationInfoService vaccineInoculationInfoService;
 
   /**
    * 管理员登陆获取验证token
@@ -203,38 +209,6 @@ public class AccountController {
   }
 
   /**
-   * 获取指定身份证号码用户的行程信息
-   * @param token 用户通信凭证
-   * @param personId 身份证号
-   * @return Result内容参考文档
-   */
-  @GetMapping("/itinerary")
-  public Result getItinerary(@RequestParam("token") String token,
-                             @RequestParam("person_id") String personId) {
-    if (!tokenUtil.verify(token)) {
-      return new Result()
-              .error(2)
-              .message("unknown token");
-    }
-    Result result = new Result().ok();
-    User user = userService.getUserInfoByPersonId(personId);
-    QueryWrapper<ItineraryInfo> wrapper = new QueryWrapper<>();
-    JSONArray jsonArray = new JSONArray();
-    wrapper.eq("person_id", personId);
-    List<ItineraryInfo> itineraryInfos = itineraryInfoService.list(wrapper);
-    itineraryInfos.sort(Comparator.comparing(ItineraryInfo::getRecordTime));
-    for (var itineraryInfo : itineraryInfos) {
-      JSONObject object = new JSONObject();
-      object.put("person_name", user.getName());
-      String venueName = venueCodeInfoService.getVenueNameById(itineraryInfo.getVenueId());
-      object.put("venue_name", venueName);
-      object.put("record_time", itineraryInfo.getRecordTime());
-      jsonArray.add(object);
-    }
-    return result.putData("itinerary_info", jsonArray);
-  }
-
-  /**
    * 获取异常信息申诉的列表
    * @param token 用户通信凭证
    * @return Result内容见文档
@@ -340,5 +314,113 @@ public class AccountController {
     wrapper.set("result_info", resultInfo);
     familyBingApplicationService.update(wrapper);
     return new Result().ok();
+  }
+
+  @GetMapping("/user/profile")
+  public Result getUserProfile(@RequestParam("token") String token,
+                               @RequestParam("person_id") String personId) {
+
+    if (!tokenUtil.verify(token)) {
+      return new Result()
+              .error(2);
+    }
+    User user = userService.getByPersonId(personId);
+    return new Result()
+            .ok()
+            .putData("person_name", user.getName())
+            .putData("person_id", personId)
+            .putData("gender", user.getGender())
+            .putData("phone_number", user.getPhoneNumber())
+            .putData("health_code_color", user.getHealthCodeColor());
+  }
+
+  /**
+   * 获取指定身份证号码用户的行程信息
+   * @param token 用户通信凭证
+   * @param personId 身份证号
+   * @return Result内容参考文档
+   */
+  @GetMapping("/user/itinerary")
+  public Result getItinerary(@RequestParam("token") String token,
+                             @RequestParam("person_id") String personId) {
+    if (!tokenUtil.verify(token)) {
+      return new Result()
+              .error(2)
+              .message("unknown token");
+    }
+    Result result = new Result().ok();
+    User user = userService.getByPersonId(personId);
+    if (user == null) {
+      return new Result()
+              .error(null)
+              .message("invalid person id");
+    }
+    QueryWrapper<ItineraryInfo> wrapper = new QueryWrapper<>();
+    JSONArray jsonArray = new JSONArray();
+    wrapper.eq("person_id", personId);
+    List<ItineraryInfo> itineraryInfos = itineraryInfoService.list(wrapper);
+    itineraryInfos.sort(Comparator.comparing(ItineraryInfo::getRecordTime));
+    for (var itineraryInfo : itineraryInfos) {
+      JSONObject object = new JSONObject();
+      object.put("person_name", user.getName());
+      String venueName = venueCodeInfoService.getVenueNameById(itineraryInfo.getVenueId());
+      object.put("venue_name", venueName);
+      object.put("record_time", itineraryInfo.getRecordTime());
+      jsonArray.add(object);
+    }
+    return result.putData("itinerary_info", jsonArray);
+  }
+
+  @GetMapping("/user/nucleic_test")
+  public Result getNucleicTestInfo(@RequestParam("token") String token,
+                                   @RequestParam("person_id") String personId) {
+    if (!tokenUtil.verify(token)) {
+      return new Result()
+              .error(2)
+              .message("unknown token");
+    }
+    User user = userService.getByPersonId(personId);
+    if (user == null) {
+      return new Result()
+              .error(null)
+              .message("invalid person id");
+    }
+    List<NucleicAcidTestInfo> nucleicAcidTestInfos =
+            nucleicAcidTestInfoService.getNucleicAcidTestInfoListByPersonId(user.getPersonId());
+    JSONArray infoList = new JSONArray();
+    for (var info : nucleicAcidTestInfos) {
+      JSONObject jsonInfo = new JSONObject();
+      jsonInfo.put("person_id", info.getPersonId());
+      jsonInfo.put("test_result", info.getTestResult());
+      jsonInfo.put("test_time", info.getTestTime());
+      jsonInfo.put("transfer_code", info.getTransferCode());
+      CovidTestInstitution covidTestInstitution = covidTestInstitutionService.getById(info.getTestInstitutionId());
+      jsonInfo.put("institution_name", covidTestInstitution.getName());
+      infoList.add(jsonInfo);
+    }
+    return new Result()
+            .ok()
+            .putData("info_list", infoList);
+  }
+
+  @GetMapping("/user/vaccine_inocu")
+  public Result getVaccineInocuInfo(@RequestParam("token") String token,
+                                    @RequestParam("person_id") String personId) {
+    if (!tokenUtil.verify(token)) {
+      return new Result()
+              .error(2)
+              .message("unknown token");
+    }
+    User user = userService.getByPersonId(personId);
+    if (user == null) {
+      return new Result()
+              .error(null)
+              .message("invalid person id");
+    }
+    List<VaccineInoculationInfo> vaccineInoculationInfos =
+            vaccineInoculationInfoService.getInfoListByPersonId(user.getPersonId());
+    return new Result()
+            .ok()
+            .putData("info_list", vaccineInoculationInfos);
   }
 }

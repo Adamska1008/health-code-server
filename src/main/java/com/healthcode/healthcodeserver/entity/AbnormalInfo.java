@@ -28,6 +28,18 @@ public class AbnormalInfo {
   @JsonProperty("is_processed")
   private Short isProcessed;
 
+  public AbnormalInfo() {
+  }
+
+  public AbnormalInfo(String id,
+                      String personName,
+                      String phoneNumber,
+                      String additionalInfo,
+                      String type,
+                      Short isInvestigated,
+                      Short isProcessed) {
+  }
+
   public String getPersonName() {
     return personName;
   }

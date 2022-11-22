@@ -93,6 +93,7 @@ CREATE table IF NOT EXISTS t_venue_code_application(
     code_application_name           VARCHAR(40) ,
     is_solved                       TINYINT CHECK ( is_solved IN (0,1)),
     code_application_result         TINYINT CHECK ( code_application_result IN (0,1)),
+    result                          TINYINT CHECK (result in (0,1)),
     result_info                     VARCHAR(100),
     PRIMARY KEY (code_application_id)
 )DEFAULT CHARSET=utf8mb4;
