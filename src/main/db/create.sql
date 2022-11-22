@@ -239,13 +239,13 @@ CREATE TABLE IF NOT EXISTS t_audit_journey_information  (
 )DEFAULT CHARSET=utf8mb4;
 
 -- 采集点信息
-CREATE TABLE IF NOT EXISTS t_collectionpoint_information (
-	collectionpoint_id            CHAR(20)    NOT NULL,
-    collectionpoint_position      VARCHAR(20) NOT NULL,
-    collectionpoint_institution   VARCHAR(20) NOT NULL,
-    collectionpoint_principal     CHAR(20)    NOT NULL,
-    collectionpoint_contact       CHAR(20)    NOT NULL,
-    PRIMARY KEY (collectionpoint_id)
+CREATE TABLE IF NOT EXISTS t_collection_point_information (
+	collection_point_id            CHAR(20)    NOT NULL,
+    collection_point_position      VARCHAR(20) NOT NULL,
+    collection_point_institution   VARCHAR(20) NOT NULL,
+    collection_point_principal     CHAR(20)    NOT NULL,
+    collection_point_contact_phone CHAR(20)    NOT NULL,
+    PRIMARY KEY (collection_point_id)
 )DEFAULT CHARSET=utf8mb4;
 
 -- 政策信息

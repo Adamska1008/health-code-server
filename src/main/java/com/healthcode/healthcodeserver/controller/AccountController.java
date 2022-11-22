@@ -52,6 +52,8 @@ public class AccountController {
   CovidTestInstitutionService covidTestInstitutionService;
   @Autowired
   VaccineInoculationInfoService vaccineInoculationInfoService;
+  @Autowired
+  CollectionPointService collectionPointService;
 
   /**
    * 管理员登陆获取验证token
@@ -304,6 +306,7 @@ public class AccountController {
       return new Result()
               .error(2);
     }
+    log.info("Admin with token " + token + " post family binding.");
     String applicationId = request.getString("application_id");
     Integer isSucceed = request.getInteger("is_succeed");
     String resultInfo = request.getString("result_info");
@@ -316,6 +319,39 @@ public class AccountController {
     return new Result().ok();
   }
 
+  @GetMapping("/collection_point")
+  public Result getCollectionPoint(@RequestParam("token") String token,
+                                   @RequestParam("page") Integer page,
+                                   @RequestParam("size") Integer size) {
+    if (!tokenUtil.verify(token)) {
+      return new Result()
+              .error(2);
+    }
+    List<CollectionPoint> points = collectionPointService.getByPage(page, size);
+    return new Result()
+            .ok()
+            .putData("point_list", points);
+  }
+
+  @PostMapping("/collection_point/add")
+  public Result addCollectionPoint(@RequestBody JSONObject request) {
+    String token = request.getString("token");
+    if (!tokenUtil.verify(token)) {
+      return new Result()
+              .error(2);
+    }
+    log.info("Admin with token " + token + " add collection point.");
+    CollectionPoint point = new CollectionPoint(
+            null,
+            request.getString("collection_point_position"),
+            request.getString("collection_point_institution"),
+            request.getString("collection_point_principal"),
+            request.getString("collection_point_contact_phone")
+    );
+    collectionPointService.save(point);
+    return new Result().ok();
+  }
+
   @GetMapping("/user/profile")
   public Result getUserProfile(@RequestParam("token") String token,
                                @RequestParam("person_id") String personId) {
@@ -325,6 +361,11 @@ public class AccountController {
               .error(2);
     }
     User user = userService.getByPersonId(personId);
+    if (user == null) {
+      return new Result()
+              .error(null)
+              .message("invalid person id");
+    }
     return new Result()
             .ok()
             .putData("person_name", user.getName())
