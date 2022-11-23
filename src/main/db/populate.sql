@@ -104,4 +104,6 @@ VALUES
 INSERT INTO
     t_bind_family_application(application_id, applicant_name, relative_name, relative_person_id, additional_information, relation_type, is_processed, is_succeed, result_info)
 VALUES
-       ('413687124546542344', 'fy', '姜洋', '18133654025', null, 0, 0, 0, null);
+       ('413687124546542344', 'fy', '姜洋', '18133654025', null, 0, 0, 0, null),
+       ('413676711737197344', 'abc', 'efg', '18234784025', null, 1, 0, 0, null),
+       ('534676711737197344', 'yq', 'cv', '41234784025', null, 2, 0, 0, null);
