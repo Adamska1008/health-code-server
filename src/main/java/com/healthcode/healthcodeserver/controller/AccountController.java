@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 
@@ -349,6 +350,33 @@ public class AccountController {
             request.getString("collection_point_contact_phone")
     );
     collectionPointService.save(point);
+    return new Result().ok();
+  }
+
+  /**
+   *
+   * @param request
+   * @return
+   */
+  @PostMapping("/collection_point/update")
+  public Result updateCollectionPoint(@RequestBody JSONObject request) {
+    String token = request.getString("token");
+    if (!tokenUtil.verify(token)) {
+      return new Result()
+              .error(2);
+    }
+    log.info("Admin with token " + token + " update collection point.");
+    String pointId = request.getString("collection_point_id");
+    UpdateWrapper<CollectionPoint> wrapper = new UpdateWrapper<>();
+    wrapper.eq("collection_point_id", pointId);
+    List<String> selections = Arrays.asList(
+            "collection_point_position", "collection_point_institution",
+            "collection_point_principal", "collection_point_contact_phone");
+    for (String selection : selections) {
+      if (request.containsKey(selection)) {
+        wrapper.set(selection, request.getString(selection));
+      }
+    }
     return new Result().ok();
   }
 
