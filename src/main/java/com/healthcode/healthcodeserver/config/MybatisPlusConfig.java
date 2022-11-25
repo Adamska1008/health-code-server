@@ -19,7 +19,8 @@ public class MybatisPlusConfig {
     paginationInnerInterceptor.setOptimizeJoin(true);
     paginationInnerInterceptor.setOverflow(true);
     interceptor.addInnerInterceptor(paginationInnerInterceptor);
-    OptimisticLockerInnerInterceptor optimisticLockerInnerInterceptor = new OptimisticLockerInnerInterceptor();
+    OptimisticLockerInnerInterceptor optimisticLockerInnerInterceptor =
+            new OptimisticLockerInnerInterceptor();
     interceptor.addInnerInterceptor(optimisticLockerInnerInterceptor);
     return interceptor;
   }

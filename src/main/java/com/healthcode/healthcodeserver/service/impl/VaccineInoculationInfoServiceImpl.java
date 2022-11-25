@@ -19,13 +19,13 @@ public class VaccineInoculationInfoServiceImpl
 
   /**
    * 通过personId获取信息列表
-   * @param id 身份证号
+   * @param personId 身份证号
    * @return 疫苗接种信息列表
    */
   @Override
-  public List<VaccineInoculationInfo> getInfoListByPersonId(String id) {
+  public List<VaccineInoculationInfo> getInfoListByPersonId(String personId) {
     QueryWrapper<VaccineInoculationInfo> queryWrapper = new QueryWrapper<>();
-    queryWrapper.eq("person_id",id);
+    queryWrapper.eq("person_id",personId);
     return vaccineInoculationInfoDao.selectList(queryWrapper);
   }
 }

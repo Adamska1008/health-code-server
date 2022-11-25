@@ -1,13 +1,13 @@
 -- 用户样例信息
 INSERT INTO
-    t_user_info(person_id, person_name, phone_number, wx_openid, gender, health_code_color)
+    t_user_info(person_id, person_name, phone_number, position, wx_openid, gender, health_code_color)
 VALUES
-       ('35341719961123514X', '张三', '14751432158', 'oHbzp5xs8kZP0nMKMyJ6Wb0VKiNI', 0, 0),
-       ('457342192208107100', '姜洋', '18133654025', 'oHbzp5yIBhroac3en14rw9zhYVcI' , 0, 0),
-       ('725341186604107764', '贾芳', '18641528264', null, 1, 1),
-       ('73151418061117368X', '唐秀兰', '18655727623', null, 0, 1),
-       ('745221196308105087', '傅强', '18626544578', null, 1, 2),
-       ('341435234546546544', 'fy','13317278715','oHbzp53Ax8GW3td4vmkV2Pp3H904',0,0);
+       ('35341719961123514X', '张三', '14751432158', '湖南省:长沙市:岳麓区','oHbzp5xs8kZP0nMKMyJ6Wb0VKiNI', 0, 0),
+       ('457342192208107100', '姜洋', '18133654025', '湖南省:长沙市:芙蓉区','oHbzp5yIBhroac3en14rw9zhYVcI' , 0, 0),
+       ('725341186604107764', '贾芳', '18641528264','湖南省:长沙市:天心区', null, 1, 1),
+       ('73151418061117368X', '唐秀兰', '18655727623','湖南省:长沙市:开福区', null, 0, 1),
+       ('745221196308105087', '傅强', '18626544578','湖南省:长沙市:雨花区', null, 1, 2),
+       ('341435234546546544', 'fy','13317278715','湖南省:长沙市:岳麓区','oHbzp53Ax8GW3td4vmkV2Pp3H904',0,0);
 
 -- 用户关系样例信息
 INSERT INTO
@@ -16,15 +16,17 @@ VALUES
        ('35341719961123514X', '457342192208107100', 0),
        ('725341186604107764', '73151418061117368X', 2);
 
+-- institution_locate_area同样需要满足 :: 结构，具体根据查看地图api的情况进行修改
 -- 疫苗检测信息
 INSERT INTO
     t_covid_test_institution(institution_id, institution_locate_area, institution_name)
 VALUES
-       ('04466936245247713632', '江西省 萍乡市 上栗县', 'A医院'),
-       ('46312353322876452624', '广西壮族自治区 防城港市 上思县', 'B医院'),
-       ('74280262060094563874', '海南省 三沙市 中沙群岛的岛礁及其海域', 'C医院'),
-       ('65527919204620368784', '山东省 菏泽市 定陶县',  'D医院');
+       ('04466936245247713632', '江西省:萍乡市:上栗县', 'A医院'),
+       ('46312353322876452624', '广西壮族自治区:防城港市:上思县', 'B医院'),
+       ('74280262060094563874', '海南省:三沙市:中沙群岛的岛礁及其海域', 'C医院'),
+       ('65527919204620368784', '山东省:菏泽市:定陶县',  'D医院');
 
+-- 转运码信息
 INSERT INTO t_transfer_code_info(transfer_code, tester_open_id, test_time, person_number, is_transferred)
 VALUES
     ('JSON123456789','ojKoj52igjq_xw7MpIKZ4LUZJnH8','2022-11-13 16:58:14',1,0),
@@ -80,7 +82,7 @@ VALUES
     ('341455234546542344','fy','341435234546546544','13317278716','2428935897293745',0,0,0,null);
 
 
-
+-- 核酸测试人员信息
 INSERT INTO
     t_tester(open_id, person_id, name, phone)
 VALUES
@@ -90,20 +92,28 @@ VALUES
     ('oHujp6yIBhfyjn14rw9gskjsajkiI','654653426845625632','董卓',16578946253);
 
 
-
+-- 异常信息申诉表
 INSERT INTO
     t_abnormal_info_application(application_id, person_name, person_phone, additional_information, type, is_investigated, is_processed, result)
 VALUES
        ('341414893546542344', 'fy', '114514514', null, '健康码', 0, 0, null);
 
+-- 异地报备
 INSERT INTO
     t_remote_reporting(report_id, person_name, person_id, img_url, _from, _to, is_checked, is_allowed, additional_info)
 VALUES
        ('413687893546542344', 'fy', '341435234546546544', '', '湖南省','湖北省', 0, 0, null);
 
+-- 绑定家属健康码
 INSERT INTO
     t_bind_family_application(application_id, applicant_name, relative_name, relative_person_id, additional_information, relation_type, is_processed, is_succeed, result_info)
 VALUES
        ('413687124546542344', 'fy', '姜洋', '18133654025', null, 0, 0, 0, null),
        ('413676711737197344', 'abc', 'efg', '18234784025', null, 1, 0, 0, null),
        ('534676711737197344', 'yq', 'cv', '41234784025', null, 2, 0, 0, null);
+
+
+INSERT INTO
+    t_venue_code_application(application_id, applicant_name, applicant_person_id, position, location, type, place_name, is_solved, is_passed, result_info)
+VALUES
+       ('1234687897161', 'fy', '18133654025', '湖南省:长沙市:岳麓区', '', '饭店', 'A饭店', 0, 0, null);

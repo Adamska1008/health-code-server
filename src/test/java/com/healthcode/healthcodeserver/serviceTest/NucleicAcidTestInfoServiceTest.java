@@ -22,7 +22,7 @@ public class NucleicAcidTestInfoServiceTest {
 
   /**
    * 测试函数 getNucleicAcidTestInfoListByPersonIdTest
-   * 用来测试函数    nucleicAcidTestInfoService.getNucleicAcidTestInfoListByPersonId(String personId);
+   * 用来测试函数 nucleicAcidTestInfoService.getNucleicAcidTestInfoListByPersonId(String personId);
    * 取值包括
    *     String personId_0 = "123er";
    *     String personId_1 = "43wserg43";
@@ -46,25 +46,35 @@ public class NucleicAcidTestInfoServiceTest {
     String personId_7 = "oaiudfjaun2525141421241241fsdrg3w4gef";
     String personId_8 = "7";
 
-    List<NucleicAcidTestInfo> nucleicAcidTestInfoList_0 = nucleicAcidTestInfoService.getNucleicAcidTestInfoListByPersonId(null);
+    List<NucleicAcidTestInfo> nucleicAcidTestInfoList_0 =
+            nucleicAcidTestInfoService.getNucleicAcidTestInfoListByPersonId(null);
     System.out.println(nucleicAcidTestInfoList_0);
-    List<NucleicAcidTestInfo> nucleicAcidTestInfoList_1 = nucleicAcidTestInfoService.getNucleicAcidTestInfoListByPersonId(personId_0);
+    List<NucleicAcidTestInfo> nucleicAcidTestInfoList_1 =
+            nucleicAcidTestInfoService.getNucleicAcidTestInfoListByPersonId(personId_0);
     System.out.println(nucleicAcidTestInfoList_1);
-    List<NucleicAcidTestInfo> nucleicAcidTestInfoList_2 = nucleicAcidTestInfoService.getNucleicAcidTestInfoListByPersonId(personId_1);
+    List<NucleicAcidTestInfo> nucleicAcidTestInfoList_2 =
+            nucleicAcidTestInfoService.getNucleicAcidTestInfoListByPersonId(personId_1);
     System.out.println(nucleicAcidTestInfoList_2);
-    List<NucleicAcidTestInfo> nucleicAcidTestInfoList_3 = nucleicAcidTestInfoService.getNucleicAcidTestInfoListByPersonId(personId_2);
+    List<NucleicAcidTestInfo> nucleicAcidTestInfoList_3 =
+            nucleicAcidTestInfoService.getNucleicAcidTestInfoListByPersonId(personId_2);
     System.out.println(nucleicAcidTestInfoList_3);
-    List<NucleicAcidTestInfo> nucleicAcidTestInfoList_4 = nucleicAcidTestInfoService.getNucleicAcidTestInfoListByPersonId(personId_3);
+    List<NucleicAcidTestInfo> nucleicAcidTestInfoList_4 =
+            nucleicAcidTestInfoService.getNucleicAcidTestInfoListByPersonId(personId_3);
     System.out.println(nucleicAcidTestInfoList_4);
-    List<NucleicAcidTestInfo> nucleicAcidTestInfoList_5= nucleicAcidTestInfoService.getNucleicAcidTestInfoListByPersonId(personId_4);
+    List<NucleicAcidTestInfo> nucleicAcidTestInfoList_5 =
+            nucleicAcidTestInfoService.getNucleicAcidTestInfoListByPersonId(personId_4);
     System.out.println(nucleicAcidTestInfoList_5);
-    List<NucleicAcidTestInfo> nucleicAcidTestInfoList_6 = nucleicAcidTestInfoService.getNucleicAcidTestInfoListByPersonId(personId_5);
+    List<NucleicAcidTestInfo> nucleicAcidTestInfoList_6 =
+            nucleicAcidTestInfoService.getNucleicAcidTestInfoListByPersonId(personId_5);
     System.out.println(nucleicAcidTestInfoList_6);
-    List<NucleicAcidTestInfo> nucleicAcidTestInfoList_7 = nucleicAcidTestInfoService.getNucleicAcidTestInfoListByPersonId(personId_6);
+    List<NucleicAcidTestInfo> nucleicAcidTestInfoList_7 =
+            nucleicAcidTestInfoService.getNucleicAcidTestInfoListByPersonId(personId_6);
     System.out.println(nucleicAcidTestInfoList_7);
-    List<NucleicAcidTestInfo> nucleicAcidTestInfoList_8 = nucleicAcidTestInfoService.getNucleicAcidTestInfoListByPersonId(personId_7);
+    List<NucleicAcidTestInfo> nucleicAcidTestInfoList_8 =
+            nucleicAcidTestInfoService.getNucleicAcidTestInfoListByPersonId(personId_7);
     System.out.println(nucleicAcidTestInfoList_8);
-    List<NucleicAcidTestInfo> nucleicAcidTestInfoList_9 = nucleicAcidTestInfoService.getNucleicAcidTestInfoListByPersonId(personId_8);
+    List<NucleicAcidTestInfo> nucleicAcidTestInfoList_9 =
+            nucleicAcidTestInfoService.getNucleicAcidTestInfoListByPersonId(personId_8);
     System.out.println(nucleicAcidTestInfoList_9);
   }
 }

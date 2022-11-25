@@ -145,12 +145,21 @@ public class RemoteReporting {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
     RemoteReporting reporting = (RemoteReporting) o;
-    return Objects.equals(id, reporting.id) && Objects.equals(personName, reporting.personName) && Objects.equals(personId, reporting.personId) && Objects.equals(imgUrl, reporting.imgUrl) && Objects.equals(from, reporting.from) && Objects.equals(to, reporting.to) && Objects.equals(additionalInfo, reporting.additionalInfo) && Objects.equals(isChecked, reporting.isChecked) && Objects.equals(isAllowed, reporting.isAllowed);
+    return Objects.equals(id, reporting.id)
+            && Objects.equals(personName, reporting.personName)
+            && Objects.equals(personId, reporting.personId)
+            && Objects.equals(imgUrl, reporting.imgUrl)
+            && Objects.equals(from, reporting.from)
+            && Objects.equals(to, reporting.to)
+            && Objects.equals(additionalInfo, reporting.additionalInfo)
+            && Objects.equals(isChecked, reporting.isChecked)
+            && Objects.equals(isAllowed, reporting.isAllowed);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(id, personName, personId, imgUrl, from, to, additionalInfo, isChecked, isAllowed);
+    return Objects.hash(id, personName, personId,
+            imgUrl, from, to, additionalInfo, isChecked, isAllowed);
   }
 }
 

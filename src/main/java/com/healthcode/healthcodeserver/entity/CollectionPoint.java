@@ -97,7 +97,11 @@ public class CollectionPoint {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
     CollectionPoint that = (CollectionPoint) o;
-    return Objects.equals(id, that.id) && Objects.equals(position, that.position) && Objects.equals(institution, that.institution) && Objects.equals(principal, that.principal) && Objects.equals(phone, that.phone);
+    return Objects.equals(id, that.id)
+            && Objects.equals(position, that.position)
+            && Objects.equals(institution, that.institution)
+            && Objects.equals(principal, that.principal)
+            && Objects.equals(phone, that.phone);
   }
 
   @Override

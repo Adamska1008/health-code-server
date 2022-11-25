@@ -18,15 +18,12 @@ public class AbnormalInfoServiceImpl
   @Autowired
   AbnormalInfoDao abnormalInfoDao;
 
-  @Override
-  public List<AbnormalInfo> listByLimit(int limit) {
-    QueryWrapper<AbnormalInfo> wrapper = new QueryWrapper<>();
-    wrapper.orderByAsc("is_investigated");
-    wrapper.orderByAsc("is_processed");
-    wrapper.last("LIMIT "+limit);
-    return abnormalInfoDao.selectList(wrapper);
-  }
-
+  /**
+   * 有分页的获取列表
+   * @param page 第几页
+   * @param size 页大小
+   * @return 元素列表
+   */
   @Override
   public List<AbnormalInfo> listByPage(int page, int size) {
     Page<AbnormalInfo> infoPage = new Page<>(page, size);

@@ -4,34 +4,32 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.Objects;
 
 @TableName("t_venue_code_application")
 public class VenueCodeApplication {
-  @TableId(value = "code_application_id", type = IdType.ASSIGN_ID)
+  @TableId(value = "application_id", type = IdType.ASSIGN_ID)
+  @JsonProperty("application_id")
   private String id;
-  @TableField("code_application_person_name")
+  @JsonProperty("applicant_name")
   private String applicantName;
-  @TableField("code_application_person_id")
+  @JsonProperty("applicant_person_id")
   private String applicantPersonId;
-  @TableField("code_application_locate")
+  private String position;
   private String location;
-  @TableField("code_application_type")
   private String type;
-  @TableField("code_application_name")
+  @JsonProperty("place_name")
   private String placeName;
-  /*
-  0 未解决
-  1 已解决
-   */
+  @JsonProperty("is_solved")
   private Integer isSolved;
-  /*
-  0 已通过
-  1 未通过
-   */
-  private Integer result;
+  @JsonProperty("is_passed")
+  private Integer isPassed;
+  @JsonProperty("result_info")
   private String resultInfo;
+  @JsonProperty("venue_id")
+  private String venueId;
 
   public VenueCodeApplication() {
   }
@@ -39,21 +37,29 @@ public class VenueCodeApplication {
   public VenueCodeApplication(String id,
                               String applicantName,
                               String applicantPersonId,
+                              String position,
                               String location,
                               String type,
                               String placeName,
                               Integer isSolved,
-                              Integer result,
-                              String resultInfo) {
+                              Integer isPassed,
+                              String resultInfo,
+                              String venueId) {
     this.id = id;
     this.applicantName = applicantName;
     this.applicantPersonId = applicantPersonId;
+    this.position = position;
     this.location = location;
     this.type = type;
     this.placeName = placeName;
     this.isSolved = isSolved;
-    this.result = result;
+    this.isPassed = isPassed;
     this.resultInfo = resultInfo;
+    this.venueId = venueId;
+  }
+
+  public String getVenueId() {
+    return venueId;
   }
 
   public String getResultInfo() {
@@ -68,6 +74,10 @@ public class VenueCodeApplication {
     return applicantPersonId;
   }
 
+  public String getPosition() {
+    return position;
+  }
+
   public String getApplicantName() {
     return applicantName;
   }
@@ -80,8 +90,8 @@ public class VenueCodeApplication {
     return isSolved;
   }
 
-  public Integer getResult() {
-    return result;
+  public Integer getIsPassed() {
+    return isPassed;
   }
 
   public String getPlaceName() {
@@ -124,8 +134,16 @@ public class VenueCodeApplication {
     this.placeName = placeName;
   }
 
-  public void setResult(Integer result) {
-    this.result = result;
+  public void setIsPassed(Integer isPassed) {
+    this.isPassed = isPassed;
+  }
+
+  public void setPosition(String position) {
+    this.position = position;
+  }
+
+  public void setVenueId(String venueId) {
+    this.venueId = venueId;
   }
 
   @Override
@@ -134,11 +152,12 @@ public class VenueCodeApplication {
             "id='" + id + '\'' +
             ", applicantName='" + applicantName + '\'' +
             ", applicantPersonId='" + applicantPersonId + '\'' +
+            ", position='" + position + '\'' +
             ", location='" + location + '\'' +
             ", type='" + type + '\'' +
             ", placeName='" + placeName + '\'' +
             ", isSolved=" + isSolved +
-            ", result=" + result +
+            ", isPassed=" + isPassed +
             ", resultInfo='" + resultInfo + '\'' +
             '}';
   }
@@ -148,11 +167,21 @@ public class VenueCodeApplication {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
     VenueCodeApplication that = (VenueCodeApplication) o;
-    return Objects.equals(id, that.id) && Objects.equals(applicantName, that.applicantName) && Objects.equals(applicantPersonId, that.applicantPersonId) && Objects.equals(location, that.location) && Objects.equals(type, that.type) && Objects.equals(placeName, that.placeName) && Objects.equals(isSolved, that.isSolved) && Objects.equals(result, that.result) && Objects.equals(resultInfo, that.resultInfo);
+    return Objects.equals(id, that.id)
+            && Objects.equals(applicantName, that.applicantName)
+            && Objects.equals(applicantPersonId, that.applicantPersonId)
+            && Objects.equals(position, that.position)
+            && Objects.equals(location, that.location)
+            && Objects.equals(type, that.type)
+            && Objects.equals(placeName, that.placeName)
+            && Objects.equals(isSolved, that.isSolved)
+            && Objects.equals(isPassed, that.isPassed)
+            && Objects.equals(resultInfo, that.resultInfo);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(id, applicantName, applicantPersonId, location, type, placeName, isSolved, result, resultInfo);
+    return Objects.hash(id, applicantName, applicantPersonId, position,
+            location, type, placeName, isSolved, isPassed, resultInfo);
   }
 }

@@ -18,6 +18,12 @@ public class CollectionPointServiceImpl
   @Autowired
   CollectionPointDao collectionPointDao;
 
+  /**
+   * 有分页的获取列表
+   * @param page 第几页
+   * @param size 页大小
+   * @return 元素列表
+   */
   @Override
   public List<CollectionPoint> getByPage(int page, int size) {
     Page<CollectionPoint> pointPage = new Page<>(page, size);

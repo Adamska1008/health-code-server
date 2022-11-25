@@ -61,7 +61,9 @@ public class ItineraryInfo {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
     ItineraryInfo that = (ItineraryInfo) o;
-    return Objects.equals(personId, that.personId) && Objects.equals(venueId, that.venueId) && Objects.equals(recordTime, that.recordTime);
+    return Objects.equals(personId, that.personId)
+            && Objects.equals(venueId, that.venueId)
+            && Objects.equals(recordTime, that.recordTime);
   }
 
   @Override

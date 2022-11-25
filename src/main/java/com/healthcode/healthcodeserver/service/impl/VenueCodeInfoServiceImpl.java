@@ -14,9 +14,14 @@ public class VenueCodeInfoServiceImpl
   @Autowired
   VenueCodeInfoDao venueCodeInfoDao;
 
+  /**
+   * 通过场所码id获取场所名称
+   * @param id 场所码id
+   * @return 场所码名称
+   */
   @Override
   public String getVenueNameById(String id) {
     VenueCodeInfo info = venueCodeInfoDao.selectById(id);
-    return info.getVenueName();
+    return info.getName();
   }
 }

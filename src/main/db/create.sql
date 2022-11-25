@@ -3,11 +3,14 @@ CREATE DATABASE healthcode;
 USE healthcode;
 
 -- gender 0:男 1:女
--- health_code_color 0:绿 1:黄 2:红
+-- health_code_color 0:绿 1:黄 2:
+-- position 必须满足 “省:市:区”格式
+-- 个人详细信息在
 CREATE TABLE IF NOT EXISTS t_user_info (
     person_id           CHAR(20)    NOT NULL,
     person_name         CHAR(20),
     phone_number        CHAR(20),
+    position            CHAR(20),
     wx_openid           CHAR(40),
     gender              TINYINT     CHECK(gender IN(0, 1)),
     health_code_color   TINYINT    	CHECK (health_code_color IN (0,1,2)),
@@ -75,9 +78,10 @@ CREATE table  IF NOT EXISTS t_covid_test_institution(
 -- 场所码信息
 CREATE table IF NOT EXISTS t_venue_code_info(
     code_id             CHAR(20)    NOT NULL,
-    venue_type          VARCHAR(10) ,
-    venue_location   VARCHAR(50) ,
     venue_name          VARCHAR(40) ,
+    venue_type          VARCHAR(10) ,
+    venue_position      VARCHAR(50) ,
+    venue_location      VARCHAR(50) ,
     PRIMARY KEY (code_id)
 )DEFAULT CHARSET=utf8mb4;
 
@@ -85,17 +89,18 @@ CREATE table IF NOT EXISTS t_venue_code_info(
 -- is_solved 0: 未处理 1:已处理
 -- code_application_result 0: 申请成功 1:申请失败
 CREATE table IF NOT EXISTS t_venue_code_application(
-    code_application_id             CHAR(20)    NOT NULL,
-    code_application_person_name    VARCHAR(30) ,
-    code_application_person_id      VARCHAR(40) ,
-    code_application_locate         VARCHAR(40) ,
-    code_application_type           VARCHAR(10) ,
-    code_application_name           VARCHAR(40) ,
+    application_id                  CHAR(20)    NOT NULL,
+    applicant_name                  VARCHAR(30) ,
+    applicant_person_id             VARCHAR(40) ,
+    position                        VARCHAR(40) ,
+    location                        VARCHAR(40),
+    type                            VARCHAR(10) ,
+    place_name                      VARCHAR(40) ,
     is_solved                       TINYINT CHECK ( is_solved IN (0,1)),
-    code_application_result         TINYINT CHECK ( code_application_result IN (0,1)),
-    result                          TINYINT CHECK (result in (0,1)),
+    is_passed                       TINYINT CHECK (is_passed in (0,1)),
     result_info                     VARCHAR(100),
-    PRIMARY KEY (code_application_id)
+    venue_id                        CHAR(20),
+    PRIMARY KEY (application_id)
 )DEFAULT CHARSET=utf8mb4;
 
 -- 行程信息

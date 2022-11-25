@@ -67,7 +67,7 @@ public class UserController {
       return new Result().error(null);
     }
     if (!openIdToSessionKey.get(openId).equals(sessionKey)) {
-      log.warn("receive openid "+openId+" and session_key "+sessionKey+", which do not correspond.");
+      log.warn("receive openid "+openId+" and session_key "+sessionKey+", which do not correspond");
       return new Result().error(3);
     }
     return new Result().ok();
@@ -127,6 +127,11 @@ public class UserController {
     return result;
   }
 
+  /**
+   * 修改用户信息
+   * @param request 请求内容，键值对集合
+   * @return Result内容见文档
+   */
   @PostMapping("/register_user_info")
   public Result registerUserInfo(@RequestBody JSONObject request) {
     String openId = request.getString("openid");
@@ -170,10 +175,12 @@ public class UserController {
       log.warn("no user with such openid");
       return new Result().error(4);
     }
-    NucleicAcidTestInfo latestInfo = nucleicAcidTestInfoService.getLatestTestInfoByPersonId(user.getPersonId());
+    NucleicAcidTestInfo latestInfo =
+            nucleicAcidTestInfoService.getLatestTestInfoByPersonId(user.getPersonId());
     JSONObject latestTest = new JSONObject();
     if (latestInfo != null) {
-      String testInstitutionName = covidTestInstitutionService.getNameById(latestInfo.getTestInstitutionId());
+      String testInstitutionName =
+              covidTestInstitutionService.getNameById(latestInfo.getTestInstitutionId());
       latestTest.put("result", latestInfo.getTestResult());
       latestTest.put("test_time", latestInfo.getTestTime());
       latestTest.put("institution_name", testInstitutionName);
@@ -247,7 +254,8 @@ public class UserController {
       jsonInfo.put("test_result", info.getTestResult());
       jsonInfo.put("test_time", info.getTestTime());
       jsonInfo.put("transfer_code", info.getTransferCode());
-      CovidTestInstitution covidTestInstitution = covidTestInstitutionService.getById(info.getTestInstitutionId());
+      CovidTestInstitution covidTestInstitution =
+              covidTestInstitutionService.getById(info.getTestInstitutionId());
       jsonInfo.put("institution_name", covidTestInstitution.getName());
       infoList.add(jsonInfo);
     }
@@ -300,10 +308,11 @@ public class UserController {
             null,
             request.getString("applicant_name"),
             request.getString("applicant_person_id"),
+            request.getString("position"),
             request.getString("location"),
             request.getString("type"),
             request.getString("place_name"),
-            0, 0, null
+            0, 0, null, null
     );
     venueCodeApplicationService.save(application);
     return new Result()
@@ -328,15 +337,23 @@ public class UserController {
       return verifiedResult;
     }
     VenueCodeApplication application = venueCodeApplicationService.getById(applicationId);
-    return new Result()
-            .ok()
-            .putData("processed", application.getIsSolved())
-            .putData("venue_code_id", application.getId())
-            .putData("venue_type", application.getType())
-            .putData("place_name", application.getPlaceName())
-            .putData("location", application.getLocation())
-            .putData("result", application.getResult())
-            .putData("result_info", application.getResultInfo());
+    if (application.getIsPassed() == 1) {
+      return new Result()
+              .ok()
+              .putData("is_solved", application.getIsSolved())
+              .putData("is_passed", application.getIsPassed())
+              .putData("venue_id", application.getVenueId())
+              .putData("venue_type", application.getType())
+              .putData("place_name", application.getPlaceName())
+              .putData("position", application.getPosition())
+              .putData("location", application.getLocation());
+    } else {
+      return new Result()
+              .ok()
+              .putData("is_solved", application.getIsSolved())
+              .putData("is_passed", application.getIsPassed())
+              .putData("result_info", application.getResultInfo());
+    }
   }
 
   /**
@@ -356,14 +373,17 @@ public class UserController {
     }
     User user = userService.getByOpenId(openId);
     String personId = user.getPersonId();
-    ItineraryInfo itineraryInfo = new ItineraryInfo(personId, venueId, new Timestamp(System.currentTimeMillis()));
+    ItineraryInfo itineraryInfo =
+            new ItineraryInfo(personId, venueId, new Timestamp(System.currentTimeMillis()));
     itineraryInfoService.save(itineraryInfo);
-    VenueCodeInfo venueCodeInfo = venueCodeInfoService.getById(venueId);
+    VenueCodeInfo info = venueCodeInfoService.getById(venueId);
     return new Result()
             .ok()
-            .putData("venue_name", venueCodeInfo.getVenueName())
-            .putData("venue_type", venueCodeInfo.getVenueType())
-            .putData("location", venueCodeInfo.getVenueLocation());
+            .putData("venue_id", info.getId())
+            .putData("place_name", info.getName())
+            .putData("type", info.getType())
+            .putData("location", info.getLocation())
+            .putData("position", info.getPosition());
   }
 
   /**
@@ -437,8 +457,10 @@ public class UserController {
       return new Result().error(null).message("Unregistered relation.");
     }
     user = userService.getByPersonId(personId);
-    NucleicAcidTestInfo latestInfo = nucleicAcidTestInfoService.getLatestTestInfoByPersonId(personId);
-    String testInstitutionName = covidTestInstitutionService.getNameById(latestInfo.getTestInstitutionId());
+    NucleicAcidTestInfo latestInfo =
+            nucleicAcidTestInfoService.getLatestTestInfoByPersonId(personId);
+    String testInstitutionName =
+            covidTestInstitutionService.getNameById(latestInfo.getTestInstitutionId());
 
     JSONObject latestTest = new JSONObject();
     latestTest.put("result", latestInfo.getTestResult());
@@ -486,43 +508,6 @@ public class UserController {
   }
 
   /**
-   *
-   * @param openId
-   * @param sessionKey
-   * @param file
-   * @param reportId
-   * @return
-   * @throws IOException
-   */
-  @PostMapping(value = "/remote_report_img", headers = "content-type=multipart/form-data")
-  public Result remoteReportImg(@RequestParam("openid") String openId,
-                                @RequestParam("session_key") String sessionKey,
-                                @RequestParam("file") MultipartFile file,
-                                @RequestParam("report_id") String reportId) throws IOException {
-    Result verifiedResult = verifySession(openId, sessionKey);
-    if (verifiedResult.getStatusCode() != 0) {
-      return verifiedResult;
-    }
-    log.info("user with openid " + openId + " upload remote report image." );
-    File dir = new File(remoteReportImgPath);
-    if (!dir.exists()) {
-      dir.mkdirs();
-    }
-    String path = remoteReportImgPath + file.getOriginalFilename();
-    File newFile = new File(path);
-    if (!newFile.exists()) {
-      newFile.createNewFile();
-    }
-    file.transferTo(newFile);
-    RemoteReporting reporting = remoteReportingService.getById(reportId);
-    if (reporting == null) {
-      return new Result().error(null).message("invalid report id");
-    }
-    reporting.setImgUrl(path);
-    return new Result().ok();
-  }
-
-  /**
    * 查看异地报备的结果，是否允许
    * @param openId 用户openid
    * @param sessionKey 会话密钥
@@ -552,9 +537,9 @@ public class UserController {
   }
 
   /**
-   *
-   * @param request
-   * @return
+   * 提交异常申诉
+   * @param request 请求体中的内容
+   * @return Result 内容见文档
    */
   @PostMapping("/abnormal")
   public Result postAbnormalInfo(@RequestBody JSONObject request) {
@@ -580,11 +565,11 @@ public class UserController {
   }
 
   /**
-   *
-   * @param openId
-   * @param sessionKey
-   * @param applicationId
-   * @return
+   * 查询异常申诉
+   * @param openId 用户小程序open_id
+   * @param sessionKey 会话密钥
+   * @param applicationId 申诉id
+   * @return Result 内容见文档
    */
   @GetMapping("/abnormal")
   public Result checkAbnormalInfo(@RequestParam("openid") String openId,

@@ -18,15 +18,12 @@ public class FamilyBingApplicationServiceImpl
   @Autowired
   FamilyBingApplicationDao familyBingApplicationDao;
 
-  @Override
-  public List<FamilyBingApplication> listByLimit(int limit) {
-    QueryWrapper<FamilyBingApplication> wrapper = new QueryWrapper<>();
-    wrapper.orderByAsc("is_succeed");
-    wrapper.orderByAsc("is_processed");
-    wrapper.last("LIMIT "+limit);
-    return familyBingApplicationDao.selectList(wrapper);
-  }
-
+  /**
+   * 有分页的获取列表
+   * @param page 第几页
+   * @param size 页大小
+   * @return 元素列表
+   */
   @Override
   public List<FamilyBingApplication> listByPage(Integer page, Integer size) {
     Page<FamilyBingApplication> applicationPage = new Page<>();

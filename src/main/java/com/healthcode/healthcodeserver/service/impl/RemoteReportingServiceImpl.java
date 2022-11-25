@@ -19,24 +19,10 @@ public class RemoteReportingServiceImpl
   RemoteReportingDao remoteReportingDao;
 
   /**
-   *
-   * @param limit
-   * @return
-   */
-  @Override
-  public List<RemoteReporting> listByLimit(int limit) {
-    QueryWrapper<RemoteReporting> wrapper = new QueryWrapper<>();
-    wrapper.orderByAsc("is_allowed");
-    wrapper.orderByAsc("is_checked");
-    wrapper.last("LIMIT "+limit);
-    return remoteReportingDao.selectList(wrapper);
-  }
-
-  /**
-   *
-   * @param page
-   * @param size
-   * @return
+   * 有分页的获取列表
+   * @param page 第几页
+   * @param size 页大小
+   * @return 元素列表
    */
   @Override
   public List<RemoteReporting> listByPage(int page, int size) {

@@ -64,7 +64,9 @@ public class CovidTestInstitution {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
     CovidTestInstitution that = (CovidTestInstitution) o;
-    return Objects.equals(institutionId, that.institutionId) && Objects.equals(location, that.location) && Objects.equals(name, that.name);
+    return Objects.equals(institutionId, that.institutionId)
+            && Objects.equals(location, that.location)
+            && Objects.equals(name, that.name);
   }
 
   @Override

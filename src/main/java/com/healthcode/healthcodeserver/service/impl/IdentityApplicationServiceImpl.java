@@ -36,10 +36,10 @@ public class IdentityApplicationServiceImpl
   }
 
   /**
-   *
-   * @param page
-   * @param size
-   * @return
+   * 有分页的获取列表
+   * @param page 第几页
+   * @param size 页大小
+   * @return 元素列表
    */
   @Override
   public List<IdentityApplication> getByPage(int page, int size) {

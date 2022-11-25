@@ -27,5 +27,6 @@ public interface UserService extends IService<User> {
    * @param gender 性别
    * @return 返回BaseMapper默认的插入行的主键Id(该返回值不使用)
    */
-  int insertUserInfo(String personId,String personName,String phoneNumber,String wxOpenId,String gender);
+  int insertUserInfo(String personId,String personName,
+                     String phoneNumber,String wxOpenId,String gender);
 }

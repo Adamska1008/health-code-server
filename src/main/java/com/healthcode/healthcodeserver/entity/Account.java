@@ -71,7 +71,10 @@ public class Account {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
     Account account = (Account) o;
-    return category == account.category && Objects.equals(accountId, account.accountId) && Objects.equals(username, account.username) && Objects.equals(password, account.password);
+    return category == account.category
+            && Objects.equals(accountId, account.accountId)
+            && Objects.equals(username, account.username)
+            && Objects.equals(password, account.password);
   }
 
   @Override

@@ -114,11 +114,18 @@ public class AbnormalInfo {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
     AbnormalInfo that = (AbnormalInfo) o;
-    return Objects.equals(id, that.id) && Objects.equals(personName, that.personName) && Objects.equals(phoneNumber, that.phoneNumber) && Objects.equals(additionalInfo, that.additionalInfo) && Objects.equals(type, that.type) && Objects.equals(isInvestigated, that.isInvestigated) && Objects.equals(isProcessed, that.isProcessed);
+    return Objects.equals(id, that.id)
+            && Objects.equals(personName, that.personName)
+            && Objects.equals(phoneNumber, that.phoneNumber)
+            && Objects.equals(additionalInfo, that.additionalInfo)
+            && Objects.equals(type, that.type)
+            && Objects.equals(isInvestigated, that.isInvestigated)
+            && Objects.equals(isProcessed, that.isProcessed);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(id, personName, phoneNumber, additionalInfo, type, isInvestigated, isProcessed);
+    return Objects.hash(id, personName, phoneNumber,
+            additionalInfo, type, isInvestigated, isProcessed);
   }
 }

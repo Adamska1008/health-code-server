@@ -30,7 +30,8 @@ public class NucleicAcidTestInfo {
   public NucleicAcidTestInfo() {
   }
 
-  public NucleicAcidTestInfo(String personId, Timestamp testTime, String testInstitutionId, String transferCode) {
+  public NucleicAcidTestInfo(String personId, Timestamp testTime,
+                             String testInstitutionId, String transferCode) {
     this.personId = personId;
     this.testTime = testTime;
     this.testInstitutionId = testInstitutionId;
@@ -93,7 +94,11 @@ public class NucleicAcidTestInfo {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
     NucleicAcidTestInfo that = (NucleicAcidTestInfo) o;
-    return Objects.equals(personId, that.personId) && Objects.equals(testTime, that.testTime) && Objects.equals(testInstitutionId, that.testInstitutionId) && Objects.equals(transferCode, that.transferCode) && Objects.equals(testResult, that.testResult);
+    return Objects.equals(personId, that.personId)
+            && Objects.equals(testTime, that.testTime)
+            && Objects.equals(testInstitutionId, that.testInstitutionId)
+            && Objects.equals(transferCode, that.transferCode)
+            && Objects.equals(testResult, that.testResult);
   }
 
   @Override

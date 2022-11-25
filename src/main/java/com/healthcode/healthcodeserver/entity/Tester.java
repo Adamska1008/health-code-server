@@ -74,7 +74,10 @@ public class Tester {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
     Tester tester = (Tester) o;
-    return Objects.equals(openId, tester.openId) && Objects.equals(personId, tester.personId) && Objects.equals(phone, tester.phone) && Objects.equals(name, tester.name);
+    return Objects.equals(openId, tester.openId)
+            && Objects.equals(personId, tester.personId)
+            && Objects.equals(phone, tester.phone)
+            && Objects.equals(name, tester.name);
   }
 
   @Override

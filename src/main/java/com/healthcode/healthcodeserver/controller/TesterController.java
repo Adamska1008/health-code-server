@@ -57,7 +57,7 @@ public class TesterController {
               .error(3);
     }
     if (!openIdToSessionKey.get(openId).equals(sessionKey)) {
-      log.warn("receive openid "+openId+" and session_key "+sessionKey+", which do not correspond.");
+      log.warn("receive openid "+openId+" and session_key "+sessionKey+", which do not correspond");
       return new Result()
               .error(101);
     }
@@ -183,7 +183,8 @@ public class TesterController {
     String time = response.getString("time");
     String transferCode = response.getString("transferCode");
     //向转运码表插入一条数据
-    TransferCodeInfo transferCodeInfo = new TransferCodeInfo(transferCode,openId,time,(Integer.parseInt(number)), (short) 0);
+    TransferCodeInfo transferCodeInfo =
+            new TransferCodeInfo(transferCode,openId,time,(Integer.parseInt(number)), (short) 0);
     //transferCode已经使用过，则无效，直接返回错误信息
     if (!transferCodeInfoService.save(transferCodeInfo)){
       result.putData("submitResult",2);
@@ -201,7 +202,7 @@ public class TesterController {
       if(!nucleicAcidTestInfoService.save(nucleicAcidTestInfo)){
         result.putData("submitResult",1);
         return result;
-      };
+      }
     }
     result.putData("submitResult",1);
 
@@ -227,7 +228,8 @@ public class TesterController {
     QueryWrapper queryWrapper = new QueryWrapper<>();
     queryWrapper.eq("tester_open_id",openId);
     queryWrapper.eq("is_transferred",0);
-    Page<TransferCodeInfo> page = new Page<>(Integer.parseInt(pageCurrent),Integer.parseInt(pageSize));
+    Page<TransferCodeInfo> page =
+            new Page<>(Integer.parseInt(pageCurrent),Integer.parseInt(pageSize));
     IPage<TransferCodeInfo> iPage = transferCodeInfoService.page(page,queryWrapper);
     result.putData("total",iPage.getTotal());
     result.putData("records",iPage.getRecords());
@@ -278,7 +280,8 @@ public class TesterController {
     QueryWrapper queryWrapper = new QueryWrapper<>();
     queryWrapper.eq("tester_open_id",openId);
     queryWrapper.eq("is_transferred",1);
-    Page<TransferCodeInfo> page = new Page<>(Integer.parseInt(pageCurrent),Integer.parseInt(pageSize));
+    Page<TransferCodeInfo> page =
+            new Page<>(Integer.parseInt(pageCurrent),Integer.parseInt(pageSize));
     IPage<TransferCodeInfo> iPage = transferCodeInfoService.page(page,queryWrapper);
     result.putData("total",iPage.getTotal());
     result.putData("records",iPage.getRecords());

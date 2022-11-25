@@ -9,7 +9,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class TesterServiceImpl extends ServiceImpl<TesterDao, Tester> implements TesterService {
+public class TesterServiceImpl
+        extends ServiceImpl<TesterDao, Tester>
+        implements TesterService {
   @Autowired
   TesterDao testerDao;
 

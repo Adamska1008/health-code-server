@@ -6,7 +6,11 @@ import com.healthcode.healthcodeserver.entity.FamilyBingApplication;
 import java.util.List;
 
 public interface FamilyBingApplicationService extends IService<FamilyBingApplication> {
-  List<FamilyBingApplication> listByLimit(int limit);
-
+  /**
+   * 有分页的获取列表
+   * @param page 第几页
+   * @param size 页大小
+   * @return 元素列表
+   */
   List<FamilyBingApplication> listByPage(Integer page, Integer size);
 }

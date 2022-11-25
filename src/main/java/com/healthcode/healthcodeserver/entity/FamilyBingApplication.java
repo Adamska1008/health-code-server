@@ -148,11 +148,21 @@ public class FamilyBingApplication {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
     FamilyBingApplication that = (FamilyBingApplication) o;
-    return Objects.equals(id, that.id) && Objects.equals(applicantName, that.applicantName) && Objects.equals(relativeName, that.relativeName) && Objects.equals(relativePersonId, that.relativePersonId) && Objects.equals(additionalInfo, that.additionalInfo) && Objects.equals(relationType, that.relationType) && Objects.equals(isProcessed, that.isProcessed) && Objects.equals(isSucceed, that.isSucceed) && Objects.equals(resultInfo, that.resultInfo);
+    return Objects.equals(id, that.id)
+            && Objects.equals(applicantName, that.applicantName)
+            && Objects.equals(relativeName, that.relativeName)
+            && Objects.equals(relativePersonId, that.relativePersonId)
+            && Objects.equals(additionalInfo, that.additionalInfo)
+            && Objects.equals(relationType, that.relationType)
+            && Objects.equals(isProcessed, that.isProcessed)
+            && Objects.equals(isSucceed, that.isSucceed)
+            && Objects.equals(resultInfo, that.resultInfo);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(id, applicantName, relativeName, relativePersonId, additionalInfo, relationType, isProcessed, isSucceed, resultInfo);
+    return Objects.hash(id, applicantName, relativeName,
+            relativePersonId, additionalInfo, relationType,
+            isProcessed, isSucceed, resultInfo);
   }
 }

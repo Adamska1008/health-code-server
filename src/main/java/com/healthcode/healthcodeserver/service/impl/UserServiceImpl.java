@@ -9,7 +9,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class UserServiceImpl extends ServiceImpl<UserDao,User> implements UserService {
+public class UserServiceImpl
+        extends ServiceImpl<UserDao,User>
+        implements UserService {
   @Autowired
   private UserDao userDao;
 
@@ -46,7 +48,8 @@ public class UserServiceImpl extends ServiceImpl<UserDao,User> implements UserSe
    * @return 返回BaseMapper默认的插入行的主键Id(该返回值不使用)
    */
   @Override
-  public int insertUserInfo(String personId, String personName, String phoneNumber, String wxOpenId, String gender) {
+  public int insertUserInfo(String personId, String personName,
+                            String phoneNumber, String wxOpenId, String gender) {
     User user = new User();
     user.setPersonId(personId);
     user.setName(personName);

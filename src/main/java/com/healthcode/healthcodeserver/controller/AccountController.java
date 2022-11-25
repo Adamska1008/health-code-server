@@ -55,6 +55,8 @@ public class AccountController {
   VaccineInoculationInfoService vaccineInoculationInfoService;
   @Autowired
   CollectionPointService collectionPointService;
+  @Autowired
+  VenueCodeApplicationService venueCodeApplicationService;
 
   /**
    * 管理员登陆获取验证token
@@ -157,9 +159,9 @@ public class AccountController {
   }
 
   /**
-   *
-   * @param token
-   * @return
+   * 获取异地报备信息
+   * @param token 用户通信凭证
+   * @return Result内容见文档
    */
   @GetMapping("/remote_report")
   public Result getRemoteReport(@RequestParam("token") String token,
@@ -188,9 +190,9 @@ public class AccountController {
   }
 
   /**
-   *
-   * @param request
-   * @return
+   * 提交异地报备的修改
+   * @param request 请求内容
+   * @return Result内容见文档
    */
   @PostMapping("remote_report")
   public Result postRemoteReport(@RequestBody JSONObject request) {
@@ -230,11 +232,7 @@ public class AccountController {
     long tot = abnormalInfoService.count(wrapper);
 
     List<AbnormalInfo> abnormalInfos;
-    if (page == null) {
-      abnormalInfos = abnormalInfoService.listByLimit(100);
-    } else {
-      abnormalInfos = abnormalInfoService.listByPage(page, size);
-    }
+    abnormalInfos = abnormalInfoService.listByPage(page, size);
     return new Result()
             .ok()
             .putData("total", tot)
@@ -242,9 +240,9 @@ public class AccountController {
   }
 
   /**
-   *
-   * @param request
-   * @return
+   * 提交异常信息修改
+   * @param request 请求内容
+   * @return Result 内容见文档
    */
   @PostMapping("/abnormal")
   public Result postAbnormalInfo(@RequestBody JSONObject request) {
@@ -265,9 +263,9 @@ public class AccountController {
   }
 
   /**
-   *
-   * @param token
-   * @return
+   * 获取家属健康码绑定
+   * @param token 通信凭证
+   * @return Result内容见文档
    */
   @GetMapping("/family_binding")
   public Result getFamilyBinding(@RequestParam("token") String token,
@@ -283,11 +281,7 @@ public class AccountController {
     long tot = familyBingApplicationService.count(wrapper);
 
     List<FamilyBingApplication> applications;
-    if (page == null) {
-      applications = familyBingApplicationService.listByLimit(100);
-    } else {
-      applications = familyBingApplicationService.listByPage(page, size);
-    }
+    applications = familyBingApplicationService.listByPage(page, size);
     return new Result()
             .ok()
             .putData("total", tot)
@@ -296,9 +290,9 @@ public class AccountController {
 
 
   /**
-   *
-   * @param request
-   * @return
+   * 家属健康码绑定
+   * @param request 请求内容
+   * @return Result 内容见文档
    */
   @PostMapping("/family_binding")
   public Result postFamilyBinding(@RequestBody JSONObject request) {
@@ -334,6 +328,11 @@ public class AccountController {
             .putData("point_list", points);
   }
 
+  /**
+   * 增加采集点
+   * @param request 请求内容
+   * @return Result 内容见文档
+   */
   @PostMapping("/collection_point/add")
   public Result addCollectionPoint(@RequestBody JSONObject request) {
     String token = request.getString("token");
@@ -354,9 +353,9 @@ public class AccountController {
   }
 
   /**
-   *
-   * @param request
-   * @return
+   * 修改采集点信息
+   * @param request 请求内容
+   * @return Result 内容见文档
    */
   @PostMapping("/collection_point/update")
   public Result updateCollectionPoint(@RequestBody JSONObject request) {
@@ -380,6 +379,12 @@ public class AccountController {
     return new Result().ok();
   }
 
+  /**
+   * 获取用户基本信息
+   * @param token 通信凭证
+   * @param personId 身份证号
+   * @return Result内容见文档
+   */
   @GetMapping("/user/profile")
   public Result getUserProfile(@RequestParam("token") String token,
                                @RequestParam("person_id") String personId) {
@@ -440,6 +445,12 @@ public class AccountController {
     return result.putData("itinerary_info", jsonArray);
   }
 
+  /**
+   * 获取用户核酸检测信息
+   * @param token 通信凭证
+   * @param personId 身份证号
+   * @return Result内容见文档
+   */
   @GetMapping("/user/nucleic_test")
   public Result getNucleicTestInfo(@RequestParam("token") String token,
                                    @RequestParam("person_id") String personId) {
@@ -463,7 +474,8 @@ public class AccountController {
       jsonInfo.put("test_result", info.getTestResult());
       jsonInfo.put("test_time", info.getTestTime());
       jsonInfo.put("transfer_code", info.getTransferCode());
-      CovidTestInstitution covidTestInstitution = covidTestInstitutionService.getById(info.getTestInstitutionId());
+      CovidTestInstitution covidTestInstitution =
+              covidTestInstitutionService.getById(info.getTestInstitutionId());
       jsonInfo.put("institution_name", covidTestInstitution.getName());
       infoList.add(jsonInfo);
     }
@@ -472,6 +484,12 @@ public class AccountController {
             .putData("info_list", infoList);
   }
 
+  /**
+   * 获取用户疫苗接种信息
+   * @param token 通信凭证
+   * @param personId 身份证号
+   * @return Result内容见文档
+   */
   @GetMapping("/user/vaccine_inocu")
   public Result getVaccineInocuInfo(@RequestParam("token") String token,
                                     @RequestParam("person_id") String personId) {
@@ -491,5 +509,66 @@ public class AccountController {
     return new Result()
             .ok()
             .putData("info_list", vaccineInoculationInfos);
+  }
+
+  /**
+   *
+   * @param token
+   * @param page
+   * @param size
+   * @return
+   */
+  @GetMapping("/venue_code/application")
+  public Result getVenueCodeApplication(@RequestParam("token") String token,
+                                        @RequestParam("page") Integer page,
+                                        @RequestParam("size") Integer size) {
+    if (!tokenUtil.verify(token)) {
+      return new Result()
+              .error(2)
+              .message("unknown token");
+    }
+    List<VenueCodeApplication> venueCodeApplications
+            = venueCodeApplicationService.getByPage(page, size);
+    return new Result()
+            .ok()
+            .putData("application_list", venueCodeApplications);
+  }
+
+  /**
+   *
+   * @param request
+   * @return
+   */
+  @PostMapping("/venue_code/application")
+  public Result postVenueCodeApplication(@RequestBody JSONObject request) {
+    String token = request.getString("token");
+    if (!tokenUtil.verify(token)) {
+      return new Result()
+              .error(2)
+              .message("unknown token");
+    }
+    String applicationId = request.getString("application_id");
+    Integer isPassed = request.getInteger("is_passed");
+    String resultInfo = request.getString("result_info");
+    VenueCodeApplication application = venueCodeApplicationService.getById(applicationId);
+    UpdateWrapper<VenueCodeApplication> wrapper = new UpdateWrapper<>();
+    if (isPassed == 1) {
+      VenueCodeInfo info = new VenueCodeInfo(
+              null,
+              application.getType(),
+              application.getPlaceName(),
+              application.getPosition(),
+              application.getLocation()
+      );
+      wrapper.set("venue_id", info.getId());
+      venueCodeInfoService.save(info);
+    }
+    wrapper.eq("application_id", applicationId);
+    wrapper.set("is_solved", 1);
+    wrapper.set("is_passed", isPassed);
+    wrapper.set("result_info", resultInfo);
+    venueCodeApplicationService.update(wrapper);
+    return new Result()
+            .ok();
   }
 }

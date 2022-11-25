@@ -107,7 +107,9 @@ public class Result {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
     Result result = (Result) o;
-    return Objects.equals(statusCode, result.statusCode) && Objects.equals(message, result.message) && Objects.equals(data, result.data);
+    return Objects.equals(statusCode, result.statusCode)
+            && Objects.equals(message, result.message)
+            && Objects.equals(data, result.data);
   }
 
   @Override

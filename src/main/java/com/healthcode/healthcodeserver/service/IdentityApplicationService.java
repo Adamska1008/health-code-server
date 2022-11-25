@@ -13,6 +13,12 @@ public interface IdentityApplicationService extends IService<IdentityApplication
    */
   List<IdentityApplication> getTesterApplicationList(int limit);
 
+  /**
+   * 有分页的获取列表
+   * @param page 第几页
+   * @param size 页大小
+   * @return 元素列表
+   */
   List<IdentityApplication> getByPage(int page, int size);
 
   /**

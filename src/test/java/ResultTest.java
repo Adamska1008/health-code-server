@@ -8,7 +8,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 public class ResultTest {
   @Test
   public void UnitTest() {
-
   }
 
   /**

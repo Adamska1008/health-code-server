@@ -161,16 +161,22 @@ public class IdentityApplication {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
     IdentityApplication that = (IdentityApplication) o;
-    return Objects.equals(id, that.id) && Objects.equals(openId, that.openId)
-            && Objects.equals(applicantName, that.applicantName) && Objects.equals(applicantPersonId, that.applicantPersonId)
-            && Objects.equals(applicantPhone, that.applicantPhone) && Objects.equals(additionalInfo, that.additionalInfo)
-            && Objects.equals(type, that.type) && Objects.equals(isProcessed, that.isProcessed)
-            && Objects.equals(isSucceed, that.isSucceed) && Objects.equals(resultInfo, that.resultInfo);
+    return Objects.equals(id, that.id)
+            && Objects.equals(openId, that.openId)
+            && Objects.equals(applicantName, that.applicantName)
+            && Objects.equals(applicantPersonId, that.applicantPersonId)
+            && Objects.equals(applicantPhone, that.applicantPhone)
+            && Objects.equals(additionalInfo, that.additionalInfo)
+            && Objects.equals(type, that.type)
+            && Objects.equals(isProcessed, that.isProcessed)
+            && Objects.equals(isSucceed, that.isSucceed)
+            && Objects.equals(resultInfo, that.resultInfo);
   }
 
   @Override
   public int hashCode() {
     return Objects.hash(
-            id, openId, applicantName, applicantPersonId, applicantPhone, additionalInfo, type, isProcessed, isSucceed, resultInfo);
+            id, openId, applicantName, applicantPersonId, applicantPhone,
+            additionalInfo, type, isProcessed, isSucceed, resultInfo);
   }
 }
