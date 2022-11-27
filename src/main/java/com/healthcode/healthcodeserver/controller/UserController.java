@@ -564,10 +564,16 @@ public class UserController {
     }
     Short isChecked = reporting.getIsChecked();
     Short isAllowed = reporting.getIsAllowed();
+    String personName = reporting.getPersonName();
+    String from = reporting.getFrom();
+    String to = reporting.getTo();
     return new Result()
             .ok()
             .putData("is_checked", isChecked)
-            .putData("is_allowed", isAllowed);
+            .putData("is_allowed", isAllowed)
+            .putData("person_name",personName)
+            .putData("from",from)
+            .putData("to",to);
   }
 
   /**
