@@ -11,11 +11,12 @@ import lombok.Data;
 public class User {
   @TableId(type=IdType.NONE)
   private String personId;
+  @TableField(value = "wx_openid")
+  private String openId;
   @TableField(value = "person_name")
   private String name;
   private String phoneNumber;
-  @TableField(value = "wx_openid")
-  private String openId;
+  private String position;
   // 0: 男; 1: 女
   private Short gender;
   // health_code_color 0:绿 1:黄 2:绿
@@ -36,6 +37,10 @@ public class User {
   }
 
   public User() {
+  }
+
+  public String getPosition() {
+    return position;
   }
 
   public String getPersonId() {
@@ -84,6 +89,10 @@ public class User {
 
   public void setHealthCodeColor(Integer healthCodeColor) {
     this.healthCodeColor = healthCodeColor;
+  }
+
+  public void setPosition(String position) {
+    this.position = position;
   }
 
   @Override

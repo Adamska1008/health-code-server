@@ -7,15 +7,12 @@ import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.healthcode.healthcodeserver.common.Result;
 import com.healthcode.healthcodeserver.entity.*;
 import com.healthcode.healthcodeserver.service.*;
+import com.healthcode.healthcodeserver.util.RedisUtil;
 import com.healthcode.healthcodeserver.util.WxUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
-import java.io.IOException;
 import java.sql.Timestamp;
 import java.util.HashMap;
 import java.util.List;
@@ -50,8 +47,8 @@ public class UserController {
   VenueCodeInfoService venueCodeInfoService;
   @Autowired
   AbnormalInfoService abnormalInfoService;
-  @Value("${imgs.remote_report.path}")
-  String remoteReportImgPath;
+  @Autowired
+  RedisUtil redisUtil;
 
   Map<String, String> openIdToSessionKey = new HashMap<>();
 
@@ -152,8 +149,6 @@ public class UserController {
     return new Result().ok();
   }
 
-
-
   /**
    * 前端发送openid与session_key获取用户信息。
    * 检查信息无误之后返回为前端定制的信息
@@ -192,6 +187,8 @@ public class UserController {
     return new Result().ok()
             .putData("name", user.getName())
             .putData("person_id", user.getPersonId())
+            .putData("phone_number", user.getPhoneNumber())
+            .putData("position", user.getPosition())
             .putData("health_code_color", user.getHealthCodeColor())
             .putData("latest_test", latestTest)
             .putData("vaccine_inoculation_info", vaccineInoculationInfoList);
@@ -315,6 +312,7 @@ public class UserController {
             0, 0, null, null
     );
     venueCodeApplicationService.save(application);
+    redisUtil.addVenueCodeApplication(openId, application.getId());
     return new Result()
             .ok()
             .putData("application_id", application.getId());
@@ -328,7 +326,7 @@ public class UserController {
    * @param applicationId 申请id
    * @return 详情见文档
    */
-  @GetMapping("venue_code")
+  @GetMapping("/venue_code")
   public Result checkVenueCode(@RequestParam("openid") String openId,
                                @RequestParam("session_key") String sessionKey,
                                @RequestParam("application_id") String applicationId) {
@@ -354,6 +352,26 @@ public class UserController {
               .putData("is_passed", application.getIsPassed())
               .putData("result_info", application.getResultInfo());
     }
+  }
+
+  /**
+   *
+   * @param openId
+   * @param sessionKey
+   * @return
+   */
+  @GetMapping("/venue_code/id_list")
+  public Result getVenueCodeApplicationIdList(@RequestParam("openid") String openId,
+                                              @RequestParam("session_key") String sessionKey) {
+    Result verifiedResult = verifySession(openId, sessionKey);
+    if (verifiedResult.getStatusCode() != 0) {
+      return verifiedResult;
+    }
+    log.info("User with openid " + openId + " acquire venue code application id list.");
+    List<String> idList = redisUtil.getVenueCodeApplicationIdList(openId);
+    return new Result()
+            .ok()
+            .putData("id_list",idList);
   }
 
   /**
@@ -409,6 +427,7 @@ public class UserController {
             0, 0, null
     );
     familyBingApplicationService.save(application);
+    redisUtil.addFamilyBindingApplication(openId, application.getId());
     return new Result()
             .ok()
             .putData("application_id", application.getId());
@@ -434,6 +453,20 @@ public class UserController {
             .ok()
             .putData("processed", application.getIsProcessed())
             .putData("succeed", application.getIsSucceed());
+  }
+
+  @GetMapping("/family_binding/id_list")
+  public Result getFamilyBindingIdList(@RequestParam("openid") String openId,
+                                       @RequestParam("session_key") String sessionKey) {
+    Result verifiedResult = verifySession(openId, sessionKey);
+    if (verifiedResult.getStatusCode() != 0) {
+      return verifiedResult;
+    }
+    log.info("User with openid " + openId + " acquire family binding id list.");
+    List<String> idList = redisUtil.getFamilyBindingApplicationIdList(openId);
+    return new Result()
+            .ok()
+            .putData("id_list", idList);
   }
 
   /**
@@ -502,6 +535,7 @@ public class UserController {
             from, to, null, (short) 0, (short) 0
     );
     remoteReportingService.save(reporting);
+    redisUtil.addRemoteReport(openId, reporting.getId());
     return new Result()
             .ok()
             .putData("report_id", reporting.getId());
@@ -534,6 +568,26 @@ public class UserController {
             .ok()
             .putData("is_checked", isChecked)
             .putData("is_allowed", isAllowed);
+  }
+
+  /**
+   *
+   * @param openId
+   * @param sessionKey
+   * @return
+   */
+  @GetMapping("/remote_report/id_list")
+  public Result getRemoteReportIdList(@RequestParam("openid") String openId,
+                                      @RequestParam("session_key") String sessionKey) {
+    Result verifiedResult = verifySession(openId, sessionKey);
+    if (verifiedResult.getStatusCode() != 0) {
+      return verifiedResult;
+    }
+    log.info("User with openid " + openId + " acquire remote report id list.");
+    List<String> idList = redisUtil.getRemoteReportIdList(openId);
+    return new Result()
+            .ok()
+            .putData("id_list", idList);
   }
 
   /**
@@ -587,5 +641,19 @@ public class UserController {
             .ok()
             .putData("is_investigated", isInvestigated)
             .putData("is_processed", isProcessed);
+  }
+
+  @GetMapping("/abnormal/id_list")
+  public Result getAbnormalInfoIdList(@RequestParam("openid") String openId,
+                                      @RequestParam("session_key") String sessionKey) {
+    Result verifiedResult = verifySession(openId, sessionKey);
+    if (verifiedResult.getStatusCode() != 0) {
+      return verifiedResult;
+    }
+    log.info("User with openid " + openId + " acquire abnormal info id list.");
+    List<String> idList = redisUtil.getAbnormalInfoIdList(openId);
+    return new Result()
+            .ok()
+            .putData("id_list", idList);
   }
 }

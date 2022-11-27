@@ -3,7 +3,7 @@ CREATE DATABASE healthcode;
 USE healthcode;
 
 -- gender 0:男 1:女
--- health_code_color 0:绿 1:黄 2:
+-- health_code_color 0:绿 1:黄 2:红
 -- position 必须满足 “省:市:区”格式
 -- 个人详细信息在
 CREATE TABLE IF NOT EXISTS t_user_info (
@@ -38,12 +38,6 @@ CREATE TABLE IF NOT EXISTS t_transfer_code_info(
     PRIMARY KEY (transfer_code)
 )DEFAULT CHARSET=utf8mb4;
 
--- 核酸试剂表
-CREATE TABLE IF NOT EXISTS t_nucleic_acid_info(
-    nucleic_acid_id      CHAR(20)    NOT NULL,
-    PRIMARY KEY (nucleic_acid_id)
-);
-
 
 -- 核酸检测结果表
 -- test_result 0:阴性 1:阳性
@@ -67,6 +61,7 @@ CREATE TABLE IF NOT EXISTS t_vaccine_inoculation_info(
     PRIMARY KEY(person_id, inoculation_number)
 )DEFAULT CHARSET=utf8mb4;
 
+-- location字段需要修改匹配地图api
 -- 核酸检测机构
 CREATE table  IF NOT EXISTS t_covid_test_institution(
     institution_id          CHAR(20)    NOT NULL,
@@ -128,7 +123,7 @@ CREATE TABLE IF NOT EXISTS t_remote_reporting(
     PRIMARY KEY (report_id)
 )DEFAULT CHARSET=utf8mb4;
 
--- 区域风险等级
+-- 省市区风险等级
 #risk_level 0:常态化 1:低 2:中 3:高
 CREATE TABLE IF NOT EXISTS t_regional_risk_profile(
     profile_id 			CHAR(10) 	NOT NULL,
@@ -136,25 +131,22 @@ CREATE TABLE IF NOT EXISTS t_regional_risk_profile(
     city 				VARCHAR(20),
     district 			VARCHAR(30),
     risk_level 			TINYINT CHECK ( risk_level IN (0,1,2,3)),
-    high_risk_number 	INTEGER,
-    general_risk_number INTEGER,
     red_code_number 	INTEGER,
     yellow_code_number 	INTEGER,
-    infected_number 	INTEGER,
+    positive_number 	INTEGER,
     PRIMARY KEY (profile_id)
 )DEFAULT CHARSET=utf8mb4;
 
--- 区域日常风险等级
+-- 区域日常新增
 #risk_level 0:低 1:中 2:高 3:常态化
-CREATE TABLE IF NOT EXISTS t_daily_risk_situation(
-    situation_id                    CHAR(10)    NOT NULL ,
+CREATE TABLE IF NOT EXISTS t_daily_risk_increasing(
+    id                              CHAR(20)    NOT NULL ,
     profile_id                      CHAR(10),
     curr_date                       DATE,
-    risk_level                      TINYINT     CHECK ( risk_level IN (0,1,2,3)),
-    detection_point_number          INTEGER,
-    yesterday_addition_positive     INTEGER,
-    yesterday_addition_asymptomatic INTEGER,
-    PRIMARY KEY (situation_id),
+    risk_level                      TINYINT CHECK (risk_level IN (0,1,2,3)),
+    addition_positive               INTEGER,
+    addition_asymptomatic           INTEGER,
+    PRIMARY KEY (id),
     FOREIGN KEY (profile_id) REFERENCES t_regional_risk_profile(profile_id)
 )DEFAULT CHARSET=utf8mb4;
 
