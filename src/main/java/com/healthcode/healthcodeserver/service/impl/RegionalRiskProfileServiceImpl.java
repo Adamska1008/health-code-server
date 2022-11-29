@@ -11,6 +11,8 @@ import com.healthcode.healthcodeserver.service.RegionalRiskProfileService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.WeakHashMap;
+
 @Service
 public class RegionalRiskProfileServiceImpl
         extends ServiceImpl<RegionalRiskProfileDao, RegionalRiskProfile>
@@ -51,5 +53,46 @@ public class RegionalRiskProfileServiceImpl
     wrapper.set("yellow_code_number", getCodeNumber(position, 1));
     //todo:设置感染人数、风险等级、风险区数量
     regionalRiskProfileDao.update(null, wrapper);
+  }
+
+  /**
+   * risk_level 0:常态化 1:低 2:中 3:高 -1:错误
+   * @param province
+   * @param city
+   * @param district
+   * @return
+   */
+  @Override
+  public int getRiskLevel(String province, String city, String district) {
+    QueryWrapper<RegionalRiskProfile> wrapper = new QueryWrapper<>();
+    wrapper.eq("province", province);
+    wrapper.eq("city", city);
+    wrapper.eq("district", district);
+    RegionalRiskProfile profile = regionalRiskProfileDao.selectOne(wrapper);
+    if (profile == null) {
+      return -1;
+    } else {
+      return profile.getRiskLevel();
+    }
+  }
+
+  /**
+   *
+   * @param province
+   * @param city
+   * @param level
+   * @return
+   */
+  @Override
+  public int getSpecificLevelNumber(String province, String city, Integer level) {
+    QueryWrapper<RegionalRiskProfile> wrapper = new QueryWrapper<>();
+    if (province != null) {
+      wrapper.eq("province", province);
+      if (city != null) {
+        wrapper.eq("city", city);
+      }
+    }
+    wrapper.eq("risk_level", level);
+    return Math.toIntExact(regionalRiskProfileDao.selectCount(wrapper));
   }
 }

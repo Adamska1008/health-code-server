@@ -48,6 +48,8 @@ public class UserController {
   @Autowired
   AbnormalInfoService abnormalInfoService;
   @Autowired
+  RegionalRiskProfileService regionalRiskProfileService;
+  @Autowired
   RedisUtil redisUtil;
 
   Map<String, String> openIdToSessionKey = new HashMap<>();
@@ -660,6 +662,12 @@ public class UserController {
             .putData("is_processed", isProcessed);
   }
 
+  /**
+   *
+   * @param openId
+   * @param sessionKey
+   * @return
+   */
   @GetMapping("/abnormal/id_list")
   public Result getAbnormalInfoIdList(@RequestParam("openid") String openId,
                                       @RequestParam("session_key") String sessionKey) {
@@ -672,5 +680,58 @@ public class UserController {
     return new Result()
             .ok()
             .putData("id_list", idList);
+  }
+
+  /**
+   *
+   * @param openId
+   * @param sessionKey
+   * @param province
+   * @param city
+   * @param district
+   * @return
+   */
+  @GetMapping("/risk/specific")
+  public Result getSpecificAreaSituation(@RequestParam("openid") String openId,
+                                         @RequestParam("session_key") String sessionKey,
+                                         @RequestParam("province") String province,
+                                         @RequestParam("city") String city,
+                                         @RequestParam("district") String district) {
+    Result verifiedResult = verifySession(openId, sessionKey);
+    if (verifiedResult.getStatusCode() != 0) {
+      return verifiedResult;
+    }
+    log.info("User with openid " + openId + " acquire specific area risk profile");
+    int riskLevel = regionalRiskProfileService.getRiskLevel(province, city, district);
+    if (riskLevel == -1) {
+      return new Result().error(null).message("Position not exists.");
+    } else {
+      return new Result().ok().putData("risk_level", riskLevel);
+    }
+  }
+
+  /**
+   * 使用redis缓存计算结果
+   * @param openId
+   * @param sessionKey
+   * @return
+   */
+  @GetMapping("/risk/overall")
+  public Result getOverallSituation(@RequestParam("openid") String openId,
+                                    @RequestParam("session_key") String sessionKey,
+                                    @RequestParam("province") String province,
+                                    @RequestParam("city") String city) {
+    Result verifiedResult = verifySession(openId, sessionKey);
+    if (verifiedResult.getStatusCode() != 0) {
+      return verifiedResult;
+    }
+    Integer lowLevelNumber = redisUtil.getOverallRiskLevel(province, city, 1);
+    Integer mediumLevelNumber = redisUtil.getOverallRiskLevel(province, city, 2);
+    Integer highLevelNumber = redisUtil.getOverallRiskLevel(province, city, 3);
+    return new Result()
+            .ok()
+            .putData("low_level_number", lowLevelNumber)
+            .putData("medium_level_number", mediumLevelNumber)
+            .putData("high_level_number", highLevelNumber);
   }
 }

@@ -19,5 +19,23 @@ public interface RegionalRiskProfileService extends IService<RegionalRiskProfile
    * @param city
    * @param district
    */
-  public void refreshOneProfileByArea(String province,String city,String district);
+  void refreshOneProfileByArea(String province,String city,String district);
+
+  /**
+   * 获取风险等级，0:常态化 1:低 2:中 3:高
+   * @param province
+   * @param city
+   * @param district
+   * @return
+   */
+  int getRiskLevel(String province, String city, String district);
+
+  /**
+   *
+   * @param province
+   * @param city
+   * @param level
+   * @return
+   */
+  int getSpecificLevelNumber(String province, String city, Integer level);
 }

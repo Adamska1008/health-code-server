@@ -15,6 +15,7 @@ public class RegionalRiskProfile {
   private String province;
   private String city;
   private String district;
+  // risk_level 0:常态化 1:低 2:中 3:高
   @JsonProperty("risk_level")
   private Integer riskLevel;
   @JsonProperty("red_code_number")
