@@ -458,7 +458,9 @@ public class UserController {
     return new Result()
             .ok()
             .putData("processed", application.getIsProcessed())
-            .putData("succeed", application.getIsSucceed());
+            .putData("succeed", application.getIsSucceed())
+            .putData("relative_name",application.getRelativeName())
+            .putData("relative_person_id",application.getRelativePersonId());
   }
 
   /**
