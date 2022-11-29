@@ -11,10 +11,12 @@ import java.util.Objects;
 @TableName("t_abnormal_info_application")
 public class AbnormalInfo {
   @TableId(value = "application_id", type = IdType.ASSIGN_ID)
-  @JsonProperty(value = "application_id")
+  @JsonProperty("application_id")
   private String id;
-  @JsonProperty(value = "person_name")
+  @JsonProperty("person_name")
   private String personName;
+  @JsonProperty("person_id")
+  private String personId;
   @TableField("person_phone")
   @JsonProperty("phone_number")
   private String phoneNumber;
@@ -33,11 +35,20 @@ public class AbnormalInfo {
 
   public AbnormalInfo(String id,
                       String personName,
+                      String personId,
                       String phoneNumber,
                       String additionalInfo,
                       String type,
                       Short isInvestigated,
                       Short isProcessed) {
+    this.id = id;
+    this.personName = personName;
+    this.personId = personId;
+    this.phoneNumber = phoneNumber;
+    this.additionalInfo = additionalInfo;
+    this.type = type;
+    this.isInvestigated = isInvestigated;
+    this.isProcessed = isProcessed;
   }
 
   public String getPersonName() {

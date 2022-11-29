@@ -2,6 +2,8 @@ package com.healthcode.healthcodeserver.entity;
 
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.sql.Timestamp;
 import java.util.Objects;
@@ -10,6 +12,8 @@ import java.util.Objects;
 public class ItineraryInfo {
   private String personId;
   private String venueId;
+  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+  @JsonProperty("record_time")
   private Timestamp recordTime;
 
   public ItineraryInfo() {

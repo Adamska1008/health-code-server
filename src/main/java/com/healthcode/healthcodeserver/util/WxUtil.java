@@ -30,7 +30,8 @@ public class WxUtil {
    * @param code 临时登录凭证
    */
   public String code2Session(String code, Integer type) {
-    String url = "https://api.weixin.qq.com/sns/jscode2session?appid={appid}&secret={secret}&js_code={js_code}&grant_type=authorization_code";
+    String url =
+"https://api.weixin.qq.com/sns/jscode2session?appid={appid}&secret={secret}&js_code={js_code}&grant_type=authorization_code";
     Map<String, Object> map = new HashMap<>(){{
       if (type == 0) {
         put("appid", mainAppId);

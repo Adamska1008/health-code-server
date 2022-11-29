@@ -17,6 +17,8 @@ public class FamilyBingApplication {
   private String id;
   @JsonProperty("applicant_name")
   private String applicantName;
+  @JsonProperty("applicant_person_id")
+  private String applicantPersonId;
   @JsonProperty("relative_name")
   private String relativeName;
   @JsonProperty("relative_person_id")
@@ -38,6 +40,7 @@ public class FamilyBingApplication {
 
   public FamilyBingApplication(String id,
                                String applicantName,
+                               String applicantPersonId,
                                String relativeName,
                                String relativePersonId,
                                String additionalInfo,
@@ -47,6 +50,7 @@ public class FamilyBingApplication {
                                String resultInfo) {
     this.id = id;
     this.applicantName = applicantName;
+    this.applicantPersonId = applicantPersonId;
     this.relativeName = relativeName;
     this.relativePersonId = relativePersonId;
     this.additionalInfo = additionalInfo;
@@ -62,6 +66,10 @@ public class FamilyBingApplication {
 
   public String getId() {
     return id;
+  }
+
+  public String getApplicantPersonId() {
+    return applicantPersonId;
   }
 
   public String getResultInfo() {
@@ -94,6 +102,10 @@ public class FamilyBingApplication {
 
   public void setId(String id) {
     this.id = id;
+  }
+
+  public void setApplicantPersonId(String applicantPersonId) {
+    this.applicantPersonId = applicantPersonId;
   }
 
   public void setApplicantName(String applicantName) {

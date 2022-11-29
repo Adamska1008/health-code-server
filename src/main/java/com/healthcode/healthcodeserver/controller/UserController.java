@@ -420,6 +420,7 @@ public class UserController {
     FamilyBingApplication application = new FamilyBingApplication(
             null,
             request.getString("applicant_name"),
+            request.getString("applicant_person_id"),
             request.getString("relative_name"),
             request.getString("relative_person_id"),
             request.getString("additional_info"),
@@ -449,13 +450,22 @@ public class UserController {
       return verifiedResult;
     }
     FamilyBingApplication application = familyBingApplicationService.getById(id);
+    if (application == null) {
+      return new Result().error(null).message("no such application with given application id");
+    }
     return new Result()
             .ok()
             .putData("processed", application.getIsProcessed())
             .putData("succeed", application.getIsSucceed());
   }
 
-  @GetMapping("/family_binding/id_list")
+  /**
+   *
+   * @param openId
+   * @param sessionKey
+   * @return
+   */
+  @GetMapping("/family/id_list")
   public Result getFamilyBindingIdList(@RequestParam("openid") String openId,
                                        @RequestParam("session_key") String sessionKey) {
     Result verifiedResult = verifySession(openId, sessionKey);
@@ -613,6 +623,7 @@ public class UserController {
     AbnormalInfo info = new AbnormalInfo(
       null,
       request.getString("person_name"),
+      request.getString("person_id"),
       request.getString("phone_number"),
       request.getString("additional_info"),
       request.getString("type"),

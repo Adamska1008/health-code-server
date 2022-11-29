@@ -33,6 +33,12 @@ public class VenueCodeApplicationServiceImpl
     return venueCodeApplicationDao.selectOne(wrapper);
   }
 
+  /**
+   *
+   * @param page
+   * @param size
+   * @return
+   */
   @Override
   public List<VenueCodeApplication> getByPage(Integer page, Integer size) {
     Page<VenueCodeApplication> applicationPage = new Page<>(page, size);

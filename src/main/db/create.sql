@@ -126,10 +126,10 @@ CREATE TABLE IF NOT EXISTS t_remote_reporting(
 -- 省市区风险等级
 #risk_level 0:常态化 1:低 2:中 3:高
 CREATE TABLE IF NOT EXISTS t_regional_risk_profile(
-    profile_id 			CHAR(10) 	NOT NULL,
-    province 			VARCHAR(10),
-    city 				VARCHAR(20),
-    district 			VARCHAR(30),
+    profile_id 			CHAR(20) 	NOT NULL,
+    province 			VARCHAR(20) NOT NULL,
+    city 				VARCHAR(20) NOT NULL,
+    district 			VARCHAR(30) NOT NULL,
     risk_level 			TINYINT CHECK ( risk_level IN (0,1,2,3)),
     red_code_number 	INTEGER,
     yellow_code_number 	INTEGER,
@@ -175,6 +175,7 @@ CREATE TABLE IF NOT EXISTS t_tester(
 CREATE TABLE IF NOT EXISTS t_abnormal_info_application(
     application_id          CHAR(20) NOT NULL ,
     person_name             VARCHAR(20),
+    person_id               CHAR(20),
     person_phone            VARCHAR(20),
     additional_information  VARCHAR(50),
     type                    VARCHAR(10),
@@ -212,6 +213,7 @@ appeal type:
 CREATE TABLE IF NOT EXISTS t_bind_family_application  (
     application_id          CHAR(20)    NOT NULL,
     applicant_name          CHAR(20)    NOT NULL,
+    applicant_person_id     CHAR(20)    NOT NULL,
     relative_name           CHAR(20)    NOT NULL,
     relative_person_id      CHAR(20)    NOT NULL,
     additional_information  VARCHAR(50) ,

@@ -11,7 +11,7 @@ public interface RegionalRiskProfileService extends IService<RegionalRiskProfile
    * @param codeStatus 健康码颜色 0：绿 1：黄 2：红
    * @return
    */
-  int getCodeNumber(String position, int codeStatus);
+  long getCodeNumber(String position, int codeStatus);
 
   /**
    * 刷新某地风险情况

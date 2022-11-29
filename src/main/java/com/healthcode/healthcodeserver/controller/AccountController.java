@@ -1,9 +1,12 @@
 package com.healthcode.healthcodeserver.controller;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.healthcode.healthcodeserver.common.Result;
 import com.healthcode.healthcodeserver.entity.*;
 import com.healthcode.healthcodeserver.service.*;
@@ -322,9 +325,11 @@ public class AccountController {
       return new Result()
               .error(2);
     }
+    long tot = collectionPointService.count();
     List<CollectionPoint> points = collectionPointService.getByPage(page, size);
     return new Result()
             .ok()
+            .putData("total", tot)
             .putData("point_list", points);
   }
 
@@ -416,7 +421,7 @@ public class AccountController {
    */
   @GetMapping("/user/itinerary")
   public Result getItinerary(@RequestParam("token") String token,
-                             @RequestParam("person_id") String personId) {
+                             @RequestParam("person_id") String personId) throws JsonProcessingException {
     if (!tokenUtil.verify(token)) {
       return new Result()
               .error(2)
@@ -434,12 +439,14 @@ public class AccountController {
     wrapper.eq("person_id", personId);
     List<ItineraryInfo> itineraryInfos = itineraryInfoService.list(wrapper);
     itineraryInfos.sort(Comparator.comparing(ItineraryInfo::getRecordTime));
+    ObjectMapper mapper = new ObjectMapper();
     for (var itineraryInfo : itineraryInfos) {
       JSONObject object = new JSONObject();
       object.put("person_name", user.getName());
       String venueName = venueCodeInfoService.getVenueNameById(itineraryInfo.getVenueId());
-      object.put("venue_name", venueName);
-      object.put("record_time", itineraryInfo.getRecordTime());
+      object.put("place_name", venueName);
+      JSONObject stringParse = JSON.parseObject(mapper.writeValueAsString(itineraryInfo));
+      object.put("record_time", stringParse.getString("record_time"));
       jsonArray.add(object);
     }
     return result.putData("itinerary_info", jsonArray);
@@ -453,7 +460,7 @@ public class AccountController {
    */
   @GetMapping("/user/nucleic_test")
   public Result getNucleicTestInfo(@RequestParam("token") String token,
-                                   @RequestParam("person_id") String personId) {
+                                   @RequestParam("person_id") String personId) throws JsonProcessingException {
     if (!tokenUtil.verify(token)) {
       return new Result()
               .error(2)
@@ -468,11 +475,13 @@ public class AccountController {
     List<NucleicAcidTestInfo> nucleicAcidTestInfos =
             nucleicAcidTestInfoService.getNucleicAcidTestInfoListByPersonId(user.getPersonId());
     JSONArray infoList = new JSONArray();
+    ObjectMapper mapper = new ObjectMapper();
     for (var info : nucleicAcidTestInfos) {
+      var jsonStr = JSON.parseObject(mapper.writeValueAsString(info));
       JSONObject jsonInfo = new JSONObject();
       jsonInfo.put("person_id", info.getPersonId());
       jsonInfo.put("test_result", info.getTestResult());
-      jsonInfo.put("test_time", info.getTestTime());
+      jsonInfo.put("test_time", jsonStr.getString("test_time"));
       jsonInfo.put("transfer_code", info.getTransferCode());
       CovidTestInstitution covidTestInstitution =
               covidTestInstitutionService.getById(info.getTestInstitutionId());
@@ -512,7 +521,7 @@ public class AccountController {
   }
 
   /**
-   *
+   * 获取场所码信息
    * @param token
    * @param page
    * @param size
@@ -527,15 +536,19 @@ public class AccountController {
               .error(2)
               .message("unknown token");
     }
+    QueryWrapper<VenueCodeApplication> wrapper = new QueryWrapper<>();
+    wrapper.lt("is_solved", 1);
+    long tot = venueCodeApplicationService.count(wrapper);
     List<VenueCodeApplication> venueCodeApplications
             = venueCodeApplicationService.getByPage(page, size);
     return new Result()
             .ok()
+            .putData("total", tot)
             .putData("application_list", venueCodeApplications);
   }
 
   /**
-   *
+   * 返回场所码信息的审批结果
    * @param request
    * @return
    */

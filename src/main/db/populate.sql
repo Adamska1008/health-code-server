@@ -102,18 +102,33 @@ VALUES
 INSERT INTO
     t_remote_reporting(report_id, person_name, person_id, img_url, _from, _to, is_checked, is_allowed, additional_info)
 VALUES
-       ('413687893546542344', 'fy', '341435234546546544', '', '湖南省','湖北省', 0, 0, null);
+       ('413687893546542344', 'fy', '341435234546546544', '', '湖南省','湖北省', 0, 0, null),
+       ('1596867897987297281', '姜洋', '457342192208107100', '', '河南省', '北京市', 0, 0, null),
+       ('1597117024788553730', '姜洋', '457342192208107100', '','北京市', '湖南省', 0, 0, null);
 
 -- 绑定家属健康码
 INSERT INTO
-    t_bind_family_application(application_id, applicant_name, relative_name, relative_person_id, additional_information, relation_type, is_processed, is_succeed, result_info)
+    t_bind_family_application(application_id, applicant_name, applicant_person_id, relative_name, relative_person_id, additional_information, relation_type, is_processed, is_succeed, result_info)
 VALUES
-       ('413687124546542344', 'fy', '姜洋', '18133654025', null, 0, 0, 0, null),
-       ('413676711737197344', 'abc', 'efg', '18234784025', null, 1, 0, 0, null),
-       ('534676711737197344', 'yq', 'cv', '41234784025', null, 2, 0, 0, null);
+       ('413687124546542344', 'fy', '341435234546546544', '姜洋', '457342192208107100', null, 0, 0, 0, null),
+       ('413676711737197344', 'abc', '49878464876376487','efg', '182347486976884025', null, 1, 0, 0, null),
+       ('534676711737197344', 'yq', '6543378348768467' ,'cv', '4123474987840257', null, 2, 0, 0, null);
 
+
+-- 场所码申请
+INSERT INTO
+    t_venue_code_application(application_id, applicant_name, applicant_person_id, position, location, type, place_name, is_solved, is_passed, result_info, venue_id)
+VALUES
+       ('1234687897161', 'fy', '341435234546546544', '湖南省:长沙市:岳麓区', '', '饭店', 'A饭店', 0, 0, null, null),
+       ('4684861378766', '姜洋', '457342192208107100', '湖南省:长沙市:岳麓区', '阜埠河路', '饭店', 'B饭店', 1, 1, null, null);
+
+-- 场所码表
+INSERT INTO
+    t_venue_code_info(code_id, venue_name, venue_type, venue_position, venue_location)
+VALUES
+       ('67681357681345', 'B饭店', '饭店', '湖南省:长沙市:岳麓区', '阜埠河路');
 
 INSERT INTO
-    t_venue_code_application(application_id, applicant_name, applicant_person_id, position, location, type, place_name, is_solved, is_passed, result_info)
+    t_itinerary_information(person_id, venue_id, record_time)
 VALUES
-       ('1234687897161', 'fy', '18133654025', '湖南省:长沙市:岳麓区', '', '饭店', 'A饭店', 0, 0, null);
+       ('457342192208107100', '67681357681345', '2022-8-9 12:13:14');

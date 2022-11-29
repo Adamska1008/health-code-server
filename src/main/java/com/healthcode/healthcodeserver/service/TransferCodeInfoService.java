@@ -12,6 +12,7 @@ public interface TransferCodeInfoService extends IService<TransferCodeInfo> {
    * @return 没有转运的试剂信息列表
    */
   List<TransferCodeInfo> getNotTransferredByOpenId(String openId);
+
   /**
    * 将转运码状态改为1（已转运）
    */
