@@ -11,7 +11,9 @@ import com.healthcode.healthcodeserver.service.RegionalRiskProfileService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.WeakHashMap;
+import java.util.stream.Collectors;
 
 @Service
 public class RegionalRiskProfileServiceImpl
@@ -53,6 +55,34 @@ public class RegionalRiskProfileServiceImpl
     wrapper.set("yellow_code_number", getCodeNumber(position, 1));
     //todo:设置感染人数、风险等级、风险区数量
     regionalRiskProfileDao.update(null, wrapper);
+  }
+
+  @Override
+  public List<String> getSubArea(String province, String city) {
+    QueryWrapper<RegionalRiskProfile> wrapper = new QueryWrapper<>();
+    if (province == null) {
+      wrapper.select("DISTINCT province");
+    } else if (city == null) {
+      wrapper.eq("province", province);
+      wrapper.select("DISTINCT city");
+    } else {
+      wrapper.eq("province", province);
+      wrapper.eq("city", city);
+      wrapper.select("DISTINCT district");
+    }
+    return regionalRiskProfileDao.selectList(wrapper).stream()
+            .map(RegionalRiskProfile::getProvince).collect(Collectors.toList());
+  }
+
+  @Override
+  public int getPositiveNumber(String province, String city, String district) {
+    String position = province+":"+city+":"+district;
+    UpdateWrapper<RegionalRiskProfile> wrapper = new UpdateWrapper<>();
+    wrapper.eq("province",province);
+    wrapper.eq("city",city);
+    wrapper.eq("district",district);
+    RegionalRiskProfile profile = regionalRiskProfileDao.selectOne(wrapper);
+    return profile.getPositiveNumber();
   }
 
   /**

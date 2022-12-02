@@ -10,6 +10,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.healthcode.healthcodeserver.common.Result;
 import com.healthcode.healthcodeserver.entity.*;
 import com.healthcode.healthcodeserver.service.*;
+import com.healthcode.healthcodeserver.util.RedisUtil;
 import com.healthcode.healthcodeserver.util.TokenUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -60,6 +61,10 @@ public class AccountController {
   CollectionPointService collectionPointService;
   @Autowired
   VenueCodeApplicationService venueCodeApplicationService;
+  @Autowired
+  RegionalRiskProfileService regionalRiskProfileService;
+  @Autowired
+  RedisUtil redisUtil;
 
   /**
    * 管理员登陆获取验证token
@@ -592,5 +597,79 @@ public class AccountController {
     venueCodeApplicationService.update(wrapper);
     return new Result()
             .ok();
+  }
+
+  /**
+   *
+   * @param token
+   * @param province
+   * @param city
+   * @param district
+   * @return
+   */
+  @GetMapping("/risk/specific")
+  public Result getSpecificAreaSituation(@RequestParam("token") String token,
+                                         @RequestParam("province") String province,
+                                         @RequestParam("city") String city,
+                                         @RequestParam("district") String district) {
+    if (!tokenUtil.verify(token)) {
+      return new Result()
+              .error(2)
+              .message("unknown token");
+    }
+    Integer riskLevel = regionalRiskProfileService.getRiskLevel(province, city, district);
+    Integer positiveNumber = regionalRiskProfileService.getPositiveNumber(province, city, district);
+    return new Result()
+            .ok()
+            .putData("risk_level", riskLevel)
+            .putData("positive_number", positiveNumber);
+  }
+
+  /**
+   *
+   * @param token
+   * @param province
+   * @param city
+   * @return
+   */
+  @GetMapping("/risk/overall")
+  public Result getOverallSituation(@RequestParam("token") String token,
+                                    @RequestParam("province") String province,
+                                    @RequestParam("city") String city) {
+    if (!tokenUtil.verify(token)) {
+      return new Result()
+              .error(2)
+              .message("unknown token");
+    }
+    Integer lowLevelNumber = redisUtil.getOverallRiskLevel(province, city, 1);
+    Integer mediumLevelNumber = redisUtil.getOverallRiskLevel(province, city, 2);
+    Integer highLevelNumber = redisUtil.getOverallRiskLevel(province, city, 3);
+    return new Result()
+            .ok()
+            .putData("low_level_number", lowLevelNumber)
+            .putData("medium_level_number", mediumLevelNumber)
+            .putData("high_level_number", highLevelNumber);
+  }
+
+  /**
+   *
+   * @param token
+   * @param province
+   * @param city
+   * @return
+   */
+  @GetMapping("/risk/sub_area")
+  public Result getSubArea(@RequestParam("token") String token,
+                           @RequestParam("province") String province,
+                           @RequestParam("city") String city) {
+    if (!tokenUtil.verify(token)) {
+      return new Result()
+              .error(2)
+              .message("unknown token");
+    }
+    List<String> subAreas = regionalRiskProfileService.getSubArea(province, city);
+    return new Result()
+            .ok()
+            .putData("sub_ares", subAreas);
   }
 }

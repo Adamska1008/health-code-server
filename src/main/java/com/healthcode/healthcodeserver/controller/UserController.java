@@ -618,7 +618,7 @@ public class UserController {
   @PostMapping("/abnormal")
   public Result postAbnormalInfo(@RequestBody JSONObject request) {
     String openId = request.getString("openid");
-    String sessionKey = request.getString("sessionKey");
+    String sessionKey = request.getString("session_key");
     Result verifiedResult = verifySession(openId, sessionKey);
     if (verifiedResult.getStatusCode() != 0) {
       return verifiedResult;
@@ -713,7 +713,7 @@ public class UserController {
   }
 
   /**
-   * 使用redis缓存计算结果
+   * 获取整体情况。使用redis缓存计算结果
    * @param openId
    * @param sessionKey
    * @return
@@ -735,5 +735,28 @@ public class UserController {
             .putData("low_level_number", lowLevelNumber)
             .putData("medium_level_number", mediumLevelNumber)
             .putData("high_level_number", highLevelNumber);
+  }
+
+  /**
+   *
+   * @param openId
+   * @param sessionKey
+   * @param province
+   * @param city
+   * @return
+   */
+  @GetMapping("/risk/sub_area")
+  public Result getSubArea(@RequestParam("openid") String openId,
+                           @RequestParam("session_key") String sessionKey,
+                           @RequestParam("province") String province,
+                           @RequestParam("city") String city) {
+    Result verifiedResult = verifySession(openId, sessionKey);
+    if (verifiedResult.getStatusCode() != 0) {
+      return verifiedResult;
+    }
+    List<String> subAreas = regionalRiskProfileService.getSubArea(province, city);
+    return new Result()
+            .ok()
+            .putData("sub_ares", subAreas);
   }
 }
