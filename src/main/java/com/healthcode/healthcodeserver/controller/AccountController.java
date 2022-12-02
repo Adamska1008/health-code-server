@@ -317,6 +317,13 @@ public class AccountController {
     return new Result().ok();
   }
 
+  /**
+   *
+   * @param token
+   * @param page
+   * @param size
+   * @return
+   */
   @GetMapping("/collection_point")
   public Result getCollectionPoint(@RequestParam("token") String token,
                                    @RequestParam("page") Integer page,
@@ -349,6 +356,7 @@ public class AccountController {
     CollectionPoint point = new CollectionPoint(
             null,
             request.getString("collection_point_position"),
+            request.getString("collection_point_location"),
             request.getString("collection_point_institution"),
             request.getString("collection_point_principal"),
             request.getString("collection_point_contact_phone")
@@ -374,8 +382,9 @@ public class AccountController {
     UpdateWrapper<CollectionPoint> wrapper = new UpdateWrapper<>();
     wrapper.eq("collection_point_id", pointId);
     List<String> selections = Arrays.asList(
-            "collection_point_position", "collection_point_institution",
-            "collection_point_principal", "collection_point_contact_phone");
+            "collection_point_position", "collection_point_location",
+            "collection_point_institution", "collection_point_principal",
+            "collection_point_contact_phone");
     for (String selection : selections) {
       if (request.containsKey(selection)) {
         wrapper.set(selection, request.getString(selection));

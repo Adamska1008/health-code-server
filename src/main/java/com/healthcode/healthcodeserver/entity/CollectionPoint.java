@@ -16,6 +16,9 @@ public class CollectionPoint {
   @TableField(value = "collection_point_position")
   @JsonProperty(value = "collection_point_position")
   private String position;
+  @TableField("collection_point_location")
+  @JsonProperty("collection_point_location")
+  private String location;
   @TableField(value = "collection_point_institution")
   @JsonProperty(value = "collection_point_institution")
   private String institution;
@@ -31,11 +34,13 @@ public class CollectionPoint {
 
   public CollectionPoint(String id,
                          String position,
+                         String location,
                          String institution,
                          String principal,
                          String phone) {
     this.id = id;
     this.position = position;
+    this.location = location;
     this.institution = institution;
     this.principal = principal;
     this.phone = phone;
@@ -57,6 +62,10 @@ public class CollectionPoint {
     return position;
   }
 
+  public String getLocation() {
+    return location;
+  }
+
   public String getPrincipal() {
     return principal;
   }
@@ -75,6 +84,10 @@ public class CollectionPoint {
 
   public void setPosition(String position) {
     this.position = position;
+  }
+
+  public void setLocation(String location) {
+    this.location = location;
   }
 
   public void setPrincipal(String principal) {
