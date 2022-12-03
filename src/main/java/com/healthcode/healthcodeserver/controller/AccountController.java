@@ -322,21 +322,17 @@ public class AccountController {
     wrapper.set("is_processed", 1);
     wrapper.set("result_info", resultInfo);
     familyBingApplicationService.update(wrapper);
-    QueryWrapper<FamilyBingApplication> queryWrapper = new QueryWrapper<>();
-    queryWrapper.eq("application_id",applicationId);
-    FamilyBingApplication familyBingApplication = familyBingApplicationService.getOne(queryWrapper);
-    UserRelation userRelation = new UserRelation(familyBingApplication.getApplicantPersonId(),
-            familyBingApplication.getRelativePersonId(),
-            familyBingApplication.getRelationType().shortValue());
-    userRelationService.save(userRelation);
-    User user = new User(familyBingApplication.getRelativePersonId(),
-            familyBingApplication.getRelativeName(),
-            null,
-            null,
-            null,
-            0
-            );
-    userService.save(user);
+    if (request.getInteger("is_succeed") == 1) {
+      QueryWrapper<FamilyBingApplication> queryWrapper = new QueryWrapper<>();
+      queryWrapper.eq("application_id",applicationId);
+      FamilyBingApplication familyBingApplication
+              = familyBingApplicationService.getOne(queryWrapper);
+      UserRelation userRelation = new UserRelation(
+              familyBingApplication.getApplicantPersonId(),
+              familyBingApplication.getRelativePersonId(),
+              familyBingApplication.getRelationType().shortValue());
+      userRelationService.save(userRelation);
+    }
     return new Result().ok();
   }
 
@@ -414,6 +410,7 @@ public class AccountController {
         wrapper.set(selection, request.getString(selection));
       }
     }
+    collectionPointService.update(wrapper);
     return new Result().ok();
   }
 

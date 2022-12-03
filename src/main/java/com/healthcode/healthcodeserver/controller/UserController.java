@@ -632,7 +632,7 @@ public class UserController {
       request.getString("person_id"),
       request.getString("phone_number"),
       request.getString("additional_info"),
-      request.getString("type"),
+      request.getInteger("type"),
       (short)0, (short)0
     );
     abnormalInfoService.save(info);
@@ -659,6 +659,9 @@ public class UserController {
     }
     log.info("User with openid " + openId + " check abnormal info application.");
     AbnormalInfo info = abnormalInfoService.getById(applicationId);
+    if (info == null) {
+      return new Result().error(null).message("id not exists");
+    }
     Short isInvestigated = info.getIsInvestigated();
     Short isProcessed = info.getIsProcessed();
     return new Result()

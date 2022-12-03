@@ -23,8 +23,14 @@ public class AbnormalInfo {
   @TableField("additional_information")
   @JsonProperty("additional_info")
   private String additionalInfo;
+  /**
+   * 0 健康码
+   * 1 行程码
+   * 2 核酸检测
+   * 3 疫苗接种
+   */
   @JsonProperty("type")
-  private String type;
+  private Integer type;
   @JsonProperty("is_investigated")
   private Short isInvestigated;
   @JsonProperty("is_processed")
@@ -38,7 +44,7 @@ public class AbnormalInfo {
                       String personId,
                       String phoneNumber,
                       String additionalInfo,
-                      String type,
+                      Integer type,
                       Short isInvestigated,
                       Short isProcessed) {
     this.id = id;
@@ -49,6 +55,10 @@ public class AbnormalInfo {
     this.type = type;
     this.isInvestigated = isInvestigated;
     this.isProcessed = isProcessed;
+  }
+
+  public String getPersonId() {
+    return personId;
   }
 
   public String getPersonName() {
@@ -63,7 +73,7 @@ public class AbnormalInfo {
     return id;
   }
 
-  public String getType() {
+  public Integer getType() {
     return type;
   }
 
@@ -83,6 +93,10 @@ public class AbnormalInfo {
     this.personName = personName;
   }
 
+  public void setPersonId(String personId) {
+    this.personId = personId;
+  }
+
   public void setAdditionalInfo(String additionalInfo) {
     this.additionalInfo = additionalInfo;
   }
@@ -95,7 +109,7 @@ public class AbnormalInfo {
     this.isProcessed = isProcessed;
   }
 
-  public void setType(String type) {
+  public void setType(Integer type) {
     this.type = type;
   }
 

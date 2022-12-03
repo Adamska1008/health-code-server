@@ -178,7 +178,7 @@ CREATE TABLE IF NOT EXISTS t_abnormal_info_application(
     person_id               CHAR(20),
     person_phone            VARCHAR(20),
     additional_information  VARCHAR(50),
-    type                    VARCHAR(10),
+    type                    TINYINT,
     is_investigated         TINYINT CHECK ( is_investigated IN (0,1)),
     is_processed            TINYINT CHECK ( is_processed IN (0,1)),
     result                  VARCHAR(20) ,
