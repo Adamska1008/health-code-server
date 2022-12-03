@@ -636,6 +636,7 @@ public class UserController {
       (short)0, (short)0
     );
     abnormalInfoService.save(info);
+    redisUtil.addAbnormalInfo(openId, info.getId());
     return new Result()
             .ok()
             .putData("application_id", info.getId());

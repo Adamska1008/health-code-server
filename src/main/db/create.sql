@@ -240,7 +240,7 @@ CREATE TABLE IF NOT EXISTS t_audit_journey_information  (
 CREATE TABLE IF NOT EXISTS t_collection_point_information (
 	collection_point_id            CHAR(20)     NOT NULL,
     collection_point_position      VARCHAR(20)  NOT NULL,
-    collection_point_location      VARCHAR(20)  NOT NULL,
+    collection_point_location      VARCHAR(50)  NOT NULL,
     collection_point_institution   VARCHAR(20)  NOT NULL,
     collection_point_principal     CHAR(20)     ,
     collection_point_contact_phone CHAR(20)     ,

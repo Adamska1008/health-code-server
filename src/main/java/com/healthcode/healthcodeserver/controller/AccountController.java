@@ -323,7 +323,7 @@ public class AccountController {
   }
 
   /**
-   *
+   * 获取采集点信息
    * @param token
    * @param page
    * @param size
@@ -354,6 +354,7 @@ public class AccountController {
   public Result addCollectionPoint(@RequestBody JSONObject request) {
     String token = request.getString("token");
     if (!tokenUtil.verify(token)) {
+      log.warn("invalid token " + token);
       return new Result()
               .error(2);
     }

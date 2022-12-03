@@ -110,7 +110,7 @@ VALUES
 INSERT INTO
     t_bind_family_application(application_id, applicant_name, applicant_person_id, relative_name, relative_person_id, additional_information, relation_type, is_processed, is_succeed, result_info)
 VALUES
-       ('413687124546542344', 'fy', '341435234546546544', '姜洋', '457342192208107100', null, 0, 0, 0, null),
+       ('1597569829328482306', 'fy', '341435234546546544', '姜洋', '457342192208107100', null, 0, 0, 0, null),
        ('413676711737197344', 'abc', '49878464876376487','efg', '182347486976884025', null, 1, 0, 0, null),
        ('534676711737197344', 'yq', '6543378348768467' ,'cv', '4123474987840257', null, 2, 0, 0, null);
 
@@ -128,7 +128,14 @@ INSERT INTO
 VALUES
        ('67681357681345', 'B饭店', '饭店', '湖南省:长沙市:岳麓区', '阜埠河路');
 
+-- 行程信息
 INSERT INTO
     t_itinerary_information(person_id, venue_id, record_time)
 VALUES
        ('457342192208107100', '67681357681345', '2022-8-9 12:13:14');
+
+-- 采集点信息
+INSERT INTO
+    t_collection_point_information(collection_point_id, collection_point_position, collection_point_location, collection_point_institution, collection_point_principal, collection_point_contact_phone)
+VALUES
+       ('1597569829328482306', '湖南省:长沙市:岳麓区', '湖南大学天马学生公寓', '篮球场', '负责人', '18157815593');
