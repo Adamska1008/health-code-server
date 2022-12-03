@@ -66,6 +66,9 @@ public class AccountController {
   @Autowired
   RedisUtil redisUtil;
 
+  @Autowired
+  UserRelationService userRelationService;
+
   /**
    * 管理员登陆获取验证token
    * @param username 用户名
@@ -319,6 +322,21 @@ public class AccountController {
     wrapper.set("is_processed", 1);
     wrapper.set("result_info", resultInfo);
     familyBingApplicationService.update(wrapper);
+    QueryWrapper<FamilyBingApplication> queryWrapper = new QueryWrapper<>();
+    queryWrapper.eq("application_id",applicationId);
+    FamilyBingApplication familyBingApplication = familyBingApplicationService.getOne(queryWrapper);
+    UserRelation userRelation = new UserRelation(familyBingApplication.getApplicantPersonId(),
+            familyBingApplication.getRelativePersonId(),
+            familyBingApplication.getRelationType().shortValue());
+    userRelationService.save(userRelation);
+    User user = new User(familyBingApplication.getRelativePersonId(),
+            familyBingApplication.getRelativeName(),
+            null,
+            null,
+            null,
+            0
+            );
+    userService.save(user);
     return new Result().ok();
   }
 
