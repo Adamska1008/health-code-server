@@ -663,7 +663,9 @@ public class UserController {
     return new Result()
             .ok()
             .putData("is_investigated", isInvestigated)
-            .putData("is_processed", isProcessed);
+            .putData("is_processed", isProcessed)
+            .putData("application_id",info.getId())
+            .putData("type",info.getType());
   }
 
   /**
