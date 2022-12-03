@@ -30,4 +30,12 @@ public class CollectionPointServiceImpl
     collectionPointDao.selectPage(pointPage, null);
     return pointPage.getRecords();
   }
+
+  @Override
+  public List<CollectionPoint> getByDistrict(String province, String city, String district) {
+    String position = province + ":" + city + ":" + district;
+    QueryWrapper<CollectionPoint> wrapper = new QueryWrapper<>();
+    wrapper.eq("collection_point_position", position);
+    return collectionPointDao.selectList(wrapper);
+  }
 }

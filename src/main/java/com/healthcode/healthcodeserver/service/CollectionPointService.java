@@ -13,4 +13,13 @@ public interface CollectionPointService extends IService<CollectionPoint> {
    * @return 元素列表
    */
   List<CollectionPoint> getByPage(int page, int size);
+
+  /**
+   *
+   * @param province
+   * @param city
+   * @param district
+   * @return
+   */
+  List<CollectionPoint> getByDistrict(String province, String city, String district);
 }

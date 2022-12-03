@@ -50,6 +50,8 @@ public class UserController {
   @Autowired
   RegionalRiskProfileService regionalRiskProfileService;
   @Autowired
+  CollectionPointService collectionPointService;
+  @Autowired
   RedisUtil redisUtil;
 
   Map<String, String> openIdToSessionKey = new HashMap<>();
@@ -758,5 +760,30 @@ public class UserController {
     return new Result()
             .ok()
             .putData("sub_ares", subAreas);
+  }
+
+  /**
+   *
+   * @param openId
+   * @param sessionKey
+   * @param province
+   * @param city
+   * @param district
+   * @return
+   */
+  @GetMapping("collection_point")
+  public Result getCollectionPoint(@RequestParam("openid") String openId,
+                                   @RequestParam("session_key") String sessionKey,
+                                   @RequestParam("province") String province,
+                                   @RequestParam("city") String city,
+                                   @RequestParam("district") String district) {
+    Result verifiedResult = verifySession(openId, sessionKey);
+    if (verifiedResult.getStatusCode() != 0) {
+      return verifiedResult;
+    }
+    List<CollectionPoint> points = collectionPointService.getByDistrict(province, city, district);
+    return new Result()
+            .ok()
+            .putData("points", points);
   }
 }
