@@ -82,7 +82,11 @@ public class RegionalRiskProfileServiceImpl
     wrapper.eq("city",city);
     wrapper.eq("district",district);
     RegionalRiskProfile profile = regionalRiskProfileDao.selectOne(wrapper);
-    return profile.getPositiveNumber();
+    if (profile == null) {
+      return 0;
+    } else {
+      return profile.getPositiveNumber();
+    }
   }
 
   /**

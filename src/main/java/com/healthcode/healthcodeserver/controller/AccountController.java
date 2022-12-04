@@ -688,4 +688,36 @@ public class AccountController {
             .ok()
             .putData("sub_ares", subAreas);
   }
+
+  /**
+   *
+   * @param token
+   * @param province
+   * @return
+   */
+  @GetMapping("/risk/province")
+  public Result getProvinceSituation(@RequestParam("token") String token,
+                                     @RequestParam("province") String province) {
+    if (!tokenUtil.verify(token)) {
+      return new Result()
+              .error(2)
+              .message("unknown token");
+    }
+    List<String> cities = regionalRiskProfileService.getSubArea(province, null);
+    JSONArray jsonArray = new JSONArray();
+    for (var city : cities) {
+      JSONObject object = new JSONObject();
+      object.put("city", city);
+      Integer lowLevelNumber = redisUtil.getOverallRiskLevel(province, city, 1);
+      Integer mediumLevelNumber = redisUtil.getOverallRiskLevel(province, city, 2);
+      Integer highLevelNumber = redisUtil.getOverallRiskLevel(province, city, 3);
+      object.put("low_level_number", lowLevelNumber);
+      object.put("medium_level_number", mediumLevelNumber);
+      object.put("high_level_number", highLevelNumber);
+      jsonArray.add(object);
+    }
+    return new Result()
+            .ok()
+            .putData("cities", jsonArray);
+  }
 }
