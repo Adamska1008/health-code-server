@@ -29,4 +29,14 @@ public interface UserService extends IService<User> {
    */
   int insertUserInfo(String personId,String personName,
                      String phoneNumber,String wxOpenId,String gender);
+
+  /**
+   *
+   * @param province
+   * @param city
+   * @param district
+   * @param isPositive
+   * @return 某省市区（市区粒度可选）感染人数
+   */
+  long getDistrictPositive(String province, String city, String district, Integer isPositive);
 }

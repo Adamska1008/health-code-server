@@ -22,14 +22,6 @@ public class UserControllerTest {
   }
 
   @Test
-  public void insertUserInfoTest(){
-    String token = "2d783y";
-    String userinfo = "y928he81u";
-    Result result = userController.insertUserInfo(  token,userinfo);
-    System.out.println(JSON.toJSON(result));
-  }
-
-  @Test
   public void getMainPageInfoTest() {
     String openid = "a8rgf23r7r4y54y";
     String sessionKey ="f34rat34ter";
@@ -54,16 +46,6 @@ public class UserControllerTest {
     String appid = "d2378y";
     Result result = userController.getVaccineInoculationInfo(openid,sessionKey,appid);
     System.out.println(JSON.toJSON(result));
-  }
-  @Test
-  public void JSONTest(){
-    String personList = "[{name=fy, idNumber=1, phone=1}, {name=fy, idNumber=1, phone=1, time=2022-11-13 15:03:14}]";
-    JSONArray jsonArray = com.alibaba.fastjson.JSON.parseArray(personList);
-    int size = jsonArray.size();
-    for (int i=0;i<size;i++){
-      JSONObject jsonObject = jsonArray.getJSONObject(i);
-      System.out.println(jsonObject.getString("name"));
-    }
   }
 
 }

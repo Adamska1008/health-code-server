@@ -650,8 +650,10 @@ public class AccountController {
    */
   @GetMapping("/risk/overall")
   public Result getOverallSituation(@RequestParam("token") String token,
-                                    @RequestParam("province") String province,
-                                    @RequestParam("city") String city) {
+                                    @RequestParam(value = "province", required = false)
+                                    String province,
+                                    @RequestParam(value = "city", required = false)
+                                    String city) {
     if (!tokenUtil.verify(token)) {
       return new Result()
               .error(2)
@@ -676,8 +678,10 @@ public class AccountController {
    */
   @GetMapping("/risk/sub_area")
   public Result getSubArea(@RequestParam("token") String token,
-                           @RequestParam("province") String province,
-                           @RequestParam("city") String city) {
+                           @RequestParam(value = "province", required = false)
+                           String province,
+                           @RequestParam(value = "city", required = false)
+                           String city) {
     if (!tokenUtil.verify(token)) {
       return new Result()
               .error(2)
@@ -719,5 +723,36 @@ public class AccountController {
     return new Result()
             .ok()
             .putData("cities", jsonArray);
+  }
+
+  /**
+   *
+   * @param token
+   * @param province
+   * @param city
+   * @param district
+   * @return
+   */
+  @GetMapping("/test/general")
+  public Result getGeneralTestInfo(@RequestParam("token") String token,
+                                   @RequestParam("province") String province,
+                                   @RequestParam("city") String city,
+                                   @RequestParam("district") String district) {
+    if (!tokenUtil.verify(token)) {
+      return new Result()
+              .error(2)
+              .message("unknown token");
+    }
+    if (province == null) {
+      return new Result()
+              .error(null)
+              .message("missing ${province} param");
+    }
+    Long positiveNumber = userService.getDistrictPositive(province, city, district, 1);
+    Long negativeNumber = userService.getDistrictPositive(province, city, district, 0);
+    return new Result()
+            .ok()
+            .putData("positive", positiveNumber)
+            .putData("negative", negativeNumber);
   }
 }

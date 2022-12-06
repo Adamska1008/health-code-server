@@ -7,18 +7,18 @@ import java.sql.Timestamp;
 @TableName("t_transfer_code_info")
 public class TransferCodeInfo {
   private String transferCode;
-  private String tester_open_id;
+  private String testerOpenId;
   private String testTime;
   private int personNumber;
   private short isTransferred;
 
   public TransferCodeInfo(String transferCode,
-                          String tester_open_id,
+                          String testerOpenId,
                           String testTime,
                           int personNumber,
                           short isTransferred) {
     this.transferCode = transferCode;
-    this.tester_open_id = tester_open_id;
+    this.testerOpenId = testerOpenId;
     this.testTime = testTime;
     this.personNumber = personNumber;
     this.isTransferred = isTransferred;
@@ -35,12 +35,12 @@ public class TransferCodeInfo {
     this.transferCode = transferCode;
   }
 
-  public String getTester_open_id() {
-    return tester_open_id;
+  public String getTesterOpenId() {
+    return testerOpenId;
   }
 
-  public void setTester_open_id(String tester_open_id) {
-    this.tester_open_id = tester_open_id;
+  public void setTesterOpenId(String tester_open_id) {
+    this.testerOpenId = tester_open_id;
   }
 
   public String getTestTime() {
@@ -71,7 +71,7 @@ public class TransferCodeInfo {
   public String toString() {
     return "TransferCodeInfo{" +
             "transferCode='" + transferCode + '\'' +
-            ", tester_open_id='" + tester_open_id + '\'' +
+            ", tester_open_id='" + testerOpenId + '\'' +
             ", testTime=" + testTime +
             ", personNumber=" + personNumber +
             ", isTransferred=" + isTransferred +

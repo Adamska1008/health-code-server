@@ -40,13 +40,6 @@ public class AccountServiceTest {
     String userPassword_2 = "1";
     int category_2 = 1;
 
-    System.out.println(accountService.accountIsValid(null , userPassword_0 , category_0 ));
-    System.out.println(accountService.accountIsValid(userName_0 , null , category_0 ));
-    System.out.println(accountService.accountIsValid(userName_0 , userPassword_0 , 0 ));
-    System.out.println(accountService.accountIsValid(null , null , category_0 ));
-    System.out.println(accountService.accountIsValid(null , userPassword_0 , 0 ));
-    System.out.println(accountService.accountIsValid(userName_0 , null , 0 ));
-    System.out.println(accountService.accountIsValid(null , null , 0 ));
     System.out.println(accountService.accountIsValid(userName_0 , userPassword_0 , category_0 ));
     System.out.println(accountService.accountIsValid(userName_1 , userPassword_1 , category_1));
     System.out.println(accountService.accountIsValid(userName_2 , userPassword_2 , category_2 ));

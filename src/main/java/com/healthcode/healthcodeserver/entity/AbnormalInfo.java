@@ -29,7 +29,6 @@ public class AbnormalInfo {
    * 2 核酸检测
    * 3 疫苗接种
    */
-  @JsonProperty("type")
   private Integer type;
   @JsonProperty("is_investigated")
   private Short isInvestigated;

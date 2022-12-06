@@ -22,6 +22,10 @@ public class CovidTestInstitutionServiceImpl
    */
   public String getNameById(String id) {
     CovidTestInstitution institution = covidTestInstitutionDao.selectById(id);
-    return institution.getName();
+    if (institution == null) {
+      return "";
+    } else {
+      return institution.getName();
+    }
   }
 }

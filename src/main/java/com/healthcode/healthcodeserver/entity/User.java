@@ -20,14 +20,15 @@ public class User {
   // 0: 男; 1: 女
   private Short gender;
   // health_code_color 0:绿 1:黄 2:绿
-  private Integer healthCodeColor;
+  private Short healthCodeColor;
+  private Short isPositive;
 
   public User(String personId,
               String name,
               String phoneNumber,
               String openId,
               Short gender,
-              Integer healthCodeColor) {
+              Short healthCodeColor) {
     this.personId = personId;
     this.name = name;
     this.phoneNumber = phoneNumber;
@@ -63,6 +64,10 @@ public class User {
     return phoneNumber;
   }
 
+  public Short getIsPositive() {
+    return isPositive;
+  }
+
   public void setPhoneNumber(String phoneNumber) {
     this.phoneNumber = phoneNumber;
   }
@@ -83,12 +88,16 @@ public class User {
     this.gender = gender;
   }
 
-  public Integer getHealthCodeColor() {
-    return healthCodeColor;
+  public void setHealthCodeColor(Short healthCodeColor) {
+    this.healthCodeColor = healthCodeColor;
   }
 
-  public void setHealthCodeColor(Integer healthCodeColor) {
-    this.healthCodeColor = healthCodeColor;
+  public void setIsPositive(Short isPositive) {
+    this.isPositive = isPositive;
+  }
+
+  public Short getHealthCodeColor() {
+    return healthCodeColor;
   }
 
   public void setPosition(String position) {

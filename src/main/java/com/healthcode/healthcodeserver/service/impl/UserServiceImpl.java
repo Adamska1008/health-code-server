@@ -55,8 +55,25 @@ public class UserServiceImpl
     user.setName(personName);
     int genderNumber = Integer.parseInt(gender);
     user.setGender((short)(genderNumber));
-    user.setHealthCodeColor(0);
+    user.setHealthCodeColor((short) 0);
     user.setOpenId(wxOpenId);
     return userDao.insert(user);
+  }
+
+  @Override
+  public long getDistrictPositive(String province, String city, String district, Integer isPositive) {
+    String location;
+    if (city == null) {
+      location = province;
+    } else if (district == null) {
+      location = province + ":" + city;
+    } else {
+      location = province + ":" + city + ":" + district;
+    }
+    location = location + "%";
+    QueryWrapper<User> wrapper = new QueryWrapper<>();
+    wrapper.like("location", location);
+    wrapper.eq("is_positive", isPositive);
+    return userDao.selectCount(wrapper);
   }
 }

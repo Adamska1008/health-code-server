@@ -148,7 +148,7 @@ public class UserController {
             request.getString("phone_number"),
             openId,
             request.getShort("person_gender"),
-            0
+            (short) 0
     );
     return new Result().ok();
   }
@@ -208,7 +208,8 @@ public class UserController {
   @PostMapping("/change_info")
   public Result changeUserInfo(@RequestParam("openid") String openId,
                                @RequestParam("session_key") String sessionKey,
-                               @RequestParam("phone_number") String phoneNumber) {
+                               @RequestParam("phone_number") String phoneNumber,
+                               @RequestParam("location") String location) {
     Result verifiedResult = verifySession(openId, sessionKey);
     if (verifiedResult.getStatusCode() != 0) {
       return verifiedResult;
@@ -220,6 +221,9 @@ public class UserController {
     wrapper.eq("person_id", personId);
     if (phoneNumber != null) {
       wrapper.set("phone_number", phoneNumber);
+    }
+    if (location != null) {
+      wrapper.set("location", location);
     }
     userService.update(wrapper);
     return new Result().ok();
@@ -339,23 +343,21 @@ public class UserController {
       return verifiedResult;
     }
     VenueCodeApplication application = venueCodeApplicationService.getById(applicationId);
-    if (application.getIsPassed() == 1) {
+    if (application == null) {
+      log.warn("Wrong venue code application id " + applicationId + ".");
       return new Result()
-              .ok()
-              .putData("is_solved", application.getIsSolved())
-              .putData("is_passed", application.getIsPassed())
-              .putData("venue_id", application.getVenueId())
-              .putData("venue_type", application.getType())
-              .putData("place_name", application.getPlaceName())
-              .putData("position", application.getPosition())
-              .putData("location", application.getLocation());
-    } else {
-      return new Result()
-              .ok()
-              .putData("is_solved", application.getIsSolved())
-              .putData("is_passed", application.getIsPassed())
-              .putData("result_info", application.getResultInfo());
+              .error(null)
+              .message("wrong application id");
     }
+    return new Result()
+            .ok()
+            .putData("is_solved", application.getIsSolved())
+            .putData("is_passed", application.getIsPassed())
+            .putData("venue_id", application.getVenueId())
+            .putData("venue_type", application.getType())
+            .putData("place_name", application.getPlaceName())
+            .putData("position", application.getPosition())
+            .putData("location", application.getLocation());
   }
 
   /**
@@ -669,7 +671,8 @@ public class UserController {
             .putData("is_investigated", isInvestigated)
             .putData("is_processed", isProcessed)
             .putData("application_id",info.getId())
-            .putData("type",info.getType());
+            .putData("type",info.getType())
+            .putData("additional_info", info.getAdditionalInfo());
   }
 
   /**
@@ -729,8 +732,10 @@ public class UserController {
   @GetMapping("/risk/overall")
   public Result getOverallSituation(@RequestParam("openid") String openId,
                                     @RequestParam("session_key") String sessionKey,
-                                    @RequestParam("province") String province,
-                                    @RequestParam("city") String city) {
+                                    @RequestParam(value = "province", required = false)
+                                    String province,
+                                    @RequestParam(value = "city", required = false)
+                                    String city) {
     Result verifiedResult = verifySession(openId, sessionKey);
     if (verifiedResult.getStatusCode() != 0) {
       return verifiedResult;
@@ -756,8 +761,10 @@ public class UserController {
   @GetMapping("/risk/sub_area")
   public Result getSubArea(@RequestParam("openid") String openId,
                            @RequestParam("session_key") String sessionKey,
-                           @RequestParam("province") String province,
-                           @RequestParam("city") String city) {
+                           @RequestParam(value = "province", required = false)
+                           String province,
+                           @RequestParam(value = "city",required = false)
+                           String city) {
     Result verifiedResult = verifySession(openId, sessionKey);
     if (verifiedResult.getStatusCode() != 0) {
       return verifiedResult;
@@ -781,8 +788,10 @@ public class UserController {
   public Result getCollectionPoint(@RequestParam("openid") String openId,
                                    @RequestParam("session_key") String sessionKey,
                                    @RequestParam("province") String province,
-                                   @RequestParam("city") String city,
-                                   @RequestParam("district") String district) {
+                                   @RequestParam(value = "city", required = false)
+                                   String city,
+                                   @RequestParam(value = "district", required = false)
+                                   String district) {
     Result verifiedResult = verifySession(openId, sessionKey);
     if (verifiedResult.getStatusCode() != 0) {
       return verifiedResult;

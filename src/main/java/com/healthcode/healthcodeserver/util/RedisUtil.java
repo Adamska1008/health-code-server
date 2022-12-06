@@ -26,8 +26,11 @@ public class RedisUtil {
    * @param remoteReportId
    */
   public void addRemoteReport(String openId, String remoteReportId) {
+    List<String> list = getRemoteReportIdList(openId);
     String key = openId + "remote_report";
-    redisTemplate.opsForList().rightPush(key, remoteReportId);
+    if (!list.contains(key)) {
+      redisTemplate.opsForList().rightPush(key, remoteReportId);
+    }
   }
 
   /**
@@ -46,8 +49,11 @@ public class RedisUtil {
    * @param applicationId
    */
   public void addVenueCodeApplication(String openId, String applicationId) {
+    List<String> list = getVenueCodeApplicationIdList(openId);
     String key = openId + "venue_code_application";
-    redisTemplate.opsForList().rightPush(key, applicationId);
+    if (!list.contains(applicationId)) {
+      redisTemplate.opsForList().rightPush(key, applicationId);
+    }
   }
 
   /**
@@ -66,8 +72,11 @@ public class RedisUtil {
    * @param applicationId
    */
   public void addFamilyBindingApplication(String openId, String applicationId) {
+    List<String> list = getFamilyBindingApplicationIdList(openId);
     String key = openId + "family_binding_application";
-    redisTemplate.opsForList().rightPush(key, applicationId);
+    if (!list.contains(applicationId)) {
+      redisTemplate.opsForList().rightPush(key, applicationId);
+    }
   }
 
   /**
@@ -86,8 +95,11 @@ public class RedisUtil {
    * @param applicationId
    */
   public void addAbnormalInfo(String openId, String applicationId) {
+    List<String> list = getAbnormalInfoIdList(openId);
     String key = openId + "abnormal_info";
-    redisTemplate.opsForList().rightPush(key, applicationId);
+    if (!list.contains(applicationId)) {
+      redisTemplate.opsForList().rightPush(key, applicationId);
+    }
   }
 
   /**

@@ -14,6 +14,7 @@ CREATE TABLE IF NOT EXISTS t_user_info (
     wx_openid           CHAR(40),
     gender              TINYINT     CHECK(gender IN(0, 1)),
     health_code_color   TINYINT    	CHECK (health_code_color IN (0,1,2)),
+    is_positive         TINYINT,
     PRIMARY KEY (person_id)
 )DEFAULT CHARSET=utf8mb4;
 

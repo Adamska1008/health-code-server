@@ -2,7 +2,7 @@ spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     username: root
-    password: 1234
+    password: xwqmw!Psr7k2
     url: jdbc:mysql:///healthcode?severTimezone=UTC
   redis:
     host: localhost

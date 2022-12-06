@@ -25,8 +25,8 @@ public class AccountServiceImpl
   @Override
   public boolean accountIsValid(String userName, String userPassword, int category) {
     QueryWrapper<Account> queryWrapper = new QueryWrapper<>();
-    queryWrapper.eq("user_name",userName);
-    queryWrapper.eq("user_password",userPassword);
+    queryWrapper.eq("username",userName);
+    queryWrapper.eq("password",userPassword);
     queryWrapper.eq("category",category);
     return !accountDao.selectList(queryWrapper).isEmpty();
   }
