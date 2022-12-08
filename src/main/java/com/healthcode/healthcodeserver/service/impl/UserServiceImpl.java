@@ -62,17 +62,17 @@ public class UserServiceImpl
 
   @Override
   public long getDistrictPositive(String province, String city, String district, Integer isPositive) {
-    String location;
+    String position;
     if (city == null) {
-      location = province;
+      position = province;
     } else if (district == null) {
-      location = province + ":" + city;
+      position = province + ":" + city;
     } else {
-      location = province + ":" + city + ":" + district;
+      position = province + ":" + city + ":" + district;
     }
-    location = location + "%";
+    position = position + "%";
     QueryWrapper<User> wrapper = new QueryWrapper<>();
-    wrapper.like("location", location);
+    wrapper.like("position", position);
     wrapper.eq("is_positive", isPositive);
     return userDao.selectCount(wrapper);
   }

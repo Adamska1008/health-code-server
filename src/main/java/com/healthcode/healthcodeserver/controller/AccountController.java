@@ -734,10 +734,14 @@ public class AccountController {
    * @return
    */
   @GetMapping("/test/general")
-  public Result getGeneralTestInfo(@RequestParam("token") String token,
-                                   @RequestParam("province") String province,
-                                   @RequestParam("city") String city,
-                                   @RequestParam("district") String district) {
+  public Result getGeneralTestInfo(@RequestParam(value = "token", required = false)
+                                   String token,
+                                   @RequestParam(value = "province", required = false)
+                                   String province,
+                                   @RequestParam(value = "city", required = false)
+                                   String city,
+                                   @RequestParam(value = "district",required = false)
+                                   String district) {
     if (!tokenUtil.verify(token)) {
       return new Result()
               .error(2)
