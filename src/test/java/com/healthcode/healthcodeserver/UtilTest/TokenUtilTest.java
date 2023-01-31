@@ -10,11 +10,6 @@ public class TokenUtilTest {
     @Autowired
     TokenUtil tokenUtil;
 
-    @Test
-    public void genTest(){
-        System.out.println(tokenUtil.gen(null));
-    }
-
     /**
      * 测试函数 verifyTest
      * 用来测试函数    tokenUtil.verify(String token);

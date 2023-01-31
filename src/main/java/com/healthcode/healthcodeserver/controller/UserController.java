@@ -488,7 +488,7 @@ public class UserController {
   }
 
   /**
-   * 查看家属健康码信息，
+   * 查看家属健康码信息
    * @param openId 用户小程序openid
    * @param sessionKey 会话密钥
    * @param personId 被查询用户的身份证号
@@ -531,6 +531,7 @@ public class UserController {
   }
 
   /**
+   * 提交异地报备
    * 传参content-type为application/json
    * @param params JSON格式消息体
    * @return Result含义见文档
@@ -595,7 +596,7 @@ public class UserController {
   }
 
   /**
-   *
+   * 获取异地报备的id列表
    * @param openId
    * @param sessionKey
    * @return
@@ -676,7 +677,7 @@ public class UserController {
   }
 
   /**
-   *
+   * 获取异常信息id
    * @param openId
    * @param sessionKey
    * @return
@@ -695,8 +696,30 @@ public class UserController {
             .putData("id_list", idList);
   }
 
+  @GetMapping("/risk/code_number")
+  public Result getCodeNumber(@RequestParam("openid") String openId,
+                              @RequestParam("session_key") String sessionKey,
+                              @RequestParam("province") String province,
+                              @RequestParam("city") String city,
+                              @RequestParam("district") String district) {
+    Result verifiedResult = verifySession(openId, sessionKey);
+    if (verifiedResult.getStatusCode() != 0) {
+      return verifiedResult;
+    }
+
+    String position = province + ":" + city + ":" + district;
+    Long green = regionalRiskProfileService.getCodeNumber(position, 0);
+    Long yellow = regionalRiskProfileService.getCodeNumber(position, 1);
+    Long red = regionalRiskProfileService.getCodeNumber(position, 2);
+    return new Result()
+            .ok()
+            .putData("green", green)
+            .putData("yellow", yellow)
+            .putData("red", red);
+  }
+
   /**
-   *
+   * 获取某个地区的风险等级
    * @param openId
    * @param sessionKey
    * @param province
@@ -751,7 +774,7 @@ public class UserController {
   }
 
   /**
-   *
+   * 获取某个地区的所有子地区列表
    * @param openId
    * @param sessionKey
    * @param province
@@ -776,7 +799,7 @@ public class UserController {
   }
 
   /**
-   *
+   * 获得某个地区的所有检查点
    * @param openId
    * @param sessionKey
    * @param province

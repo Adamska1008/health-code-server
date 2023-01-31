@@ -9,6 +9,7 @@ import com.healthcode.healthcodeserver.service.RemoteReportingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.rmi.Remote;
 import java.util.List;
 
 @Service

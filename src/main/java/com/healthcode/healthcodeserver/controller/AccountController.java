@@ -109,7 +109,7 @@ public class AccountController {
     log.info("admin with token "+token+" acquire tester apply info");
     if (tokenUtil.verify(token)) {
       log.info("admin with token "+token+" successfully get application list.");
-      // 统计未处理的数据条数
+      // 只统计未处理的数据条数
       QueryWrapper<IdentityApplication> wrapper = new QueryWrapper<>();
       wrapper.lt("is_processed", 1);
       long tot = identityApplicationService.count(wrapper);
@@ -172,6 +172,8 @@ public class AccountController {
   /**
    * 获取异地报备信息
    * @param token 用户通信凭证
+   * @param page 当前页数，从 1 开始
+   * @param size 当前页的大小
    * @return Result内容见文档
    */
   @GetMapping("/remote_report")
@@ -613,6 +615,36 @@ public class AccountController {
     venueCodeApplicationService.update(wrapper);
     return new Result()
             .ok();
+  }
+
+
+  /**
+   * 获取某个地区的红黄码数量
+   * @param token
+   * @param province
+   * @param city
+   * @param district
+   * @return
+   */
+  @GetMapping("/risk/code_number")
+  public Result getCodeNumber(@RequestParam("token") String token,
+                              @RequestParam("province") String province,
+                              @RequestParam("city") String city,
+                              @RequestParam("district") String district) {
+    if (!tokenUtil.verify(token)) {
+      return new Result()
+              .error(2)
+              .message("unknown token");
+    }
+    String position = province + ":" + city + ":" + district;
+    Long green = regionalRiskProfileService.getCodeNumber(position, 0);
+    Long yellow = regionalRiskProfileService.getCodeNumber(position, 1);
+    Long red = regionalRiskProfileService.getCodeNumber(position, 2);
+    return new Result()
+            .ok()
+            .putData("green", green)
+            .putData("yellow", yellow)
+            .putData("red", red);
   }
 
   /**
