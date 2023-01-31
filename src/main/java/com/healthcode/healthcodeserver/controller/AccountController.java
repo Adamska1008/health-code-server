@@ -723,7 +723,7 @@ public class AccountController {
     List<String> subAreas = regionalRiskProfileService.getSubArea(province, city);
     return new Result()
             .ok()
-            .putData("sub_ares", subAreas);
+            .putData("sub_areas", subAreas);
   }
 
   /**

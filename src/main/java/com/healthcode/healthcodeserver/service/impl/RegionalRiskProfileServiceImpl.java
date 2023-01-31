@@ -61,16 +61,29 @@ public class RegionalRiskProfileServiceImpl
     QueryWrapper<RegionalRiskProfile> wrapper = new QueryWrapper<>();
     if (province == null) {
       wrapper.select("DISTINCT province");
+      List<RegionalRiskProfile> subAreas = regionalRiskProfileDao.selectList(wrapper);
+      return subAreas
+              .stream()
+              .map(RegionalRiskProfile::getProvince)
+              .collect(Collectors.toList());
     } else if (city == null) {
       wrapper.eq("province", province);
       wrapper.select("DISTINCT city");
+      List<RegionalRiskProfile> subAreas = regionalRiskProfileDao.selectList(wrapper);
+      return subAreas
+              .stream()
+              .map(RegionalRiskProfile::getCity)
+              .collect(Collectors.toList());
     } else {
       wrapper.eq("province", province);
       wrapper.eq("city", city);
       wrapper.select("DISTINCT district");
+      List<RegionalRiskProfile> subAreas = regionalRiskProfileDao.selectList(wrapper);
+      return subAreas
+              .stream()
+              .map(RegionalRiskProfile::getDistrict)
+              .collect(Collectors.toList());
     }
-    return regionalRiskProfileDao.selectList(wrapper).stream()
-            .map(RegionalRiskProfile::getProvince).collect(Collectors.toList());
   }
 
   @Override
