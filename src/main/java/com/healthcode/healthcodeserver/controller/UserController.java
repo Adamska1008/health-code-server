@@ -706,8 +706,8 @@ public class UserController {
     if (verifiedResult.getStatusCode() != 0) {
       return verifiedResult;
     }
-
     String position = province + ":" + city + ":" + district;
+    log.info("User with openid " + openId + " get code number of " + position);
     Long green = regionalRiskProfileService.getCodeNumber(position, 0);
     Long yellow = regionalRiskProfileService.getCodeNumber(position, 1);
     Long red = regionalRiskProfileService.getCodeNumber(position, 2);

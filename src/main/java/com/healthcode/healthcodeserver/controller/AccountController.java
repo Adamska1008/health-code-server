@@ -637,6 +637,7 @@ public class AccountController {
               .message("unknown token");
     }
     String position = province + ":" + city + ":" + district;
+    log.info("Admin with token " + token + " get code number of " + position);
     Long green = regionalRiskProfileService.getCodeNumber(position, 0);
     Long yellow = regionalRiskProfileService.getCodeNumber(position, 1);
     Long red = regionalRiskProfileService.getCodeNumber(position, 2);
