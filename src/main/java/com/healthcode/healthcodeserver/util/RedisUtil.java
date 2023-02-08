@@ -125,7 +125,7 @@ public class RedisUtil {
     String key = levelToStr.get(level);
     if (province != null) { // 不指定省份与城市
       key = key + "_" + province;
-      if (city != null) {
+      if (city != null) { // 不指定城市
         key = key + "_" + city;
       }
     }
@@ -133,7 +133,7 @@ public class RedisUtil {
       return Integer.valueOf(Objects.requireNonNull(redisTemplate.opsForValue().get(key)));
     } else {
       Integer value = regionalRiskProfileService
-              .getSpecificLevelNumber(null, null, level);
+              .getSpecificLevelNumber(province, city, level);
       redisTemplate.opsForValue().set(key, String.valueOf(value));
       redisTemplate.expire(key, riskProfileExpireTime, TimeUnit.SECONDS);
       return value;

@@ -670,6 +670,7 @@ public class UserController {
     return new Result()
             .ok()
             .putData("is_investigated", isInvestigated)
+            .putData("submit_time", info.getSubmitTime())
             .putData("is_processed", isProcessed)
             .putData("application_id",info.getId())
             .putData("type",info.getType())

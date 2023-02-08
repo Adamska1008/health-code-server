@@ -605,8 +605,8 @@ public class AccountController {
               application.getPosition(),
               application.getLocation()
       );
-      wrapper.set("venue_id", info.getId());
       venueCodeInfoService.save(info);
+      wrapper.set("venue_id", info.getId());
     }
     wrapper.eq("application_id", applicationId);
     wrapper.set("is_solved", 1);
@@ -666,8 +666,11 @@ public class AccountController {
               .error(2)
               .message("unknown token");
     }
-    Integer riskLevel = regionalRiskProfileService.getRiskLevel(province, city, district);
-    Integer positiveNumber = regionalRiskProfileService.getPositiveNumber(province, city, district);
+    int riskLevel = regionalRiskProfileService.getRiskLevel(province, city, district);
+    if (riskLevel == -1) {
+      riskLevel = 0;
+    }
+    int positiveNumber = regionalRiskProfileService.getPositiveNumber(province, city, district);
     return new Result()
             .ok()
             .putData("risk_level", riskLevel)
@@ -692,6 +695,7 @@ public class AccountController {
               .error(2)
               .message("unknown token");
     }
+    log.info("Acquire risky districts number of city: " + city + " province: " + province);
     Integer lowLevelNumber = redisUtil.getOverallRiskLevel(province, city, 1);
     Integer mediumLevelNumber = redisUtil.getOverallRiskLevel(province, city, 2);
     Integer highLevelNumber = redisUtil.getOverallRiskLevel(province, city, 3);

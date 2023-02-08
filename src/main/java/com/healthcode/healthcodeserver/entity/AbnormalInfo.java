@@ -4,8 +4,10 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.sql.Timestamp;
 import java.util.Objects;
 
 @TableName("t_abnormal_info_application")
@@ -20,6 +22,9 @@ public class AbnormalInfo {
   @TableField("person_phone")
   @JsonProperty("phone_number")
   private String phoneNumber;
+  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+  @JsonProperty("submit_time")
+  private Timestamp submitTime;
   @TableField("additional_information")
   @JsonProperty("additional_info")
   private String additionalInfo;
@@ -50,6 +55,7 @@ public class AbnormalInfo {
     this.personName = personName;
     this.personId = personId;
     this.phoneNumber = phoneNumber;
+    this.submitTime = new Timestamp(System.currentTimeMillis());
     this.additionalInfo = additionalInfo;
     this.type = type;
     this.isInvestigated = isInvestigated;
@@ -80,6 +86,10 @@ public class AbnormalInfo {
     return phoneNumber;
   }
 
+  public Timestamp getSubmitTime() {
+    return submitTime;
+  }
+
   public Short getIsInvestigated() {
     return isInvestigated;
   }
@@ -94,6 +104,10 @@ public class AbnormalInfo {
 
   public void setPersonId(String personId) {
     this.personId = personId;
+  }
+
+  public void setSubmitTime(Timestamp submitTime) {
+    this.submitTime = submitTime;
   }
 
   public void setAdditionalInfo(String additionalInfo) {

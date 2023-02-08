@@ -180,6 +180,7 @@ CREATE TABLE IF NOT EXISTS t_abnormal_info_application(
     person_phone            VARCHAR(20),
     additional_information  VARCHAR(50),
     type                    TINYINT,
+    submit_time             DATE,
     is_investigated         TINYINT CHECK ( is_investigated IN (0,1)),
     is_processed            TINYINT CHECK ( is_processed IN (0,1)),
     result                  VARCHAR(20) ,
@@ -237,6 +238,7 @@ CREATE TABLE IF NOT EXISTS t_audit_journey_information  (
     appeal_result VARCHAR(20),
     PRIMARY KEY(application_id) 
 )DEFAULT CHARSET=utf8mb4;
+
 -- 采集点信息
 CREATE TABLE IF NOT EXISTS t_collection_point_information (
 	collection_point_id            CHAR(20)     NOT NULL,
