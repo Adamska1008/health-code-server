@@ -526,6 +526,7 @@ public class UserController {
             .putData("name", user.getName())
             .putData("person_id", user.getPersonId())
             .putData("health_code_color", user.getHealthCodeColor())
+            .putData("phone_number", user.getPhoneNumber())
             .putData("latest_test", latestTest)
             .putData("vaccine_inoculation_info", vaccineInoculationInfoList);
   }
