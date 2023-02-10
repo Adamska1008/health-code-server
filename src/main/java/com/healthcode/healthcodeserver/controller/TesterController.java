@@ -317,4 +317,25 @@ public class TesterController {
     return result.ok();
   }
 
+  @GetMapping("/{appid}/sampled_info_by_id")
+  public Result getSampledPersonInfoById(@RequestParam("openid") String openId,
+                                         @RequestParam("session_key") String sessionKey,
+                                         @RequestParam("personId") String personId){
+    Result verifiedResult = verifySession(openId, sessionKey);
+    if (verifiedResult.getStatusCode() != 0) {
+      return verifiedResult;
+    }
+    Result result = new Result();
+    User user = userService.getByPersonId(personId);
+    if (user == null){
+      result.putData("requestStatus",0);
+    } else {
+      result.putData("requestStatus",1);
+      result.putData("name",user.getName());
+      result.putData("idNumber",user.getPersonId());
+      result.putData("phone",user.getPhoneNumber());
+    }
+    return result.ok();
+  }
+
 }
