@@ -327,6 +327,7 @@ public class TesterController {
     }
     Result result = new Result();
     User user = userService.getByPersonId(personId);
+    log.info("Use with personId " + personId + " acquire person info.");
     if (user == null){
       result.putData("requestStatus",0);
     } else {

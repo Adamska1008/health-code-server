@@ -1,16 +1,21 @@
 package com.healthcode.healthcodeserver;
 
 import com.healthcode.healthcodeserver.util.RedisUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.Bean;
 import org.springframework.data.auditing.ReactiveIsNewAwareAuditingHandler;
 
 import javax.annotation.PostConstruct;
 
 @SpringBootApplication
 public class HealthCodeServerApplication {
-  static RedisUtil redisUtilStatic;
+  private static Logger logger = LoggerFactory.getLogger(HealthCodeServerApplication.class);
+  private static RedisUtil redisUtilStatic;
   @Autowired
   RedisUtil redisUtil;
 
@@ -21,7 +26,15 @@ public class HealthCodeServerApplication {
 
   public static void main(String[] args) {
     SpringApplication.run(HealthCodeServerApplication.class, args);
-    insertData();
+  }
+
+  @Bean
+  CommandLineRunner redis_example_data_insert() {
+    return args -> {
+      logger.info("inserting redis data");
+      insertData();
+      logger.info("insert redis data finished");
+    };
   }
 
   static void insertData() {
@@ -30,6 +43,8 @@ public class HealthCodeServerApplication {
 
     redisUtilStatic.addFamilyBindingApplication(
             openIdA, "1597569829328482306");
+    redisUtilStatic.addFamilyBindingApplication(
+            openIdB, "1597569829328263884");
 
     redisUtilStatic.addRemoteReport(
             openIdA, "4136878935465423441");

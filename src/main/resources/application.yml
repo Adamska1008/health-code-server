@@ -2,7 +2,7 @@ spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     username: root
-    password: xwqmw!Psr7k2
+    password: 123456
     url: jdbc:mysql:///healthcode?severTimezone=UTC
   redis:
     host: localhost
@@ -22,3 +22,4 @@ server:
 imgs:
   remote_report:
     path: /public/img/remote_report/
+

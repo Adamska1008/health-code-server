@@ -35,6 +35,7 @@ public class UserServiceImpl
   public User getByOpenId(String openId) {
     QueryWrapper<User> queryWrapper = new QueryWrapper<>();
     queryWrapper.eq("wx_openid",openId);
+    queryWrapper.last("LIMIT 1");
     return userDao.selectOne(queryWrapper);
   }
 

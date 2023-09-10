@@ -7,12 +7,12 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.healthcode.healthcodeserver.aspect.pointCutAnnotation.FullLog;
 import com.healthcode.healthcodeserver.common.Result;
 import com.healthcode.healthcodeserver.entity.*;
 import com.healthcode.healthcodeserver.service.*;
 import com.healthcode.healthcodeserver.util.RedisUtil;
 import com.healthcode.healthcodeserver.util.TokenUtil;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -27,7 +27,6 @@ import java.util.Comparator;
 import java.util.List;
 
 @CrossOrigin
-@Slf4j
 @RestController
 @RequestMapping("web/admin")
 public class AccountController {
@@ -75,22 +74,19 @@ public class AccountController {
    * @param password 密码
    * @return token值
    */
+  @FullLog
   @GetMapping("/login")
   public Result adminLogIn(@RequestParam("username") String username,
                            @RequestParam("password") String password){
-    log.info("Admin with username "+username+" request log in.");
     QueryWrapper<Account> wrapper = new QueryWrapper<>();
     wrapper.eq("username", username);
     Account account = accountService.getOne(wrapper);
     if (account == null) {
-      log.info("User with given username not exist.");
       return new Result().error(201);
     }
     if (!account.getPassword().equals(password)) {
-      log.info("Wrong password.");
       return new Result().error(202);
     }
-    log.info("Admin with username "+username+" successfully log in.");
     String token = tokenUtil.gen(account);
     return new Result()
             .ok()
@@ -102,13 +98,12 @@ public class AccountController {
    * @param token 管理员自身的token
    * @return 检测人员申请列表
    */
+  @FullLog
   @GetMapping("/get_tester_apply")
   public Result getTesterApplicationInfo(@RequestParam("token") String token,
                                          @RequestParam("page") Integer page,
                                          @RequestParam("size") Integer size) {
-    log.info("admin with token "+token+" acquire tester apply info");
     if (tokenUtil.verify(token)) {
-      log.info("admin with token "+token+" successfully get application list.");
       // 只统计未处理的数据条数
       QueryWrapper<IdentityApplication> wrapper = new QueryWrapper<>();
       wrapper.lt("is_processed", 1);
@@ -125,7 +120,6 @@ public class AccountController {
               .putData("total", tot)
               .putData("application_list", identityApplications);
     } else {
-      log.info("Invalid token.");
       return new Result()
               .error(2);
     }
@@ -136,11 +130,11 @@ public class AccountController {
    * @Param request 请求
    * @return Result
    */
+  @FullLog
   @PostMapping("/post_tester_apply")
   public Result postTesterApplicationInfo(@RequestBody JSONObject request) {
     String token = request.getString("token");
     if (tokenUtil.verify(token)) {
-      log.info("Account with token " + token + " post processed application.");
       Integer isSucceed = request.getInteger("is_succeed");
       String resultInfo = request.getString("result_info");
       String applicationId = request.getString("application_id");
@@ -162,7 +156,6 @@ public class AccountController {
       return new Result()
               .ok();
     } else {
-      log.info("unknown token");
       return new Result()
               .error(2)
               .message("unknown token");
@@ -176,6 +169,7 @@ public class AccountController {
    * @param size 当前页的大小
    * @return Result内容见文档
    */
+  @FullLog
   @GetMapping("/remote_report")
   public Result getRemoteReport(@RequestParam("token") String token,
                                 @RequestParam("page") Integer page,
@@ -185,7 +179,6 @@ public class AccountController {
               .error(2)
               .message("unknown token");
     }
-    log.info("admin with token " + token + " get remote report");
     QueryWrapper<RemoteReporting> wrapper = new QueryWrapper<>();
     wrapper.lt("is_checked", 1);
     long tot = remoteReportingService.count(wrapper);
@@ -207,6 +200,7 @@ public class AccountController {
    * @param request 请求内容
    * @return Result内容见文档
    */
+  @FullLog
   @PostMapping("remote_report")
   public Result postRemoteReport(@RequestBody JSONObject request) {
     String token = request.getString("token");
@@ -215,7 +209,6 @@ public class AccountController {
               .error(2)
               .message("unknown token");
     }
-    log.info("admin with token " + token + " post remote report");
     Integer isAllowed = request.getInteger("is_allowed");
     String reportId = request.getString("report_id");
     UpdateWrapper<RemoteReporting> wrapper = new UpdateWrapper<>();
@@ -231,6 +224,7 @@ public class AccountController {
    * @param token 用户通信凭证
    * @return Result内容见文档
    */
+  @FullLog
   @GetMapping("/abnormal")
   public Result getAbnormalInfo(@RequestParam("token") String token,
                                 @RequestParam("page") Integer page,
@@ -239,7 +233,6 @@ public class AccountController {
       return new Result()
               .error(2);
     }
-    log.info("admin with token " + token + " get abnormal info");
     QueryWrapper<AbnormalInfo> wrapper = new QueryWrapper<>();
     wrapper.lt("is_investigated", 1);
     long tot = abnormalInfoService.count(wrapper);
@@ -257,6 +250,7 @@ public class AccountController {
    * @param request 请求内容
    * @return Result 内容见文档
    */
+  @FullLog
   @PostMapping("/abnormal")
   public Result postAbnormalInfo(@RequestBody JSONObject request) {
     String token = request.getString("token");
@@ -264,7 +258,6 @@ public class AccountController {
       return new Result()
               .error(2);
     }
-    log.info("admin with token " + token + " post abnormal info");
     String applicationId = request.getString("application_id");
     Integer isProcessed = request.getInteger("is_processed");
     UpdateWrapper<AbnormalInfo> wrapper = new UpdateWrapper<>();
@@ -280,6 +273,7 @@ public class AccountController {
    * @param token 通信凭证
    * @return Result内容见文档
    */
+  @FullLog
   @GetMapping("/family_binding")
   public Result getFamilyBinding(@RequestParam("token") String token,
                                  @RequestParam("page") Integer page,
@@ -288,7 +282,6 @@ public class AccountController {
       return new Result()
             .error(2);
     }
-    log.info("admin with token " + token + " get family_binding info");
     QueryWrapper<FamilyBingApplication> wrapper = new QueryWrapper<>();
     wrapper.lt("is_processed", 1);
     long tot = familyBingApplicationService.count(wrapper);
@@ -307,6 +300,7 @@ public class AccountController {
    * @param request 请求内容
    * @return Result 内容见文档
    */
+  @FullLog
   @PostMapping("/family_binding")
   public Result postFamilyBinding(@RequestBody JSONObject request) {
     String token = request.getString("token");
@@ -314,7 +308,6 @@ public class AccountController {
       return new Result()
               .error(2);
     }
-    log.info("Admin with token " + token + " post family binding.");
     String applicationId = request.getString("application_id");
     Integer isSucceed = request.getInteger("is_succeed");
     String resultInfo = request.getString("result_info");
@@ -345,6 +338,7 @@ public class AccountController {
    * @param size
    * @return
    */
+  @FullLog
   @GetMapping("/collection_point")
   public Result getCollectionPoint(@RequestParam("token") String token,
                                    @RequestParam("page") Integer page,
@@ -366,15 +360,14 @@ public class AccountController {
    * @param request 请求内容
    * @return Result 内容见文档
    */
+  @FullLog
   @PostMapping("/collection_point/add")
   public Result addCollectionPoint(@RequestBody JSONObject request) {
     String token = request.getString("token");
     if (!tokenUtil.verify(token)) {
-      log.warn("invalid token " + token);
       return new Result()
               .error(2);
     }
-    log.info("Admin with token " + token + " add collection point.");
     CollectionPoint point = new CollectionPoint(
             null,
             request.getString("collection_point_position"),
@@ -392,6 +385,7 @@ public class AccountController {
    * @param request 请求内容
    * @return Result 内容见文档
    */
+  @FullLog
   @PostMapping("/collection_point/update")
   public Result updateCollectionPoint(@RequestBody JSONObject request) {
     String token = request.getString("token");
@@ -399,7 +393,6 @@ public class AccountController {
       return new Result()
               .error(2);
     }
-    log.info("Admin with token " + token + " update collection point.");
     String pointId = request.getString("collection_point_id");
     UpdateWrapper<CollectionPoint> wrapper = new UpdateWrapper<>();
     wrapper.eq("collection_point_id", pointId);
@@ -422,6 +415,7 @@ public class AccountController {
    * @param personId 身份证号
    * @return Result内容见文档
    */
+  @FullLog
   @GetMapping("/user/profile")
   public Result getUserProfile(@RequestParam("token") String token,
                                @RequestParam("person_id") String personId) {
@@ -451,6 +445,7 @@ public class AccountController {
    * @param personId 身份证号
    * @return Result内容参考文档
    */
+  @FullLog
   @GetMapping("/user/itinerary")
   public Result getItinerary(@RequestParam("token") String token,
                              @RequestParam("person_id") String personId) throws JsonProcessingException {
@@ -490,6 +485,7 @@ public class AccountController {
    * @param personId 身份证号
    * @return Result内容见文档
    */
+  @FullLog
   @GetMapping("/user/nucleic_test")
   public Result getNucleicTestInfo(@RequestParam("token") String token,
                                    @RequestParam("person_id") String personId) throws JsonProcessingException {
@@ -531,6 +527,7 @@ public class AccountController {
    * @param personId 身份证号
    * @return Result内容见文档
    */
+  @FullLog
   @GetMapping("/user/vaccine_inocu")
   public Result getVaccineInocuInfo(@RequestParam("token") String token,
                                     @RequestParam("person_id") String personId) {
@@ -559,6 +556,7 @@ public class AccountController {
    * @param size
    * @return
    */
+  @FullLog
   @GetMapping("/venue_code/application")
   public Result getVenueCodeApplication(@RequestParam("token") String token,
                                         @RequestParam("page") Integer page,
@@ -584,6 +582,7 @@ public class AccountController {
    * @param request
    * @return
    */
+  @FullLog
   @PostMapping("/venue_code/application")
   public Result postVenueCodeApplication(@RequestBody JSONObject request) {
     String token = request.getString("token");
@@ -626,6 +625,7 @@ public class AccountController {
    * @param district
    * @return
    */
+  @FullLog
   @GetMapping("/risk/code_number")
   public Result getCodeNumber(@RequestParam("token") String token,
                               @RequestParam("province") String province,
@@ -637,7 +637,6 @@ public class AccountController {
               .message("unknown token");
     }
     String position = province + ":" + city + ":" + district;
-    log.info("Admin with token " + token + " get code number of " + position);
     Long green = regionalRiskProfileService.getCodeNumber(position, 0);
     Long yellow = regionalRiskProfileService.getCodeNumber(position, 1);
     Long red = regionalRiskProfileService.getCodeNumber(position, 2);
@@ -656,6 +655,7 @@ public class AccountController {
    * @param district
    * @return
    */
+  @FullLog
   @GetMapping("/risk/specific")
   public Result getSpecificAreaSituation(@RequestParam("token") String token,
                                          @RequestParam("province") String province,
@@ -684,6 +684,7 @@ public class AccountController {
    * @param city
    * @return
    */
+  @FullLog
   @GetMapping("/risk/overall")
   public Result getOverallSituation(@RequestParam("token") String token,
                                     @RequestParam(value = "province", required = false)
@@ -695,7 +696,6 @@ public class AccountController {
               .error(2)
               .message("unknown token");
     }
-    log.info("Acquire risky districts number of city: " + city + " province: " + province);
     Integer lowLevelNumber = redisUtil.getOverallRiskLevel(province, city, 1);
     Integer mediumLevelNumber = redisUtil.getOverallRiskLevel(province, city, 2);
     Integer highLevelNumber = redisUtil.getOverallRiskLevel(province, city, 3);
@@ -713,6 +713,7 @@ public class AccountController {
    * @param city
    * @return
    */
+  @FullLog
   @GetMapping("/risk/sub_area")
   public Result getSubArea(@RequestParam("token") String token,
                            @RequestParam(value = "province", required = false)
@@ -736,6 +737,7 @@ public class AccountController {
    * @param province
    * @return
    */
+  @FullLog
   @GetMapping("/risk/province")
   public Result getProvinceSituation(@RequestParam("token") String token,
                                      @RequestParam("province") String province) {
@@ -770,6 +772,7 @@ public class AccountController {
    * @param district
    * @return
    */
+  @FullLog
   @GetMapping("/test/general")
   public Result getGeneralTestInfo(@RequestParam(value = "token", required = false)
                                    String token,

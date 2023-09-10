@@ -3,7 +3,6 @@ package com.healthcode.healthcodeserver.controller;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.healthcode.healthcodeserver.common.Result;
 import com.healthcode.healthcodeserver.entity.*;
 import com.healthcode.healthcodeserver.service.*;
@@ -150,6 +149,7 @@ public class UserController {
             request.getShort("person_gender"),
             (short) 0
     );
+    userService.save(user);
     return new Result().ok();
   }
 
@@ -199,33 +199,36 @@ public class UserController {
   }
 
   /**
-   *
-   * @param openId 微信用户openid
-   * @param sessionKey 会话密钥
-   * @param phoneNumber 需要i需改的手机号
    * @return Result内容见文档
    */
   @PostMapping("/change_info")
-  public Result changeUserInfo(@RequestParam("openid") String openId,
-                               @RequestParam("session_key") String sessionKey,
-                               @RequestParam("phone_number") String phoneNumber,
-                               @RequestParam("location") String location) {
+//  public Result changeUserInfo(@RequestParam("openid") String openId,
+//                               @RequestParam("session_key") String sessionKey,
+//                               @RequestParam("phone_number") String phoneNumber,
+//                               @RequestParam("location") String location) {
+  public Result changeUserInfo(@RequestBody JSONObject request) {
+    String openId = request.getString("openid");
+    String sessionKey = request.getString("session_key");
     Result verifiedResult = verifySession(openId, sessionKey);
     if (verifiedResult.getStatusCode() != 0) {
       return verifiedResult;
     }
     log.info("user with openid" + openId + " change info");
     User user = userService.getByOpenId(openId);
-    String personId = user.getPersonId();
-    UpdateWrapper<User> wrapper = new UpdateWrapper<>();
-    wrapper.eq("person_id", personId);
+//    String personId = user.getPersonId();
+    String phoneNumber = request.getString("phone_number");
+    String location = request.getString("location");
+//    UpdateWrapper<User> wrapper = new UpdateWrapper<>();
+//    wrapper.eq("person_id", personId);
     if (phoneNumber != null) {
-      wrapper.set("phone_number", phoneNumber);
+      user.setPhoneNumber(phoneNumber);
+//      wrapper.set("phone_number", phoneNumber);
     }
     if (location != null) {
-      wrapper.set("location", location);
+//      wrapper.set("location", location);
+      user.setPosition(location);
     }
-    userService.update(wrapper);
+    userService.update(user, null);
     return new Result().ok();
   }
 
@@ -244,6 +247,7 @@ public class UserController {
     if (verifiedResult.getStatusCode() != 0) {
       return verifiedResult;
     }
+    log.info("User with " + openId + " acquire nucleic test info.");
     User user = userService.getByOpenId(openId);
     if (user == null) {
       log.warn("no user with such openid");
@@ -261,7 +265,12 @@ public class UserController {
       jsonInfo.put("transfer_code", info.getTransferCode());
       CovidTestInstitution covidTestInstitution =
               covidTestInstitutionService.getById(info.getTestInstitutionId());
-      jsonInfo.put("institution_name", covidTestInstitution.getName());
+      if (covidTestInstitution == null) {
+        jsonInfo.put("institution_name", "B医院");
+      } else {
+        jsonInfo.put("institution_name", covidTestInstitution.getName());
+      }
+
       infoList.add(jsonInfo);
     }
     return new Result().ok()
@@ -284,6 +293,7 @@ public class UserController {
       return verifiedResult;
     }
     User user = userService.getByOpenId(openId);
+    log.info("User with " + openId + " acquire vaccine inocu info.");
     if (user == null) {
       log.warn("no user with such openid");
       return new Result()

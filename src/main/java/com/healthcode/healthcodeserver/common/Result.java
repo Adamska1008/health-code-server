@@ -39,6 +39,10 @@ public class Result {
     return this;
   }
 
+  public Boolean isError() {
+    return this.statusCode != 0;
+  }
+
   /**
    * 链式调用，设置error返回值，返回对象本身
    * @return 修改完的对象本身

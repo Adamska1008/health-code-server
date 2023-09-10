@@ -18,7 +18,7 @@ public class NucleicAcidTestInfoServiceImpl
   private NucleicAcidTestInfoDao nucleicAcidTestInfoDao;
 
   /**
-   * 通过身份证获取核酸检测信息表
+   * 通过身份证获取核酸检测信息表，保证获取顺序为按时间降序
    * @param personId 身份证
    * @return 核酸检测信息表
    */
@@ -26,6 +26,7 @@ public class NucleicAcidTestInfoServiceImpl
   public List<NucleicAcidTestInfo> getNucleicAcidTestInfoListByPersonId(String personId) {
     QueryWrapper<NucleicAcidTestInfo> queryWrapper = new QueryWrapper<>();
     queryWrapper.eq("person_id", personId);
+    queryWrapper.orderByDesc("test_time");
     return nucleicAcidTestInfoDao.selectList(queryWrapper);
   }
 
