@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.healthcode.healthcodeserver.aspect.pointCutAnnotation.CheckAdminToken;
 import com.healthcode.healthcodeserver.aspect.pointCutAnnotation.FullLog;
 import com.healthcode.healthcodeserver.common.Result;
 import com.healthcode.healthcodeserver.entity.*;
@@ -99,30 +100,25 @@ public class AccountController {
    * @return 检测人员申请列表
    */
   @FullLog
+  @CheckAdminToken
   @GetMapping("/get_tester_apply")
   public Result getTesterApplicationInfo(@RequestParam("token") String token,
                                          @RequestParam("page") Integer page,
                                          @RequestParam("size") Integer size) {
-    if (tokenUtil.verify(token)) {
       // 只统计未处理的数据条数
-      QueryWrapper<IdentityApplication> wrapper = new QueryWrapper<>();
-      wrapper.lt("is_processed", 1);
-      long tot = identityApplicationService.count(wrapper);
-
-      List<IdentityApplication> identityApplications;
-      if (page == null) {
-        identityApplications = identityApplicationService.getTesterApplicationList(100);
-      } else {
-        identityApplications = identityApplicationService.getByPage(page, size);
-      }
-      return new Result()
-              .ok()
-              .putData("total", tot)
-              .putData("application_list", identityApplications);
+    QueryWrapper<IdentityApplication> wrapper = new QueryWrapper<>();
+    wrapper.lt("is_processed", 1);
+    long tot = identityApplicationService.count(wrapper);
+    List<IdentityApplication> identityApplications;
+    if (page == null) {
+      identityApplications = identityApplicationService.getTesterApplicationList(100);
     } else {
-      return new Result()
-              .error(2);
+      identityApplications = identityApplicationService.getByPage(page, size);
     }
+    return new Result()
+            .ok()
+            .putData("total", tot)
+            .putData("application_list", identityApplications);
   }
 
   /**
@@ -170,19 +166,14 @@ public class AccountController {
    * @return Result内容见文档
    */
   @FullLog
+  @CheckAdminToken
   @GetMapping("/remote_report")
   public Result getRemoteReport(@RequestParam("token") String token,
                                 @RequestParam("page") Integer page,
                                 @RequestParam("size") Integer size) {
-    if (!tokenUtil.verify(token)) {
-      return new Result()
-              .error(2)
-              .message("unknown token");
-    }
     QueryWrapper<RemoteReporting> wrapper = new QueryWrapper<>();
     wrapper.lt("is_checked", 1);
     long tot = remoteReportingService.count(wrapper);
-
     List<RemoteReporting> remoteReportings;
     if (page == null || size == null) {
       return new Result().error(0).message("not given page or size");
@@ -225,14 +216,11 @@ public class AccountController {
    * @return Result内容见文档
    */
   @FullLog
+  @CheckAdminToken
   @GetMapping("/abnormal")
   public Result getAbnormalInfo(@RequestParam("token") String token,
                                 @RequestParam("page") Integer page,
                                 @RequestParam("size") Integer size) {
-    if (!tokenUtil.verify(token)) {
-      return new Result()
-              .error(2);
-    }
     QueryWrapper<AbnormalInfo> wrapper = new QueryWrapper<>();
     wrapper.lt("is_investigated", 1);
     long tot = abnormalInfoService.count(wrapper);
@@ -274,14 +262,11 @@ public class AccountController {
    * @return Result内容见文档
    */
   @FullLog
+  @CheckAdminToken
   @GetMapping("/family_binding")
   public Result getFamilyBinding(@RequestParam("token") String token,
                                  @RequestParam("page") Integer page,
                                  @RequestParam("size") Integer size) {
-    if (!tokenUtil.verify(token)) {
-      return new Result()
-            .error(2);
-    }
     QueryWrapper<FamilyBingApplication> wrapper = new QueryWrapper<>();
     wrapper.lt("is_processed", 1);
     long tot = familyBingApplicationService.count(wrapper);
@@ -339,14 +324,11 @@ public class AccountController {
    * @return
    */
   @FullLog
+  @CheckAdminToken
   @GetMapping("/collection_point")
   public Result getCollectionPoint(@RequestParam("token") String token,
                                    @RequestParam("page") Integer page,
                                    @RequestParam("size") Integer size) {
-    if (!tokenUtil.verify(token)) {
-      return new Result()
-              .error(2);
-    }
     long tot = collectionPointService.count();
     List<CollectionPoint> points = collectionPointService.getByPage(page, size);
     return new Result()
@@ -416,14 +398,10 @@ public class AccountController {
    * @return Result内容见文档
    */
   @FullLog
+  @CheckAdminToken
   @GetMapping("/user/profile")
   public Result getUserProfile(@RequestParam("token") String token,
                                @RequestParam("person_id") String personId) {
-
-    if (!tokenUtil.verify(token)) {
-      return new Result()
-              .error(2);
-    }
     User user = userService.getByPersonId(personId);
     if (user == null) {
       return new Result()
@@ -446,14 +424,10 @@ public class AccountController {
    * @return Result内容参考文档
    */
   @FullLog
+  @CheckAdminToken
   @GetMapping("/user/itinerary")
   public Result getItinerary(@RequestParam("token") String token,
                              @RequestParam("person_id") String personId) throws JsonProcessingException {
-    if (!tokenUtil.verify(token)) {
-      return new Result()
-              .error(2)
-              .message("unknown token");
-    }
     Result result = new Result().ok();
     User user = userService.getByPersonId(personId);
     if (user == null) {
@@ -486,14 +460,10 @@ public class AccountController {
    * @return Result内容见文档
    */
   @FullLog
+  @CheckAdminToken
   @GetMapping("/user/nucleic_test")
   public Result getNucleicTestInfo(@RequestParam("token") String token,
                                    @RequestParam("person_id") String personId) throws JsonProcessingException {
-    if (!tokenUtil.verify(token)) {
-      return new Result()
-              .error(2)
-              .message("unknown token");
-    }
     User user = userService.getByPersonId(personId);
     if (user == null) {
       return new Result()
@@ -528,14 +498,10 @@ public class AccountController {
    * @return Result内容见文档
    */
   @FullLog
+  @CheckAdminToken
   @GetMapping("/user/vaccine_inocu")
   public Result getVaccineInocuInfo(@RequestParam("token") String token,
                                     @RequestParam("person_id") String personId) {
-    if (!tokenUtil.verify(token)) {
-      return new Result()
-              .error(2)
-              .message("unknown token");
-    }
     User user = userService.getByPersonId(personId);
     if (user == null) {
       return new Result()
@@ -557,15 +523,11 @@ public class AccountController {
    * @return
    */
   @FullLog
+  @CheckAdminToken
   @GetMapping("/venue_code/application")
   public Result getVenueCodeApplication(@RequestParam("token") String token,
                                         @RequestParam("page") Integer page,
                                         @RequestParam("size") Integer size) {
-    if (!tokenUtil.verify(token)) {
-      return new Result()
-              .error(2)
-              .message("unknown token");
-    }
     QueryWrapper<VenueCodeApplication> wrapper = new QueryWrapper<>();
     wrapper.lt("is_solved", 1);
     long tot = venueCodeApplicationService.count(wrapper);
@@ -626,16 +588,12 @@ public class AccountController {
    * @return
    */
   @FullLog
+  @CheckAdminToken
   @GetMapping("/risk/code_number")
   public Result getCodeNumber(@RequestParam("token") String token,
                               @RequestParam("province") String province,
                               @RequestParam("city") String city,
                               @RequestParam("district") String district) {
-    if (!tokenUtil.verify(token)) {
-      return new Result()
-              .error(2)
-              .message("unknown token");
-    }
     String position = province + ":" + city + ":" + district;
     Long green = regionalRiskProfileService.getCodeNumber(position, 0);
     Long yellow = regionalRiskProfileService.getCodeNumber(position, 1);
@@ -656,16 +614,12 @@ public class AccountController {
    * @return
    */
   @FullLog
+  @CheckAdminToken
   @GetMapping("/risk/specific")
   public Result getSpecificAreaSituation(@RequestParam("token") String token,
                                          @RequestParam("province") String province,
                                          @RequestParam("city") String city,
                                          @RequestParam("district") String district) {
-    if (!tokenUtil.verify(token)) {
-      return new Result()
-              .error(2)
-              .message("unknown token");
-    }
     int riskLevel = regionalRiskProfileService.getRiskLevel(province, city, district);
     if (riskLevel == -1) {
       riskLevel = 0;
@@ -685,17 +639,13 @@ public class AccountController {
    * @return
    */
   @FullLog
+  @CheckAdminToken
   @GetMapping("/risk/overall")
   public Result getOverallSituation(@RequestParam("token") String token,
                                     @RequestParam(value = "province", required = false)
                                     String province,
                                     @RequestParam(value = "city", required = false)
                                     String city) {
-    if (!tokenUtil.verify(token)) {
-      return new Result()
-              .error(2)
-              .message("unknown token");
-    }
     Integer lowLevelNumber = redisUtil.getOverallRiskLevel(province, city, 1);
     Integer mediumLevelNumber = redisUtil.getOverallRiskLevel(province, city, 2);
     Integer highLevelNumber = redisUtil.getOverallRiskLevel(province, city, 3);
@@ -714,17 +664,13 @@ public class AccountController {
    * @return
    */
   @FullLog
+  @CheckAdminToken
   @GetMapping("/risk/sub_area")
   public Result getSubArea(@RequestParam("token") String token,
                            @RequestParam(value = "province", required = false)
                            String province,
                            @RequestParam(value = "city", required = false)
                            String city) {
-    if (!tokenUtil.verify(token)) {
-      return new Result()
-              .error(2)
-              .message("unknown token");
-    }
     List<String> subAreas = regionalRiskProfileService.getSubArea(province, city);
     return new Result()
             .ok()
@@ -738,14 +684,10 @@ public class AccountController {
    * @return
    */
   @FullLog
+  @CheckAdminToken
   @GetMapping("/risk/province")
   public Result getProvinceSituation(@RequestParam("token") String token,
                                      @RequestParam("province") String province) {
-    if (!tokenUtil.verify(token)) {
-      return new Result()
-              .error(2)
-              .message("unknown token");
-    }
     List<String> cities = regionalRiskProfileService.getSubArea(province, null);
     JSONArray jsonArray = new JSONArray();
     for (var city : cities) {
@@ -773,8 +715,9 @@ public class AccountController {
    * @return
    */
   @FullLog
+  @CheckAdminToken
   @GetMapping("/test/general")
-  public Result getGeneralTestInfo(@RequestParam(value = "token", required = false)
+  public Result getGeneralTestInfo(@RequestParam(value = "token")
                                    String token,
                                    @RequestParam(value = "province", required = false)
                                    String province,
@@ -782,11 +725,6 @@ public class AccountController {
                                    String city,
                                    @RequestParam(value = "district",required = false)
                                    String district) {
-    if (!tokenUtil.verify(token)) {
-      return new Result()
-              .error(2)
-              .message("unknown token");
-    }
     if (province == null) {
       return new Result()
               .error(null)
